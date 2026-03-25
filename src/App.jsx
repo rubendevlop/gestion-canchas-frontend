@@ -41,7 +41,7 @@ function LoginGuard({ children }) {
 function RoleRedirect() {
   const { user, role, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-background text-primary">Cargando...</div>;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user || !role) return <Navigate to="/login" replace />;
   if (role === 'client') return <Navigate to="/portal" replace />;
   return <Navigate to="/dashboard" replace />;
 }

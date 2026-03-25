@@ -249,7 +249,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   if (loading) return LOADING_SCREEN;
   if (!user) return <Navigate to="/login" replace />;
-  if (!role) return LOADING_SCREEN;
+  if (!role) return <Navigate to="/login" replace />;
 
   if (role === 'owner' && allowedRoles?.includes('owner')) {
     if (ownerStatus === 'PENDING') return <PendingApprovalScreen />;

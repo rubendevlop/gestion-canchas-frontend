@@ -71,11 +71,9 @@ export function AuthProvider({ children }) {
             setOwnerStatusNote(sessionStorage.getItem('ownerStatusNote') || '');
             setOwnerBilling(readCachedBilling());
           } else {
-            setUser(currentUser);
-            setRole(null);
-            setOwnerStatus(null);
-            setOwnerStatusNote('');
-            setOwnerBilling(null);
+            // No cached session and backend unreachable — clear everything
+            // so the user lands on /login instead of spinning forever.
+            clearProfile();
           }
         }
       } else {

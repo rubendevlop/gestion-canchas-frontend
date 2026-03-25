@@ -328,13 +328,13 @@ export default function OwnerCollections() {
 
           {!account?.secureStorageReady && (
             <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
-              Falta <code>PAYMENT_ACCOUNT_ENCRYPTION_SECRET</code> en el backend. Sin esa variable no se puede guardar la vinculacion de la cuenta.
+              La vinculación de cuentas está temporalmente no disponible. Contactá al administrador del sistema.
             </div>
           )}
 
           {account?.secureStorageReady && !account?.oauthReady && (
             <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
-              Falta terminar la configuracion OAuth de Mercado Pago en el backend. Revisá <code>MERCADOPAGO_CLIENT_ID</code>, <code>MERCADOPAGO_CLIENT_SECRET</code>, <code>BACKEND_PUBLIC_URL</code> y <code>FRONTEND_URL</code>.
+              La integración con Mercado Pago no está configurada aún. Contactá al administrador del sistema.
             </div>
           )}
 
@@ -345,7 +345,9 @@ export default function OwnerCollections() {
                 : 'Todavía no hay una cuenta de Mercado Pago conectada.'}
             </p>
             <p className="mt-1 text-xs text-on_surface_variant">
-              El flujo correcto es OAuth: el owner entra con su usuario de Mercado Pago y autoriza la conexión desde Mercado Pago.
+              {account?.providerConfigured
+                ? 'Podés reconectar tu cuenta en cualquier momento.'
+                : 'Conectá tu cuenta para empezar a cobrar reservas y ventas online.'}
             </p>
           </div>
 

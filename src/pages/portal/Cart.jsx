@@ -175,7 +175,7 @@ export default function Cart() {
       <MercadoPagoCardModal
         open={Boolean(paymentSession)}
         title="Pagar pedido del ecommerce"
-        subtitle="El cobro se procesa con Mercado Pago Orders API y queda vinculado al complejo correspondiente."
+
         amount={Number(paymentSession?.amount || total)}
         currency={paymentSession?.currency || 'ARS'}
         payerEmail={paymentSession?.payer?.email || user?.email || ''}

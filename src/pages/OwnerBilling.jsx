@@ -459,7 +459,7 @@ export default function OwnerBilling() {
       <MercadoPagoCardModal
         open={Boolean(paymentSession)}
         title="Completar mensualidad"
-        subtitle="El cobro se procesa con Mercado Pago Orders API desde el mismo panel."
+
         amount={Number(paymentSession?.amount || billing?.amount || 0)}
         currency={paymentSession?.currency || billing?.currency || 'ARS'}
         payerEmail={paymentSession?.payer?.email || user?.email || ''}

@@ -269,7 +269,7 @@ export default function BookCourt() {
       <MercadoPagoCardModal
         open={Boolean(paymentSession)}
         title="Pagar reserva"
-        subtitle="El cobro se procesa con la cuenta Mercado Pago del complejo."
+
         amount={Number(paymentSession?.amount || court?.pricePerHour || 0)}
         currency={paymentSession?.currency || 'ARS'}
         payerEmail={paymentSession?.payer?.email || user?.email || ''}

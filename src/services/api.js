@@ -1,6 +1,8 @@
 import { auth } from '../firebase';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://gestioncanchasbackend.vercel.app/api';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
 
 export const fetchAPI = async (endpoint, options = {}) => {
   let token = null;

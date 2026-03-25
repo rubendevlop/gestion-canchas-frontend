@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   CheckCircle2,
   CreditCard,
@@ -6,13 +7,13 @@ import {
   RefreshCw,
   Save,
   Settings2,
+  ShieldAlert,
+  ShieldCheck,
   ShoppingBag,
   Ticket,
+  Unplug,
 } from 'lucide-react';
 import { fetchAPI } from '../services/api';
-
-const INPUT_CLS =
-  'w-full rounded-2xl border border-outline_variant/15 bg-surface_container px-4 py-3 text-sm text-on_surface placeholder-outline focus:outline-none focus:border-primary/40 transition-all';
 
 const PAYMENT_STATUS_LABEL = {
   UNPAID: 'Sin cobrar',
@@ -82,6 +83,7 @@ function ToggleRow({ label, description, checked, onChange }) {
 }
 
 export default function OwnerCollections() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [account, setAccount] = useState(null);
   const [complexes, setComplexes] = useState([]);
   const [reservations, setReservations] = useState([]);
@@ -89,11 +91,11 @@ export default function OwnerCollections() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [form, setForm] = useState({
-    publicKey: '',
-    accessToken: '',
     reservationsEnabled: true,
     ordersEnabled: true,
   });
@@ -120,8 +122,6 @@ export default function OwnerCollections() {
       setReservations(Array.isArray(reservationsResponse) ? reservationsResponse : []);
       setOrders(Array.isArray(ordersResponse) ? ordersResponse : []);
       setForm({
-        publicKey: nextAccount?.publicKey || '',
-        accessToken: '',
         reservationsEnabled: nextAccount?.reservationsEnabled ?? true,
         ordersEnabled: nextAccount?.ordersEnabled ?? true,
       });
@@ -136,6 +136,20 @@ export default function OwnerCollections() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const mpStatus = searchParams.get('mp');
+    if (!mpStatus) return;
+
+    if (mpStatus === 'connected') {
+      setMessage('La cuenta de Mercado Pago quedó conectada correctamente.');
+      loadData('refresh');
+    } else if (mpStatus === 'error') {
+      setErrorMessage(searchParams.get('message') || 'No se pudo conectar la cuenta de Mercado Pago.');
+    }
+
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const stats = useMemo(() => {
     const paidReservations = reservations.filter((reservation) => reservation.paymentStatus === 'PAID');
@@ -167,19 +181,59 @@ export default function OwnerCollections() {
       });
 
       setAccount(response.account);
-      setForm((prev) => ({
-        ...prev,
-        accessToken: '',
-        publicKey: response.account?.publicKey || prev.publicKey,
-        reservationsEnabled: response.account?.reservationsEnabled ?? prev.reservationsEnabled,
-        ordersEnabled: response.account?.ordersEnabled ?? prev.ordersEnabled,
-      }));
-      setMessage(response.message || 'Cuenta de cobro actualizada.');
+      setForm({
+        reservationsEnabled: response.account?.reservationsEnabled ?? true,
+        ordersEnabled: response.account?.ordersEnabled ?? true,
+      });
+      setMessage(response.message || 'Preferencias de cobro actualizadas.');
       await loadData('refresh');
     } catch (error) {
-      setErrorMessage(error.message || 'No se pudo guardar la cuenta de cobro.');
+      setErrorMessage(error.message || 'No se pudieron guardar las preferencias de cobro.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleConnect = async () => {
+    setConnecting(true);
+    setErrorMessage('');
+    setMessage('');
+
+    try {
+      const response = await fetchAPI('/payment-account/oauth/connect-url');
+      if (!response.authorizationUrl) {
+        throw new Error('No se pudo generar la autorizacion de Mercado Pago.');
+      }
+
+      window.location.assign(response.authorizationUrl);
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo iniciar la conexion con Mercado Pago.');
+      setConnecting(false);
+      return;
+    }
+  };
+
+  const handleDisconnect = async () => {
+    setDisconnecting(true);
+    setErrorMessage('');
+    setMessage('');
+
+    try {
+      const response = await fetchAPI('/payment-account/current', {
+        method: 'DELETE',
+      });
+
+      setAccount(response.account);
+      setForm({
+        reservationsEnabled: response.account?.reservationsEnabled ?? true,
+        ordersEnabled: response.account?.ordersEnabled ?? true,
+      });
+      setMessage(response.message || 'La cuenta de Mercado Pago fue desvinculada.');
+      await loadData('refresh');
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo desvincular la cuenta.');
+    } finally {
+      setDisconnecting(false);
     }
   };
 
@@ -200,7 +254,7 @@ export default function OwnerCollections() {
             Reservas y tienda
           </h2>
           <p className="max-w-3xl text-on_surface_variant">
-            Desde aca conectas la cuenta de Mercado Pago donde vas a cobrar las reservas y las compras de productos.
+            Desde acá conectás tu cuenta de Mercado Pago para cobrar reservas y ventas de productos sin cargar credenciales de desarrollador.
           </p>
         </div>
 
@@ -258,7 +312,7 @@ export default function OwnerCollections() {
         />
       </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-8 xl:grid-cols-[0.9fr_1.1fr]">
+      <div className="mb-8 grid grid-cols-1 gap-8 xl:grid-cols-[0.95fr_1.05fr]">
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_low p-6 sm:p-7">
           <div className="mb-5 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -267,88 +321,114 @@ export default function OwnerCollections() {
             <div>
               <h3 className="text-xl font-display font-medium text-on_surface">Cuenta Mercado Pago</h3>
               <p className="text-sm text-on_surface_variant">
-                Esta cuenta va a recibir el dinero de reservas y productos de tu complejo.
+                El owner inicia sesión en Mercado Pago y autoriza el uso de su cuenta de cobro.
               </p>
             </div>
           </div>
 
           {!account?.secureStorageReady && (
             <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
-              Falta `PAYMENT_ACCOUNT_ENCRYPTION_SECRET` en el backend. Sin esa variable no se pueden guardar credenciales del owner.
+              Falta <code>PAYMENT_ACCOUNT_ENCRYPTION_SECRET</code> en el backend. Sin esa variable no se puede guardar la vinculacion de la cuenta.
             </div>
           )}
 
-          <form className="space-y-4" onSubmit={handleSave}>
-            <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-outline">
-                Public Key
-              </label>
-              <input
-                type="text"
-                value={form.publicKey}
-                onChange={(event) => setForm((prev) => ({ ...prev, publicKey: event.target.value }))}
-                placeholder="APP_USR-..."
-                className={INPUT_CLS}
-              />
+          {account?.secureStorageReady && !account?.oauthReady && (
+            <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
+              Falta terminar la configuracion OAuth de Mercado Pago en el backend. Revisá <code>MERCADOPAGO_CLIENT_ID</code>, <code>MERCADOPAGO_CLIENT_SECRET</code>, <code>BACKEND_PUBLIC_URL</code> y <code>FRONTEND_URL</code>.
             </div>
+          )}
 
-            <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-outline">
-                Access Token
-              </label>
-              <input
-                type="password"
-                value={form.accessToken}
-                onChange={(event) => setForm((prev) => ({ ...prev, accessToken: event.target.value }))}
-                placeholder={account?.accessTokenLastFour ? `Actual termina en ${account.accessTokenLastFour}` : 'APP_USR-...'}
-                className={INPUT_CLS}
-              />
-              <p className="mt-2 text-xs text-outline">
-                Si ya tenes una cuenta guardada, deja este campo vacio para conservar el token actual.
-              </p>
-            </div>
+          <div className="mb-5 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4">
+            <p className="text-sm font-medium text-on_surface">
+              {account?.providerConfigured
+                ? 'La cuenta ya está vinculada y lista para cobrar.'
+                : 'Todavía no hay una cuenta de Mercado Pago conectada.'}
+            </p>
+            <p className="mt-1 text-xs text-on_surface_variant">
+              El flujo correcto es OAuth: el owner entra con su usuario de Mercado Pago y autoriza la conexión desde Mercado Pago.
+            </p>
+          </div>
 
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={handleConnect}
+              disabled={connecting || !account?.secureStorageReady || !account?.oauthReady}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-5 py-3.5 font-semibold text-on_primary_fixed transition-all hover:brightness-110 disabled:opacity-50"
+            >
+              {connecting ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
+              {connecting
+                ? 'Abriendo Mercado Pago...'
+                : account?.providerConfigured
+                  ? 'Reconectar cuenta'
+                  : 'Conectar Mercado Pago'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDisconnect}
+              disabled={disconnecting || !account?.providerConfigured}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-outline_variant/15 bg-surface_container px-5 py-3.5 font-semibold text-on_surface transition-colors hover:bg-surface_container_highest disabled:opacity-50"
+            >
+              {disconnecting ? <Loader2 size={18} className="animate-spin" /> : <Unplug size={18} />}
+              {disconnecting ? 'Desvinculando...' : 'Desconectar cuenta'}
+            </button>
+          </div>
+
+          <form className="mt-5 space-y-4" onSubmit={handleSave}>
             <ToggleRow
               label="Cobrar reservas online"
-              description="Si lo apagas, las reservas se siguen creando pero no se podran cobrar por Mercado Pago."
+              description="Si lo apagás, las reservas se siguen creando pero no se podrán cobrar por Mercado Pago."
               checked={form.reservationsEnabled}
               onChange={(checked) => setForm((prev) => ({ ...prev, reservationsEnabled: checked }))}
             />
 
             <ToggleRow
               label="Cobrar tienda online"
-              description="Si lo apagas, el carrito del ecommerce no abrira checkout."
+              description="Si lo apagás, el carrito de la tienda no abrirá checkout."
               checked={form.ordersEnabled}
               onChange={(checked) => setForm((prev) => ({ ...prev, ordersEnabled: checked }))}
             />
 
             <button
               type="submit"
-              disabled={saving || !account?.secureStorageReady}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-5 py-3.5 font-semibold text-on_primary_fixed transition-all hover:brightness-110 disabled:opacity-50"
+              disabled={saving}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-surface_container_highest px-5 py-3.5 font-semibold text-on_surface transition-colors hover:bg-surface disabled:opacity-50"
             >
               {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-              {saving ? 'Validando cuenta...' : 'Guardar cuenta de cobro'}
+              {saving ? 'Guardando...' : 'Guardar preferencias de cobro'}
             </button>
           </form>
         </section>
 
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_low p-6 sm:p-7">
-          <h3 className="mb-5 text-xl font-display font-medium text-on_surface">Estado de la conexion</h3>
+          <h3 className="mb-5 text-xl font-display font-medium text-on_surface">Estado de la conexión</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <MiniStat label="Estado" value={account?.status || 'DISCONNECTED'} />
             <MiniStat label="Modo" value={account?.mode || 'sandbox'} />
+            <MiniStat label="Tipo de conexión" value={account?.authType === 'oauth' ? 'OAuth' : 'Manual'} />
             <MiniStat label="Collector ID" value={account?.collectorId || 'Sin validar'} />
             <MiniStat label="Nickname" value={account?.collectorNickname || 'Sin validar'} />
             <MiniStat label="Email cobrador" value={account?.collectorEmail || 'Sin validar'} />
-            <MiniStat label="Ultima validacion" value={formatDate(account?.lastValidatedAt)} />
+            <MiniStat label="Última validación" value={formatDate(account?.lastValidatedAt)} />
+            <MiniStat label="Token vigente hasta" value={formatDate(account?.tokenExpiresAt)} />
           </div>
+
+          {account?.lastValidationError && (
+            <div className="mt-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4">
+              <p className="flex items-center gap-2 text-sm font-medium text-yellow-400">
+                <ShieldAlert size={16} />
+                Último problema informado por Mercado Pago
+              </p>
+              <p className="mt-2 text-sm text-on_surface_variant">{account.lastValidationError}</p>
+            </div>
+          )}
 
           <div className="mt-5 rounded-2xl border border-outline_variant/10 bg-surface_container p-4">
             <p className="text-xs uppercase tracking-widest text-outline mb-2">Complejos vinculados</p>
             <div className="flex flex-wrap gap-2">
               {complexes.length === 0 ? (
-                <span className="text-sm text-on_surface_variant">No tenes complejos creados todavia.</span>
+                <span className="text-sm text-on_surface_variant">No tenés complejos creados todavía.</span>
               ) : (
                 complexes.map((complex) => (
                   <span
@@ -378,7 +458,7 @@ export default function OwnerCollections() {
 
           {reservations.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-outline_variant/15 bg-surface_container_low px-5 py-8 text-center text-sm text-on_surface_variant">
-              Todavia no hay reservas registradas.
+              Todavía no hay reservas registradas.
             </div>
           ) : (
             <div className="space-y-3">
@@ -406,14 +486,14 @@ export default function OwnerCollections() {
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
               <h3 className="text-xl font-display font-medium text-on_surface">Cobros de tienda</h3>
-              <p className="text-sm text-on_surface_variant">Pedidos del ecommerce y su estado de pago.</p>
+              <p className="text-sm text-on_surface_variant">Pedidos de la tienda y su estado de pago.</p>
             </div>
             <span className="text-xs uppercase tracking-widest text-outline">{orders.length} pedidos</span>
           </div>
 
           {orders.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-outline_variant/15 bg-surface_container_low px-5 py-8 text-center text-sm text-on_surface_variant">
-              Todavia no hay pedidos registrados.
+              Todavía no hay pedidos registrados.
             </div>
           ) : (
             <div className="space-y-3">

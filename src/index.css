@@ -5,34 +5,78 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: #9ef06b;
+  }
+
+  html {
+    background: #101710;
+  }
+
   body {
     @apply bg-background text-on_surface font-inter antialiased;
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+    color-scheme: dark;
+    background-image:
+      radial-gradient(circle at top left, rgba(158, 240, 107, 0.14), transparent 28%),
+      radial-gradient(circle at top right, rgba(255, 200, 87, 0.10), transparent 22%),
+      linear-gradient(180deg, rgba(12, 18, 12, 0.94), rgba(16, 23, 16, 1));
+    background-attachment: fixed;
   }
-  
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.38;
+    background:
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 62%),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 112px,
+        rgba(184, 255, 160, 0.028) 112px,
+        rgba(184, 255, 160, 0.028) 224px
+      );
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-manrope font-semibold tracking-tight;
+  }
+
+  ::selection {
+    background: rgba(158, 240, 107, 0.32);
+    color: #071309;
   }
 }
 
 @layer components {
-  /* Minimalismo de Capas Infinitas */
   .glass-panel {
-    @apply bg-surface_container/70 backdrop-blur-xl border border-outline_variant/15;
+    @apply bg-surface_container/72 backdrop-blur-xl border border-outline_variant/15;
   }
 
   .btn-primary {
-    @apply bg-primary-gradient text-[#001849] px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-primary_container/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary_container/40;
+    @apply bg-primary-gradient text-on_primary_fixed px-6 py-3 rounded-2xl font-semibold shadow-lg shadow-primary_container/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary_container/40;
   }
 
   .btn-secondary {
     @apply bg-surface_container_highest text-on_surface px-6 py-3 rounded-2xl font-medium transition-all duration-300 hover:bg-surface_bright;
   }
-  
+
   .card {
     @apply bg-surface_container_high rounded-3xl p-6 border border-outline_variant/10;
   }
 
   .input-field {
-    @apply bg-surface_container_low w-full text-on_surface placeholder-on_surface_variant rounded-xl px-4 py-3 border border-transparent focus:border-primary/30 focus:shadow-[0_0_15px_rgba(180,197,255,0.1)] outline-none transition-all duration-300;
+    @apply bg-surface_container_low w-full text-on_surface placeholder-on_surface_variant rounded-xl px-4 py-3 border border-transparent focus:border-primary/30 focus:shadow-[0_0_18px_rgba(158,240,107,0.12)] outline-none transition-all duration-300;
   }
 }

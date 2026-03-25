@@ -150,7 +150,7 @@ export default function Settings() {
 
         {/* CTA guardar */}
         <button type="submit" disabled={saving}
-          className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-bold py-4 rounded-2xl hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_30px_-10px_rgba(23,101,242,0.4)]">
+          className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-bold py-4 rounded-2xl hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_8px_30px_-10px_rgba(47,172,76,0.4)]">
           {saving ? <Loader2 size={18} className="animate-spin"/> : saved ? <CheckCircle2 size={18}/> : <Save size={18}/>}
           {saving ? 'Guardando...' : saved ? '¡Guardado!' : isNew ? 'Crear mi complejo' : 'Guardar cambios'}
         </button>

@@ -97,7 +97,8 @@ export default function Login() {
     <div className="min-h-screen bg-background flex text-on_surface font-body overflow-hidden">
 
       {/* Panel izquierdo decorativo */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-surface_container_low border-r border-outline_variant/15">
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden p-12 bg-[linear-gradient(155deg,rgba(11,27,14,0.98),rgba(22,52,24,0.94))] border-r border-outline_variant/15">
+        <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_108px,rgba(194,255,170,0.16)_108px,rgba(194,255,170,0.16)_216px)] pointer-events-none" />
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full pointer-events-none" />
         <div className="z-10 relative">
@@ -121,7 +122,7 @@ export default function Login() {
       </div>
 
       {/* Panel derecho */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-surface">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[radial-gradient(circle_at_top,rgba(158,240,107,0.08),transparent_32%),linear-gradient(180deg,rgba(18,27,19,1),rgba(16,23,16,1))]">
         <div className="w-full max-w-md">
 
           {/* Éxito de registro */}
@@ -216,7 +217,7 @@ export default function Login() {
                 e.preventDefault();
                 alert('El acceso por email estará disponible pronto. Usá Google por ahora.');
               }}
-              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-semibold py-3 rounded-2xl mt-2 flex justify-center items-center gap-2 hover:brightness-110 transition-all shadow-[0_8px_24px_-8px_rgba(23,101,242,0.4)] disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-semibold py-3 rounded-2xl mt-2 flex justify-center items-center gap-2 hover:brightness-110 transition-all shadow-[0_8px_24px_-8px_rgba(47,172,76,0.38)] disabled:opacity-50"
               disabled={loading}
             >
               {mode === 'login' ? 'Ingresar' : 'Crear cuenta'}

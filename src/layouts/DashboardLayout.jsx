@@ -204,18 +204,24 @@ export default function DashboardLayout() {
           onClick={() => mobile && setSidebarOpen(false)}
           className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 ${
             isActive
-              ? 'bg-surface_container_highest text-on_surface shadow-[0_8px_24px_rgba(0,0,0,0.2)]'
+              ? 'bg-surface_container_highest text-on_surface shadow-[0_12px_30px_-18px_rgba(47,172,76,0.48)]'
               : 'text-on_surface_variant hover:bg-surface hover:text-on_surface'
           }`}
         >
-          <Icon size={20} className={isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(179,197,255,0.4)]' : ''} />
+          <Icon size={20} className={isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(158,240,107,0.38)]' : ''} />
           <span className="font-medium text-sm tracking-wide">{item.name}</span>
         </Link>
       );
     });
 
   return (
-    <div className="min-h-screen bg-background text-on_surface font-body lg:flex">
+    <div className="relative min-h-screen overflow-hidden bg-background text-on_surface font-body lg:flex">
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute left-[-8rem] top-[-7rem] h-[22rem] w-[22rem] rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute right-[-6rem] top-[10rem] h-[18rem] w-[18rem] rounded-full bg-tertiary/10 blur-3xl" />
+        <div className="absolute bottom-[-10rem] right-[-6rem] h-[24rem] w-[24rem] rounded-full bg-secondary/10 blur-3xl" />
+      </div>
+
       {sidebarOpen && (
         <button
           type="button"
@@ -226,7 +232,7 @@ export default function DashboardLayout() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] bg-surface_container_low flex flex-col shadow-[8px_0_30px_-15px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:static lg:translate-x-0 lg:z-20 ${
+        className={`fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] border-r border-outline_variant/15 bg-surface_container_low/92 backdrop-blur-xl flex flex-col shadow-[8px_0_30px_-15px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:static lg:translate-x-0 lg:z-20 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -285,8 +291,8 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 flex flex-col">
-        <header className="sticky top-0 z-10 bg-background/85 backdrop-blur-xl border-b border-outline_variant/10">
+      <main className="relative z-10 min-w-0 flex-1 flex flex-col">
+        <header className="sticky top-0 z-10 bg-background/72 backdrop-blur-xl border-b border-outline_variant/15">
           <div className="px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button

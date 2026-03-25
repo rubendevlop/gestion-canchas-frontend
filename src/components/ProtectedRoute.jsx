@@ -143,7 +143,7 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
         </div>
         <h1 className="text-3xl font-display font-bold text-on_surface mb-3">Pago mensual requerido</h1>
         <p className="text-on_surface_variant mb-6 leading-relaxed">
-          Tu cuenta owner ya fue aprobada, pero para usar el panel tenes que abonar la mensualidad mediante un pago directo de Mercado Pago.
+          Tu cuenta owner ya fue aprobada, pero para usar el panel tenes que abonar la mensualidad del complejo mediante un pago directo de Mercado Pago.
         </p>
 
         <div className="bg-surface_container rounded-3xl p-5 text-left space-y-3 mb-6">
@@ -160,7 +160,7 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
           <div className="mb-6 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-5 py-4 text-left">
             <p className="flex items-center gap-2 text-sm font-medium text-yellow-400">
               <ShieldAlert size={16} />
-              Mercado Pago todavia no esta configurado en el backend.
+              Mercado Pago todavia no esta configurado.
             </p>
             <p className="mt-2 text-sm text-on_surface_variant">
               Hasta que se carguen la clave privada y la publica no se va a poder generar el cobro mensual.
@@ -200,8 +200,8 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
 
         <MercadoPagoCardModal
           open={Boolean(paymentSession)}
-          title="Pagar mensualidad owner"
-          subtitle="Completa el cobro desde este bloqueo para volver a habilitar el panel."
+          title="Pagar mensualidad"
+          subtitle="Completa el pago desde este bloqueo para volver a habilitar el panel."
           amount={Number(paymentSession?.amount || ownerBilling?.amount || 0)}
           currency={paymentSession?.currency || ownerBilling?.currency || 'ARS'}
           payerEmail={paymentSession?.payer?.email || user?.email || ''}

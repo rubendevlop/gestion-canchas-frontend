@@ -86,15 +86,15 @@ function getStatusMessage(billing, pendingInvoice) {
       ? `La proxima factura ya fue generada y vence el ${formatDate(pendingInvoice.dueDate)}.`
       : 'Tu proxima factura mensual se puede generar desde este panel.';
 
-    return `Tu acceso owner esta habilitado hasta el ${formatDate(billing.accessEndsAt)}. ${renewalHint}`;
+    return `Tu acceso al panel esta habilitado hasta el ${formatDate(billing.accessEndsAt)}. ${renewalHint}`;
   }
 
   if (billing.status === 'GRACE') {
-    return `Tenes tiempo hasta el ${formatDate(billing.blockAt)} para pagar antes de que se bloquee el panel y tu complejo deje de operar.`;
+    return `Tenes tiempo hasta el ${formatDate(billing.blockAt)} para pagar antes de que se bloquee el panel y tu complejo quede con acceso limitado.`;
   }
 
   if (billing.status === 'BLOCKED') {
-    return 'Tu acceso owner esta bloqueado por falta de pago. Hasta regularizarlo no vas a poder gestionar el complejo y los clientes no podran reservar ni comprar.';
+    return 'El acceso al panel esta bloqueado por falta de pago. Hasta regularizarlo no vas a poder gestionar el complejo.';
   }
 
   return 'La facturacion mensual solo aplica a cuentas owner aprobadas.';
@@ -245,12 +245,12 @@ export default function OwnerBilling() {
     <div className="animate-fade-in pb-10">
       <header className="mb-8 sm:mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm text-outline uppercase tracking-widest mb-1">Facturacion owner</p>
+          <p className="text-sm text-outline uppercase tracking-widest mb-1">Mensualidad</p>
           <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-on_surface tracking-tight">
-            Pago mensual del SaaS
+            Mensualidad del complejo
           </h2>
           <p className="text-on_surface_variant max-w-3xl">
-            Desde este panel gestionas la mensualidad que pagas al duenio del sistema. El cobro se hace por pago directo de Mercado Pago, sin suscripciones automaticas.
+            Desde este panel gestionas el pago mensual de tu complejo. El cobro se realiza con Mercado Pago y se registra mes a mes, sin renovaciones automaticas.
           </p>
         </div>
 
@@ -281,7 +281,7 @@ export default function OwnerBilling() {
         <div className="mb-6 rounded-[1.5rem] border border-yellow-400/15 bg-yellow-400/5 px-5 py-4">
           <p className="flex items-center gap-2 text-sm font-medium text-yellow-400">
             <ShieldAlert size={16} />
-            Mercado Pago no esta configurado en el backend.
+            Mercado Pago no esta configurado.
           </p>
           <p className="mt-2 text-sm text-on_surface_variant">
             Hasta que se carguen la clave privada y la publica no se va a poder abrir el cobro mensual.
@@ -299,7 +299,7 @@ export default function OwnerBilling() {
         <MetricCard
           label="Estado"
           value={statusMeta.label}
-          note={billing?.required ? 'Acceso del panel owner' : 'Facturacion no requerida'}
+          note={billing?.required ? 'Acceso al panel' : 'Facturacion no requerida'}
           badgeClass={statusMeta.badgeClass}
           icon={StatusIcon}
         />
@@ -313,7 +313,7 @@ export default function OwnerBilling() {
         <MetricCard
           label="Acceso actual"
           value={billing?.accessEndsAt ? formatDate(billing.accessEndsAt) : 'Pendiente'}
-          note="Cobertura de la cuenta owner"
+          note="Cobertura de acceso"
           badgeClass="bg-surface_container_highest text-on_surface_variant"
           icon={CheckCircle2}
         />
@@ -355,9 +355,9 @@ export default function OwnerBilling() {
             <InfoCard
               title="Impacto operativo"
               rows={[
-                { label: 'Panel owner', value: billing?.hasAccess ? 'Habilitado' : 'Bloqueado' },
-                { label: 'Reservas clientes', value: billing?.hasAccess ? 'Permitidas' : 'Bloqueadas' },
-                { label: 'Compras clientes', value: billing?.hasAccess ? 'Permitidas' : 'Bloqueadas' },
+                { label: 'Panel de administracion', value: billing?.hasAccess ? 'Habilitado' : 'Bloqueado' },
+                { label: 'Reservas del complejo', value: billing?.hasAccess ? 'Permitidas' : 'Bloqueadas' },
+                { label: 'Compras del complejo', value: billing?.hasAccess ? 'Permitidas' : 'Bloqueadas' },
               ]}
             />
           </div>
@@ -458,7 +458,7 @@ export default function OwnerBilling() {
 
       <MercadoPagoCardModal
         open={Boolean(paymentSession)}
-        title="Completar mensualidad owner"
+        title="Completar mensualidad"
         subtitle="El cobro se procesa con Mercado Pago Orders API desde el mismo panel."
         amount={Number(paymentSession?.amount || billing?.amount || 0)}
         currency={paymentSession?.currency || billing?.currency || 'ARS'}

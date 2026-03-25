@@ -101,17 +101,17 @@ export default function Login() {
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full pointer-events-none" />
         <div className="z-10 relative">
-          <h1 className="text-3xl font-display font-medium text-primary tracking-tight">Gestión Pro.</h1>
+          <h1 className="text-3xl font-display font-medium text-primary tracking-tight">Clubes Tucumán</h1>
         </div>
         <div className="z-10 relative mt-auto">
           <h2 className="text-5xl font-display font-bold leading-tight mb-6">
-            Administrá tu complejo sin fricciones.
+            Gestioná tu complejo con claridad.
           </h2>
           <p className="text-on_surface_variant text-lg max-w-md">
-            El SaaS para gestionar canchas, reservas y ventas. Simple, moderno y sin complicaciones.
+            Gestioná canchas, reservas y ventas desde un solo lugar. Simple, moderno y sin complicaciones.
           </p>
           <div className="mt-8 flex gap-4">
-            {['Canchas', 'Reservas', 'Ecommerce', 'Multi-complejo'].map((tag) => (
+            {['Canchas', 'Reservas', 'Tienda', 'Multi-complejo'].map((tag) => (
               <span key={tag} className="text-xs bg-surface_container px-3 py-1.5 rounded-full text-on_surface_variant border border-outline_variant/15">
                 {tag}
               </span>

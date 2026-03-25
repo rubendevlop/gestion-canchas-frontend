@@ -25,7 +25,7 @@ const ROLE_META = {
   owner: {
     label: 'Dueno / Admin',
     badgeClass: 'text-primary bg-primary/10',
-    eyebrow: 'Workspace Administrativo',
+    eyebrow: 'Panel Administrativo',
     searchPlaceholder: 'Buscar reservas, canchas, productos...',
     nav: [
       { name: 'Dashboard', path: '/dashboard', icon: Home },
@@ -232,7 +232,7 @@ export default function DashboardLayout() {
       >
         <div className="p-6 sm:p-8 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-display font-medium text-primary tracking-tight">Gestion Pro.</h1>
+            <h1 className="text-2xl font-display font-medium text-primary tracking-tight">Clubes Tucumán</h1>
             <p className="text-[0.65rem] text-on_surface_variant uppercase tracking-widest mt-2">
               {meta.eyebrow}
             </p>

@@ -208,7 +208,9 @@ export default function DashboardLayout({ children = null }) {
           className={`group flex items-center gap-4 rounded-2xl border px-4 py-3.5 transition-all duration-200 ${
             isActive
               ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgba(31,143,73,0.24)]'
-              : 'border-transparent bg-transparent text-on_surface_variant hover:border-outline_variant/20 hover:bg-white/80 hover:text-on_surface'
+              : mobile
+                ? 'border-transparent bg-[#f7fbf3] text-on_surface hover:border-outline_variant/18 hover:bg-white'
+                : 'border-transparent bg-transparent text-on_surface_variant hover:border-outline_variant/20 hover:bg-white/80 hover:text-on_surface'
           }`}
         >
           <Icon
@@ -237,18 +239,20 @@ export default function DashboardLayout({ children = null }) {
           type="button"
           aria-label="Cerrar menu"
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-[#102014]/58 backdrop-blur-[2px] lg:hidden"
+          className="fixed inset-0 z-40 bg-[#0d140e]/42 backdrop-blur-[1px] lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-[min(20rem,88vw)] flex-col border-r border-outline_variant/30 bg-[linear-gradient(180deg,#fcfef9_0%,#f2f7ec_100%)] shadow-[12px_0_34px_-18px_rgba(20,32,22,0.22)] transition-transform duration-300 lg:static lg:w-72 lg:translate-x-0 lg:z-20 ${
+        className={`fixed inset-y-0 left-0 z-[60] isolate flex w-[min(20rem,88vw)] flex-col overflow-hidden border-r border-outline_variant/40 bg-[#f7fbf3] shadow-[18px_0_42px_-18px_rgba(11,20,12,0.28)] transition-transform duration-300 lg:static lg:z-20 lg:w-72 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-outline_variant/18 px-6 pb-5 pt-6 sm:px-8">
+        <div className="pointer-events-none absolute inset-0 bg-[#f7fbf3]" />
+
+        <div className="relative flex items-start justify-between gap-4 border-b border-outline_variant/20 px-6 pb-5 pt-6 sm:px-8">
           <div className="min-w-0">
-            <div className="inline-flex rounded-[1.75rem] border border-outline_variant/20 bg-white/80 px-4 py-3 shadow-[0_16px_30px_-24px_rgba(20,32,22,0.2)]">
+            <div className="inline-flex rounded-[1.75rem] border border-outline_variant/20 bg-white px-4 py-3 shadow-[0_18px_30px_-24px_rgba(20,32,22,0.24)]">
               <BrandLogo imageClassName="h-14 w-auto" />
             </div>
             <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-outline">
@@ -259,22 +263,22 @@ export default function DashboardLayout({ children = null }) {
             type="button"
             aria-label="Cerrar menu"
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden rounded-2xl border border-outline_variant/20 bg-white/80 p-2.5 text-on_surface_variant transition-colors hover:bg-white hover:text-on_surface"
+            className="lg:hidden rounded-2xl border border-outline_variant/20 bg-white p-2.5 text-on_surface transition-colors hover:bg-surface_container_low"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="px-6 pb-3 pt-5 sm:px-8">
+        <div className="relative px-6 pb-3 pt-5 sm:px-8">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-outline">Menu</p>
         </div>
 
-        <nav className="flex-1 space-y-2 overflow-y-auto px-4 pb-4">
+        <nav className="relative flex-1 space-y-2 overflow-y-auto px-4 pb-4">
           {renderNavItems(true)}
         </nav>
 
-        <div className="mt-auto border-t border-outline_variant/15 p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] sm:p-6">
-          <div className="rounded-[1.5rem] border border-outline_variant/15 bg-white/82 p-4 shadow-[0_20px_34px_-28px_rgba(20,32,22,0.28)]">
+        <div className="relative mt-auto border-t border-outline_variant/18 p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] sm:p-6">
+          <div className="rounded-[1.5rem] border border-outline_variant/18 bg-white p-4 shadow-[0_20px_34px_-28px_rgba(20,32,22,0.28)]">
             <div className="mb-4 flex items-center gap-3">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt="Avatar" className="h-11 w-11 rounded-full ring-2 ring-surface_container_highest" />

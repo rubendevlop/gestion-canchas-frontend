@@ -29,7 +29,10 @@ export default function BookCourt() {
   useEffect(() => {
     setLoading(true);
     fetchAPI(`/courts?complexId=${complexId}&clientVisible=true`)
-      .then(setCourts)
+      .then((data) => {
+        setCourts(data);
+        setErrorMessage('');
+      })
       .catch((error) => {
         setCourts([]);
         setErrorMessage(error.message || 'Este complejo no esta disponible para reservas.');
@@ -41,7 +44,10 @@ export default function BookCourt() {
     if (!selectedCourt || !selectedDate) return;
 
     fetchAPI(`/reservations/taken?courtId=${selectedCourt}&date=${selectedDate}`)
-      .then((data) => setTakenSlots(data.takenHours || []))
+      .then((data) => {
+        setTakenSlots(data.takenHours || []);
+        setErrorMessage('');
+      })
       .catch((error) => {
         setTakenSlots([]);
         if (error?.message) {

@@ -39,13 +39,13 @@ export default function ComplexDetail() {
 
   return (
     <div>
-      <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/15 bg-gradient-to-br from-primary/20 via-primary_container/15 to-secondary/10">
+      <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/20 bg-gradient-to-br from-white via-surface_container_low to-secondary/10 shadow-[0_24px_70px_-42px_rgba(24,36,24,0.18)]">
         {complex.imageUrl ? (
           <img src={complex.imageUrl} alt={complex.name} className="h-full w-full object-cover" />
         ) : (
           <span className="text-8xl">Futbol</span>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/92 via-white/55 to-transparent" />
         <div className="absolute bottom-0 left-0 p-8">
           <h1 className="mb-2 text-4xl font-display font-bold text-on_surface">{complex.name}</h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-on_surface_variant">
@@ -68,14 +68,14 @@ export default function ComplexDetail() {
       <div className="mb-10 grid grid-cols-2 gap-4">
         <Link
           to={`/portal/complejo/${complexId}/reservar`}
-          className="flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-5 text-lg font-semibold text-on_primary_fixed shadow-[0_8px_30px_-10px_rgba(47,172,76,0.42)] transition-all hover:scale-[1.01] hover:brightness-110"
+          className="flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-5 text-lg font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] transition-all hover:scale-[1.01] hover:brightness-110"
         >
           <CalendarRange size={22} />
           Reservar cancha
         </Link>
         <Link
           to={`/portal/complejo/${complexId}/tienda`}
-          className="flex items-center justify-center gap-3 rounded-2xl border border-outline_variant/15 bg-surface_container_high/65 py-5 text-lg font-semibold text-on_surface transition-all hover:bg-surface_container_highest/80"
+          className="flex items-center justify-center gap-3 rounded-2xl border border-outline_variant/25 bg-white py-5 text-lg font-semibold text-on_surface transition-all hover:bg-surface_container_low"
         >
           <ShoppingBag size={22} />
           Ver tienda
@@ -92,7 +92,7 @@ export default function ComplexDetail() {
               <Link
                 key={court._id}
                 to={`/portal/complejo/${complexId}/reservar?courtId=${court._id}`}
-                className="group grid overflow-hidden rounded-2xl border border-outline_variant/15 bg-surface_container_high/55 transition-all hover:border-primary/30 hover:bg-surface_container_highest/75 md:grid-cols-[220px_minmax(0,1fr)]"
+                className="group grid overflow-hidden rounded-2xl border border-outline_variant/20 bg-white transition-all hover:border-primary/30 hover:bg-surface_container_low md:grid-cols-[220px_minmax(0,1fr)]"
               >
                 <div className="h-44 bg-gradient-to-br from-surface_container to-surface_container_high md:h-full">
                   {imageUrl ? (

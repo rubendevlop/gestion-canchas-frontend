@@ -21,9 +21,9 @@ export default function PortalHome() {
 
   return (
     <div>
-      <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-outline_variant/15 bg-[linear-gradient(150deg,rgba(20,46,22,0.92),rgba(18,32,20,0.82))] px-6 py-16 text-center shadow-[0_24px_70px_-35px_rgba(0,0,0,0.75)] sm:px-10">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(158,240,107,0.15),transparent_36%),linear-gradient(180deg,transparent,rgba(255,255,255,0.02))]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-20 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_94px,rgba(194,255,170,0.12)_94px,rgba(194,255,170,0.12)_188px)]" />
+      <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-outline_variant/20 bg-[linear-gradient(145deg,#ffffff,#eff7e5)] px-6 py-16 text-center shadow-[0_26px_70px_-42px_rgba(24,36,24,0.22)] sm:px-10">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(242,177,52,0.12),transparent_28%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-35 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_94px,rgba(123,207,82,0.08)_94px,rgba(123,207,82,0.08)_188px)]" />
 
         <div className="relative mx-auto max-w-3xl">
           <h1 className="mb-4 text-5xl font-display font-bold leading-tight text-on_surface">
@@ -41,7 +41,7 @@ export default function PortalHome() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar complejo o ciudad..."
-              className="w-full rounded-2xl border border-outline_variant/15 bg-surface_container_high/75 py-4 pl-14 pr-6 text-base text-on_surface placeholder-outline transition-all focus:border-primary/50 focus:outline-none"
+              className="w-full rounded-2xl border border-outline_variant/25 bg-white py-4 pl-14 pr-6 text-base text-on_surface placeholder-outline transition-all focus:border-primary/50 focus:outline-none"
             />
           </div>
         </div>
@@ -70,7 +70,7 @@ function ComplexCard({ complex }) {
   return (
     <Link
       to={`/portal/complejo/${complex._id}`}
-      className="group block overflow-hidden rounded-3xl border border-outline_variant/15 bg-surface_container_high/55 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface_container_highest/80"
+      className="group block overflow-hidden rounded-3xl border border-outline_variant/20 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface_container_low"
     >
       <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/20 via-primary_container/20 to-secondary/15">
         {complex.imageUrl ? (

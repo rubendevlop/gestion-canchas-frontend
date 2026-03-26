@@ -16,12 +16,12 @@ export default function PortalLayout() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-on_surface font-body">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(158,240,107,0.12),transparent_48%)]" />
-        <div className="absolute left-[-6rem] top-[6rem] h-[18rem] w-[18rem] rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.1),transparent_48%)]" />
+        <div className="absolute left-[-6rem] top-[6rem] h-[18rem] w-[18rem] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute bottom-[-8rem] right-[-6rem] h-[22rem] w-[22rem] rounded-full bg-secondary/10 blur-3xl" />
       </div>
 
-      <header className="sticky top-0 z-30 border-b border-outline_variant/15 bg-surface_container_low/78 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-outline_variant/25 bg-white/84 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link to="/portal" className="shrink-0 text-lg font-display font-semibold tracking-tight text-on_surface">
             Clubes <span className="text-primary">Tucuman</span>
@@ -48,8 +48,8 @@ export default function PortalLayout() {
                     to={item.path}
                     className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'border border-primary/20 bg-primary/12 text-on_surface'
-                        : 'text-on_surface_variant hover:bg-surface_container_high/75 hover:text-on_surface'
+                        ? 'border border-primary/20 bg-primary/10 text-on_surface'
+                        : 'text-on_surface_variant hover:bg-surface_container_low hover:text-on_surface'
                     }`}
                   >
                     <Icon size={16} />
@@ -62,7 +62,7 @@ export default function PortalLayout() {
             <button
               type="button"
               onClick={logout}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-surface_container_high/70 px-3 py-2 text-sm text-on_surface_variant transition-colors hover:bg-red-500/10 hover:text-red-300 sm:px-4"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-surface_container px-3 py-2 text-sm text-on_surface_variant transition-colors hover:bg-red-500/10 hover:text-red-500 sm:px-4"
               title="Cerrar sesion"
             >
               <LogOut size={15} />

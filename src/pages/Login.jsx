@@ -97,10 +97,10 @@ export default function Login() {
     <div className="min-h-screen bg-background flex text-on_surface font-body overflow-hidden">
 
       {/* Panel izquierdo decorativo */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden p-12 bg-[linear-gradient(155deg,rgba(11,27,14,0.98),rgba(22,52,24,0.94))] border-r border-outline_variant/15">
-        <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_108px,rgba(194,255,170,0.16)_108px,rgba(194,255,170,0.16)_216px)] pointer-events-none" />
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 blur-[100px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden p-12 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)] border-r border-outline_variant/25">
+        <div className="absolute inset-0 opacity-35 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_108px,rgba(123,207,82,0.08)_108px,rgba(123,207,82,0.08)_216px)] pointer-events-none" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/14 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/14 blur-[120px] rounded-full pointer-events-none" />
         <div className="z-10 relative">
           <h1 className="text-3xl font-display font-medium text-primary tracking-tight">Clubes Tucumán</h1>
         </div>
@@ -122,7 +122,7 @@ export default function Login() {
       </div>
 
       {/* Panel derecho */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[radial-gradient(circle_at_top,rgba(158,240,107,0.08),transparent_32%),linear-gradient(180deg,rgba(18,27,19,1),rgba(16,23,16,1))]">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(242,177,52,0.12),transparent_28%),linear-gradient(180deg,#fcfef9,#f7faf4)]">
         <div className="w-full max-w-md">
 
           {/* Éxito de registro */}
@@ -217,7 +217,7 @@ export default function Login() {
                 e.preventDefault();
                 alert('El acceso por email estará disponible pronto. Usá Google por ahora.');
               }}
-              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-semibold py-3 rounded-2xl mt-2 flex justify-center items-center gap-2 hover:brightness-110 transition-all shadow-[0_8px_24px_-8px_rgba(47,172,76,0.38)] disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary font-semibold py-3 rounded-2xl mt-2 flex justify-center items-center gap-2 hover:brightness-110 transition-all shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] disabled:opacity-50"
               disabled={loading}
             >
               {mode === 'login' ? 'Ingresar' : 'Crear cuenta'}
@@ -234,7 +234,7 @@ export default function Login() {
           <button
             onClick={isRegistering ? handleRegisterIntent : handleGoogleLogin}
             disabled={loading}
-            className="w-full bg-surface_container_high text-on_surface py-3 rounded-2xl flex justify-center items-center gap-3 hover:bg-surface_container_highest transition-colors disabled:opacity-50"
+            className="w-full bg-white border border-outline_variant/30 text-on_surface py-3 rounded-2xl flex justify-center items-center gap-3 hover:bg-surface_container_low transition-colors disabled:opacity-50"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-on_surface_variant border-t-transparent rounded-full animate-spin" />
@@ -274,7 +274,7 @@ export default function Login() {
       {/* ─── Modal de confirmación ─── */}
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-surface_container_low rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-outline_variant/20 relative">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-[0_26px_70px_-32px_rgba(24,36,24,0.28)] border border-outline_variant/25 relative">
             <button
               onClick={() => setShowConfirmModal(false)}
               className="absolute top-4 right-4 text-outline hover:text-on_surface transition-colors"
@@ -305,7 +305,7 @@ export default function Login() {
 
             <button
               onClick={handleConfirmedRegister}
-              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-bold py-3.5 rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-primary_container to-primary text-on_primary font-bold py-3.5 rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-2"
             >
               <GoogleIcon /> Continuar con Google
             </button>
@@ -321,7 +321,7 @@ export default function Login() {
 
       {/* ─── Cookie Banner ─── */}
       {!cookieBannerDismissed && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 bg-surface_container_high border border-outline_variant/20 rounded-2xl p-5 shadow-2xl">
+        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 bg-white border border-outline_variant/25 rounded-2xl p-5 shadow-[0_26px_60px_-34px_rgba(24,36,24,0.28)]">
           <div className="flex items-start gap-3 mb-4">
             <Cookie size={20} className="text-primary shrink-0 mt-0.5" />
             <div>
@@ -367,7 +367,7 @@ function AccountTypeCard({ icon, title, desc, active, onClick }) {
       className={`flex flex-col items-center gap-2 p-4 rounded-2xl border text-center transition-all ${
         active
           ? 'border-primary bg-primary/10 text-primary'
-          : 'border-outline_variant/20 bg-surface_container text-on_surface_variant hover:border-primary/40 hover:text-on_surface'
+          : 'border-outline_variant/25 bg-white text-on_surface_variant hover:border-primary/40 hover:text-on_surface'
       }`}
     >
       <div className={active ? 'text-primary' : 'text-outline'}>{icon}</div>
@@ -388,7 +388,7 @@ function FormField({ icon, placeholder, label, type = 'text' }) {
         <input
           type={type}
           placeholder={placeholder}
-          className="w-full bg-surface_container_lowest border border-outline_variant/15 rounded-xl py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+          className="w-full bg-white border border-outline_variant/30 rounded-xl py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
         />
       </div>
     </div>

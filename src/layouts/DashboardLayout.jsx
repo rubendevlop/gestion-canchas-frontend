@@ -204,11 +204,11 @@ export default function DashboardLayout() {
           onClick={() => mobile && setSidebarOpen(false)}
           className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 ${
             isActive
-              ? 'bg-surface_container_highest text-on_surface shadow-[0_12px_30px_-18px_rgba(47,172,76,0.48)]'
-              : 'text-on_surface_variant hover:bg-surface hover:text-on_surface'
+              ? 'border border-primary/15 bg-white text-on_surface shadow-[0_16px_34px_-22px_rgba(47,158,68,0.28)]'
+              : 'text-on_surface_variant hover:bg-surface_container_low hover:text-on_surface'
           }`}
         >
-          <Icon size={20} className={isActive ? 'text-primary drop-shadow-[0_0_8px_rgba(158,240,107,0.38)]' : ''} />
+          <Icon size={20} className={isActive ? 'text-primary' : ''} />
           <span className="font-medium text-sm tracking-wide">{item.name}</span>
         </Link>
       );
@@ -217,8 +217,8 @@ export default function DashboardLayout() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-on_surface font-body lg:flex">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute left-[-8rem] top-[-7rem] h-[22rem] w-[22rem] rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute right-[-6rem] top-[10rem] h-[18rem] w-[18rem] rounded-full bg-tertiary/10 blur-3xl" />
+        <div className="absolute left-[-8rem] top-[-7rem] h-[24rem] w-[24rem] rounded-full bg-primary/8 blur-3xl" />
+        <div className="absolute right-[-6rem] top-[10rem] h-[18rem] w-[18rem] rounded-full bg-tertiary/8 blur-3xl" />
         <div className="absolute bottom-[-10rem] right-[-6rem] h-[24rem] w-[24rem] rounded-full bg-secondary/10 blur-3xl" />
       </div>
 
@@ -232,7 +232,7 @@ export default function DashboardLayout() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] border-r border-outline_variant/15 bg-surface_container_low/92 backdrop-blur-xl flex flex-col shadow-[8px_0_30px_-15px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:static lg:translate-x-0 lg:z-20 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 max-w-[85vw] flex-col border-r border-outline_variant/30 bg-white/92 shadow-[8px_0_30px_-18px_rgba(24,36,24,0.16)] backdrop-blur-xl transition-transform duration-300 lg:static lg:translate-x-0 lg:z-20 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -292,7 +292,7 @@ export default function DashboardLayout() {
       </aside>
 
       <main className="relative z-10 min-w-0 flex-1 flex flex-col">
-        <header className="sticky top-0 z-10 bg-background/72 backdrop-blur-xl border-b border-outline_variant/15">
+        <header className="sticky top-0 z-10 border-b border-outline_variant/25 bg-white/78 backdrop-blur-xl">
           <div className="px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
@@ -324,7 +324,7 @@ export default function DashboardLayout() {
                 <button
                   type="button"
                   onClick={handleNotificationsToggle}
-                  className="relative p-2.5 rounded-full bg-surface_container_low text-on_surface_variant hover:bg-surface_container_highest transition-colors"
+                  className="relative rounded-full bg-surface_container_low p-2.5 text-on_surface_variant transition-colors hover:bg-surface_container_highest"
                 >
                   <Bell size={20} />
                   {hasUnreadNotifications && (
@@ -333,7 +333,7 @@ export default function DashboardLayout() {
                 </button>
 
                 {notificationsOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm rounded-3xl border border-outline_variant/15 bg-surface_container_high shadow-[0_20px_60px_-20px_rgba(0,0,0,0.55)] overflow-hidden">
+                  <div className="absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-3xl border border-outline_variant/25 bg-white shadow-[0_24px_60px_-30px_rgba(24,36,24,0.24)]">
                     <div className="px-5 py-4 border-b border-outline_variant/10">
                       <p className="text-sm font-semibold text-on_surface">Notificaciones</p>
                       <p className="text-xs text-outline mt-1">

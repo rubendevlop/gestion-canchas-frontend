@@ -360,11 +360,11 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
               onClick={acceptCookies}
-              className="flex-1 rounded-xl bg-primary py-2.5 text-sm font-semibold text-on_primary_fixed transition-all hover:brightness-110"
+              className="flex-1 rounded-xl bg-primary py-2.5 text-sm font-semibold text-on_primary transition-all hover:brightness-110"
             >
               Aceptar
             </button>

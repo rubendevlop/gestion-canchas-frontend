@@ -119,6 +119,11 @@ export default function MercadoPagoCardModal({
                   placeholder="tu@email.com"
                   className="w-full rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface outline-none transition-colors focus:border-primary"
                 />
+                {payerEmailHelpText && (
+                  <p className="mt-2 text-xs leading-relaxed text-on_surface_variant">
+                    {payerEmailHelpText}
+                  </p>
+                )}
               </div>
             )}
 

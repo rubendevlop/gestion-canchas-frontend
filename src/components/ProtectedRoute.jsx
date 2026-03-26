@@ -230,7 +230,7 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
           amount={Number(paymentSession?.amount || ownerBilling?.amount || 0)}
           currency={paymentSession?.currency || ownerBilling?.currency || 'ARS'}
           payerEmail={paymentSession?.payer?.email || user?.email || ''}
-          allowPayerEmailEdit
+          allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
           payerEmailHelpText="Si estas usando credenciales de prueba, carga el email de un comprador de prueba de Mercado Pago. No uses tu email real."
           submitLabel="mensualidad"
           onClose={() => setPaymentSession(null)}

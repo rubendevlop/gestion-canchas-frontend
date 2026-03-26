@@ -179,8 +179,12 @@ export default function Cart() {
         currency={paymentSession?.currency || 'ARS'}
         payerEmail={paymentSession?.payer?.email || user?.email || ''}
         publicKey={paymentSession?.publicKey || ''}
-        allowPayerEmailEdit
-
+        allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
+        payerEmailHelpText={
+          paymentSession?.payer?.requiresTestUser
+            ? 'La cuenta de cobro esta en modo prueba. Usa un comprador de prueba de Mercado Pago. Si no configuraste un email de prueba en el backend, no uses tu email real.'
+            : ''
+        }
         submitLabel="pedido"
         maxInstallments={3}
         onClose={() => setPaymentSession(null)}

@@ -464,7 +464,7 @@ export default function OwnerBilling() {
         currency={paymentSession?.currency || billing?.currency || 'ARS'}
         payerEmail={paymentSession?.payer?.email || user?.email || ''}
         publicKey={paymentSession?.publicKey || ''}
-        allowPayerEmailEdit
+        allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
         payerEmailHelpText="Si estas usando credenciales de prueba, carga el email de un comprador de prueba de Mercado Pago. No uses tu email real."
         submitLabel="mensualidad"
         onClose={() => setPaymentSession(null)}

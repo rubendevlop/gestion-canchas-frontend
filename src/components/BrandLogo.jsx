@@ -8,7 +8,7 @@ export default function BrandLogo({
     <img
       src={brandLogo}
       alt="Clubes Tucuman"
-      className={`block ${className} ${imageClassName}`.trim()}
+      className={`block max-w-full shrink-0 object-contain ${className} ${imageClassName}`.trim()}
     />
   );
 }

@@ -16,7 +16,7 @@ import {
 import { auth, loginWithGoogle } from '../firebase';
 import { fetchAPI } from '../services/api';
 import BrandLogo from '../components/BrandLogo';
-import LoginHeroArtwork from '../components/LoginHeroArtwork';
+import loginBackground from '../IMG/fondo.png';
 
 export default function Login() {
   const [mode, setMode] = useState('login');
@@ -105,38 +105,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background text-on_surface font-body lg:flex">
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)]">
-        <div className="absolute inset-0 opacity-35 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_108px,rgba(123,207,82,0.08)_108px,rgba(123,207,82,0.08)_216px)] pointer-events-none" />
-        <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-primary/14 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-secondary/14 blur-[120px] pointer-events-none" />
-
-        <div className="relative z-10 flex h-full w-full flex-col px-12 py-10">
-          <BrandLogo imageClassName="h-20 w-auto" />
-
-          <div className="relative min-h-[25rem] flex-1">
-            <LoginHeroArtwork className="absolute inset-x-[-4rem] bottom-[-4rem] top-2" />
-          </div>
-
-          <div className="relative z-10 max-w-[38rem] pb-6">
-            <h1 className="mb-6 text-5xl font-display font-bold leading-[0.95] tracking-tight text-on_surface">
-              Gestiona tu complejo con claridad.
-            </h1>
-            <p className="max-w-xl text-lg leading-relaxed text-on_surface_variant">
-              Gestiona canchas, reservas y ventas desde un solo lugar. Simple, moderno y sin complicaciones.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              {['Canchas', 'Reservas', 'Tienda', 'Multi-complejo'].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-outline_variant/15 bg-white/80 px-4 py-2 text-sm text-on_surface_variant shadow-[0_10px_20px_-18px_rgba(24,36,24,0.24)]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)] p-6 xl:p-8">
+        <img
+          src={loginBackground}
+          alt="Vista previa de la plataforma Clubes Tucuman"
+          className="block max-h-[calc(100vh-3rem)] w-full max-w-[48rem] object-contain object-center"
+        />
       </div>
 
       <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(242,177,52,0.12),transparent_28%),linear-gradient(180deg,#fcfef9,#f7faf4)] p-8 lg:w-1/2">

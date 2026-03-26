@@ -113,19 +113,19 @@ export default function Login() {
         />
       </div>
 
-      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(242,177,52,0.12),transparent_28%),linear-gradient(180deg,#fcfef9,#f7faf4)] p-8 lg:w-1/2">
-        <div className="w-full max-w-md">
+      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(114,203,84,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(201,138,25,0.12),transparent_28%),linear-gradient(180deg,#fbfdf8,#f3f7ee)] p-5 sm:p-8 lg:w-1/2 lg:p-10">
+        <div className="w-full max-w-md rounded-[2rem] border border-outline_variant/20 bg-white/92 p-6 shadow-[0_32px_64px_-42px_rgba(20,32,22,0.28)] backdrop-blur-sm sm:p-8">
           <div className="mb-8 flex justify-center lg:hidden">
             <BrandLogo imageClassName="h-16 w-auto" />
           </div>
 
           {registeredSuccess && (
-            <div className="mb-6 flex items-start gap-3 rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4">
-              <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-green-500" />
+            <div className="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
+              <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-700" />
               <div>
-                <p className="text-sm font-semibold text-green-600">Cuenta creada con exito</p>
-                <p className="mt-0.5 text-xs text-green-700/80">
-                  Inicia sesion con tus credenciales para acceder.
+                <p className="text-sm font-semibold text-emerald-800">Cuenta creada con exito</p>
+                <p className="mt-0.5 text-xs text-emerald-700">
+                  Inicia sesion con Google para entrar a la plataforma.
                 </p>
               </div>
             </div>
@@ -137,15 +137,15 @@ export default function Login() {
               {mode === 'register-client' && 'Crear cuenta de cliente'}
               {mode === 'register-owner' && 'Registrar mi complejo'}
             </h2>
-            <p className="text-on_surface_variant">
-              {mode === 'login' && 'Ingresa para acceder a tu panel.'}
-              {mode === 'register-client' && 'Reserva canchas y compra en segundos.'}
-              {mode === 'register-owner' && 'Empieza a gestionar tus canchas hoy.'}
+            <p className="text-sm leading-relaxed text-on_surface_variant sm:text-base">
+              {mode === 'login' && 'Ingresa con Google para acceder a tu panel y gestionar reservas, cobros y clientes.'}
+              {mode === 'register-client' && 'Crea tu cuenta para reservar canchas y comprar en segundos.'}
+              {mode === 'register-owner' && 'Activa tu cuenta para administrar tu complejo desde un solo lugar.'}
             </p>
           </div>
 
           {isRegistering && (
-            <div className="mb-6 grid grid-cols-2 gap-3">
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <AccountTypeCard
                 icon={<Users size={22} />}
                 title="Soy cliente"
@@ -215,6 +215,10 @@ export default function Login() {
               </label>
             )}
 
+            <div className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
+              El acceso activo hoy se realiza con Google. Las opciones por email quedan visibles como referencia y se habilitaran mas adelante.
+            </div>
+
             <button
               type="button"
               onClick={(event) => {
@@ -224,7 +228,7 @@ export default function Login() {
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] transition-all hover:brightness-110 disabled:opacity-50"
               disabled={loading}
             >
-              {mode === 'login' ? 'Ingresar' : 'Crear cuenta'}
+              {mode === 'login' ? 'Acceso por email (proximamente)' : 'Registro por email (proximamente)'}
               <ArrowRight size={18} />
             </button>
           </div>

@@ -306,29 +306,29 @@ export default function DashboardLayout({ children = null }) {
       </aside>
 
       <main className="relative z-10 min-w-0 flex-1 flex flex-col">
-        <header className="sticky top-0 z-10 border-b border-outline_variant/25 bg-white/78 backdrop-blur-xl">
-          <div className="px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between gap-3">
+        <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/92 shadow-[0_12px_28px_-24px_rgba(20,32,22,0.24)] backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-10">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
                 type="button"
                 aria-label="Abrir menu"
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-xl bg-surface_container_low text-on_surface_variant hover:bg-surface_container_highest hover:text-on_surface transition-colors"
+                className="lg:hidden rounded-2xl border border-outline_variant/20 bg-white p-2.5 text-on_surface transition-colors hover:bg-surface_container_low"
               >
                 <Menu size={18} />
               </button>
 
               <div className="min-w-0 lg:hidden">
-                <p className="text-xs uppercase tracking-widest text-outline">{meta.eyebrow}</p>
-                <p className="text-sm font-medium text-on_surface truncate">{meta.label}</p>
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-outline">{meta.label}</p>
+                <p className="truncate text-sm font-semibold text-on_surface">{currentPageTitle}</p>
               </div>
 
-              <div className="relative hidden sm:block flex-1 max-w-md">
+              <div className="relative hidden md:block flex-1 max-w-md">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-outline_variant" size={18} />
                 <input
                   type="text"
                   placeholder={meta.searchPlaceholder}
-                  className="w-full bg-surface_container border border-outline_variant/10 rounded-full py-2.5 pl-12 pr-6 text-sm text-on_surface placeholder-outline focus:outline-none focus:ring-1 focus:ring-primary/40 transition-all"
+                  className="w-full rounded-full border border-outline_variant/20 bg-surface_container_low py-2.5 pl-12 pr-6 text-sm text-on_surface placeholder-on_surface_variant transition-all focus:outline-none focus:ring-2 focus:ring-primary/15"
                 />
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function DashboardLayout({ children = null }) {
                 <button
                   type="button"
                   onClick={handleNotificationsToggle}
-                  className="relative rounded-full bg-surface_container_low p-2.5 text-on_surface_variant transition-colors hover:bg-surface_container_highest"
+                  className="relative rounded-full border border-outline_variant/15 bg-surface_container_low p-2.5 text-on_surface transition-colors hover:bg-surface_container_high"
                 >
                   <Bell size={20} />
                   {hasUnreadNotifications && (
@@ -347,10 +347,10 @@ export default function DashboardLayout({ children = null }) {
                 </button>
 
                 {notificationsOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-3xl border border-outline_variant/25 bg-white shadow-[0_24px_60px_-30px_rgba(24,36,24,0.24)]">
+                  <div className="absolute right-0 top-full mt-3 w-[min(22rem,calc(100vw-1rem))] max-w-sm overflow-hidden rounded-[1.75rem] border border-outline_variant/20 bg-white shadow-[0_24px_60px_-30px_rgba(24,36,24,0.24)]">
                     <div className="px-5 py-4 border-b border-outline_variant/10">
                       <p className="text-sm font-semibold text-on_surface">Notificaciones</p>
-                      <p className="text-xs text-outline mt-1">
+                      <p className="mt-1 text-xs text-on_surface_variant">
                         {notifications.length === 0 ? 'No hay novedades por ahora.' : 'Estado de tu cuenta y acciones pendientes.'}
                       </p>
                     </div>
@@ -360,12 +360,12 @@ export default function DashboardLayout({ children = null }) {
                         No tenes notificaciones nuevas.
                       </div>
                     ) : (
-                      <div className="p-3 space-y-2">
+                      <div className="max-h-[56vh] space-y-2 overflow-y-auto p-3">
                         {notifications.map((notification) => {
                           const Icon = notification.icon;
                           const content = (
-                            <div className="flex items-start gap-3 rounded-2xl px-4 py-4 bg-surface_container_low hover:bg-surface_container transition-colors">
-                              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${notification.tone}`}>
+                            <div className="flex items-start gap-3 rounded-2xl border border-outline_variant/10 bg-surface_container_low px-4 py-4 transition-colors hover:bg-surface_container">
+                              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${notification.tone}`}>
                                 <Icon size={18} />
                               </div>
                               <div className="min-w-0">
@@ -398,7 +398,7 @@ export default function DashboardLayout({ children = null }) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-surface_container_low px-3 py-2.5 text-sm text-on_surface_variant transition-colors hover:bg-error/10 hover:text-error sm:px-4"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-outline_variant/15 bg-surface_container_low px-3 py-2.5 text-sm text-on_surface transition-colors hover:border-error/20 hover:bg-error/10 hover:text-error sm:px-4"
                 title="Cerrar sesion"
               >
                 <LogOut size={18} />
@@ -408,7 +408,7 @@ export default function DashboardLayout({ children = null }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 sm:px-6 lg:px-10 pb-10 pt-5 sm:pt-6 lg:pb-12">
+        <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 pb-12 pt-4 sm:px-6 sm:pt-6 lg:px-10 lg:pb-12">
           {children ?? <Outlet />}
         </div>
       </main>

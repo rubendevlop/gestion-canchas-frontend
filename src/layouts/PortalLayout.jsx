@@ -2,6 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { CalendarRange, Home, LogOut, Search, User } from 'lucide-react';
 import { logout } from '../auth';
 import { useAuth } from '../contexts/AuthContext';
+import BrandLogo from '../components/BrandLogo';
 
 const NAV = [
   { name: 'Inicio', path: '/portal', icon: Home },
@@ -23,8 +24,8 @@ export default function PortalLayout() {
 
       <header className="sticky top-0 z-30 border-b border-outline_variant/25 bg-white/84 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Link to="/portal" className="shrink-0 text-lg font-display font-semibold tracking-tight text-on_surface">
-            Clubes <span className="text-primary">Tucuman</span>
+          <Link to="/portal" className="shrink-0">
+            <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
           </Link>
 
           <div className="relative hidden max-w-md flex-1 md:block">

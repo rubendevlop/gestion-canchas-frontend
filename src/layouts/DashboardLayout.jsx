@@ -20,6 +20,7 @@ import {
 import { logout } from '../auth';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAPI } from '../services/api';
+import BrandLogo from '../components/BrandLogo';
 
 const ROLE_META = {
   owner: {

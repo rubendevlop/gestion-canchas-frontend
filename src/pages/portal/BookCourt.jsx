@@ -274,7 +274,7 @@ export default function BookCourt() {
         payerEmail={paymentSession?.payer?.email || user?.email || ''}
         publicKey={paymentSession?.publicKey || ''}
         allowPayerEmailEdit
-        payerEmailHelpText="Si estas probando en sandbox, usa el email de un comprador de prueba de Mercado Pago."
+
         submitLabel="reserva"
         onClose={() => setPaymentSession(null)}
         onSubmit={handleReservationPayment}

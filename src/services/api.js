@@ -22,7 +22,7 @@ export const fetchAPI = async (endpoint, options = {}) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.error || `Error HTTP: ${response.status}`);
+    throw new Error(data.error || data.message || data.detail || `Error HTTP: ${response.status}`);
   }
 
   return data;

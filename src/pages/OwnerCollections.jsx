@@ -111,22 +111,45 @@ export default function OwnerCollections() {
     setErrorMessage('');
 
     try {
-      const [paymentAccountResponse, reservationsResponse, ordersResponse] = await Promise.all([
+      const [paymentAccountResult, reservationsResult, ordersResult] = await Promise.allSettled([
         fetchAPI('/payment-account/current'),
         fetchAPI('/reservations'),
         fetchAPI('/orders'),
       ]);
 
+      if (paymentAccountResult.status !== 'fulfilled') {
+        throw paymentAccountResult.reason;
+      }
+
+      const paymentAccountResponse = paymentAccountResult.value;
+      const reservationsResponse =
+        reservationsResult.status === 'fulfilled' && Array.isArray(reservationsResult.value)
+          ? reservationsResult.value
+          : [];
+      const ordersResponse =
+        ordersResult.status === 'fulfilled' && Array.isArray(ordersResult.value)
+          ? ordersResult.value
+          : [];
+
       const nextAccount = paymentAccountResponse.account || null;
       setAccount(nextAccount);
       setOauthSetup(paymentAccountResponse.oauthSetup || null);
       setComplexes(Array.isArray(paymentAccountResponse.complexes) ? paymentAccountResponse.complexes : []);
-      setReservations(Array.isArray(reservationsResponse) ? reservationsResponse : []);
-      setOrders(Array.isArray(ordersResponse) ? ordersResponse : []);
+      setReservations(reservationsResponse);
+      setOrders(ordersResponse);
       setForm({
         reservationsEnabled: nextAccount?.reservationsEnabled ?? true,
         ordersEnabled: nextAccount?.ordersEnabled ?? true,
       });
+
+      const warnings = [reservationsResult, ordersResult]
+        .filter((result) => result.status === 'rejected')
+        .map((result) => result.reason?.message)
+        .filter(Boolean);
+
+      if (warnings.length > 0) {
+        setErrorMessage(warnings[0]);
+      }
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo cargar el panel de cobros.');
     } finally {

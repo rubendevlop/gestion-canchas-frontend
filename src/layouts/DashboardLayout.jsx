@@ -239,7 +239,7 @@ export default function DashboardLayout() {
       >
         <div className="p-6 sm:p-8 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-display font-medium text-primary tracking-tight">Clubes Tucumán</h1>
+            <BrandLogo imageClassName="h-14 w-auto" />
             <p className="text-[0.65rem] text-on_surface_variant uppercase tracking-widest mt-2">
               {meta.eyebrow}
             </p>

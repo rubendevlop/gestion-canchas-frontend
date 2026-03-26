@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { loginWithGoogle, auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { fetchAPI } from '../services/api';
+import BrandLogo from '../components/BrandLogo';
 import {
   Mail, Lock, User as UserIcon, ArrowRight, Building2,
   Users, Shield, CheckCircle2, X, ExternalLink, Cookie
@@ -102,7 +103,7 @@ export default function Login() {
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/14 blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/14 blur-[120px] rounded-full pointer-events-none" />
         <div className="z-10 relative">
-          <h1 className="text-3xl font-display font-medium text-primary tracking-tight">Clubes Tucumán</h1>
+          <BrandLogo imageClassName="h-20 w-auto" />
         </div>
         <div className="z-10 relative mt-auto">
           <h2 className="text-5xl font-display font-bold leading-tight mb-6">

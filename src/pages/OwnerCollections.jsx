@@ -28,6 +28,13 @@ const ORDER_STATUS_LABEL = {
   cancelled: 'Cancelada',
 };
 
+const ACCOUNT_STATUS_LABEL = {
+  ACTIVE: 'Activa',
+  DISCONNECTED: 'Desconectada',
+  INVALID: 'Revisar',
+  EXPIRED: 'Vencida',
+};
+
 function formatMoney(value, currency = 'ARS') {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -45,12 +52,16 @@ function formatDate(value) {
   });
 }
 
+function formatAccountStatus(value) {
+  return ACCOUNT_STATUS_LABEL[String(value || '').toUpperCase()] || 'Desconectada';
+}
+
 function MetricCard({ label, value, note, icon: Icon, tone = 'text-primary' }) {
   return (
     <div className="rounded-[1.5rem] border border-outline_variant/10 bg-surface_container p-5">
       <Icon size={18} className={`${tone} mb-2`} />
-      <p className="text-xs uppercase tracking-wider text-outline mb-1">{label}</p>
-      <p className="text-2xl font-display font-semibold text-on_surface">{value}</p>
+      <p className="mb-1 text-xs uppercase tracking-wider text-outline">{label}</p>
+      <p className="font-display text-2xl font-semibold text-on_surface">{value}</p>
       <p className="mt-2 text-sm text-on_surface_variant">{note}</p>
     </div>
   );
@@ -59,7 +70,7 @@ function MetricCard({ label, value, note, icon: Icon, tone = 'text-primary' }) {
 function MiniStat({ label, value }) {
   return (
     <div className="rounded-2xl bg-surface_container px-4 py-3">
-      <p className="text-[0.65rem] uppercase tracking-widest text-outline mb-1">{label}</p>
+      <p className="mb-1 text-[0.65rem] uppercase tracking-widest text-outline">{label}</p>
       <p className="text-sm text-on_surface">{value || '-'}</p>
     </div>
   );
@@ -67,10 +78,10 @@ function MiniStat({ label, value }) {
 
 function ToggleRow({ label, description, checked, onChange }) {
   return (
-    <label className="flex items-start justify-between gap-4 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4 cursor-pointer">
+    <label className="flex cursor-pointer items-start justify-between gap-4 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4">
       <div>
         <p className="text-sm font-medium text-on_surface">{label}</p>
-        <p className="text-xs text-on_surface_variant mt-1">{description}</p>
+        <p className="mt-1 text-xs text-on_surface_variant">{description}</p>
       </div>
       <input
         type="checkbox"
@@ -85,7 +96,6 @@ function ToggleRow({ label, description, checked, onChange }) {
 export default function OwnerCollections() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [account, setAccount] = useState(null);
-  const [oauthSetup, setOauthSetup] = useState(null);
   const [complexes, setComplexes] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -133,7 +143,6 @@ export default function OwnerCollections() {
 
       const nextAccount = paymentAccountResponse.account || null;
       setAccount(nextAccount);
-      setOauthSetup(paymentAccountResponse.oauthSetup || null);
       setComplexes(Array.isArray(paymentAccountResponse.complexes) ? paymentAccountResponse.complexes : []);
       setReservations(reservationsResponse);
       setOrders(ordersResponse);
@@ -167,7 +176,7 @@ export default function OwnerCollections() {
     if (!mpStatus) return;
 
     if (mpStatus === 'connected') {
-      setMessage('La cuenta de Mercado Pago quedó conectada correctamente.');
+      setMessage('La cuenta de Mercado Pago quedo conectada correctamente.');
       loadData('refresh');
     } else if (mpStatus === 'error') {
       setErrorMessage(searchParams.get('message') || 'No se pudo conectar la cuenta de Mercado Pago.');
@@ -206,7 +215,6 @@ export default function OwnerCollections() {
       });
 
       setAccount(response.account);
-      setOauthSetup(response.oauthSetup || null);
       setForm({
         reservationsEnabled: response.account?.reservationsEnabled ?? true,
         ordersEnabled: response.account?.ordersEnabled ?? true,
@@ -228,14 +236,13 @@ export default function OwnerCollections() {
     try {
       const response = await fetchAPI('/payment-account/oauth/connect-url');
       if (!response.authorizationUrl) {
-        throw new Error('No se pudo generar la autorizacion de Mercado Pago.');
+        throw new Error('No se pudo iniciar la conexion con Mercado Pago.');
       }
 
       window.location.assign(response.authorizationUrl);
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo iniciar la conexion con Mercado Pago.');
       setConnecting(false);
-      return;
     }
   };
 
@@ -250,7 +257,6 @@ export default function OwnerCollections() {
       });
 
       setAccount(response.account);
-      setOauthSetup(response.oauthSetup || null);
       setForm({
         reservationsEnabled: response.account?.reservationsEnabled ?? true,
         ordersEnabled: response.account?.ordersEnabled ?? true,
@@ -277,11 +283,12 @@ export default function OwnerCollections() {
       <header className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="mb-1 text-sm uppercase tracking-widest text-outline">Cobros del complejo</p>
-          <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-on_surface tracking-tight">
+          <h2 className="font-display text-[2rem] font-medium tracking-tight text-on_surface sm:text-[2.5rem]">
             Reservas y tienda
           </h2>
           <p className="max-w-3xl text-on_surface_variant">
-            Desde acá conectás tu cuenta de Mercado Pago para cobrar reservas y ventas de productos sin cargar credenciales de desarrollador.
+            Desde aca conectas tu cuenta de Mercado Pago para cobrar reservas y ventas de productos
+            desde tu complejo.
           </p>
         </div>
 
@@ -346,66 +353,47 @@ export default function OwnerCollections() {
               <Settings2 size={18} />
             </div>
             <div>
-              <h3 className="text-xl font-display font-medium text-on_surface">Cuenta Mercado Pago</h3>
+              <h3 className="font-display text-xl font-medium text-on_surface">Cuenta Mercado Pago</h3>
               <p className="text-sm text-on_surface_variant">
-                El owner inicia sesión en Mercado Pago y autoriza el uso de su cuenta de cobro.
+                Conecta tu cuenta y autoriza los cobros desde una ventana segura de Mercado Pago.
               </p>
             </div>
           </div>
 
           {!account?.secureStorageReady && (
             <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
-              La vinculación de cuentas está temporalmente no disponible. Contactá al administrador del sistema.
+              La vinculacion de cuentas esta temporalmente no disponible. Contacta al administrador
+              del sistema.
             </div>
           )}
 
           {account?.secureStorageReady && !account?.oauthReady && (
             <div className="mb-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4 text-sm text-yellow-400">
-              La integración con Mercado Pago no está configurada aún. Contactá al administrador del sistema.
+              La integracion con Mercado Pago todavia no esta disponible. Contacta al administrador
+              del sistema.
             </div>
           )}
 
           <div className="mb-5 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4">
             <p className="text-sm font-medium text-on_surface">
               {account?.providerConfigured
-                ? 'La cuenta ya está vinculada y lista para cobrar.'
-                : 'Todavía no hay una cuenta de Mercado Pago conectada.'}
+                ? 'La cuenta ya esta vinculada y lista para cobrar.'
+                : 'Todavia no hay una cuenta de Mercado Pago conectada.'}
             </p>
             <p className="mt-1 text-xs text-on_surface_variant">
               {account?.providerConfigured
-                ? 'Podés reconectar tu cuenta en cualquier momento.'
-                : 'Conectá tu cuenta para empezar a cobrar reservas y ventas online.'}
+                ? 'Podes reconectar tu cuenta en cualquier momento.'
+                : 'Conecta tu cuenta para empezar a cobrar reservas y ventas online.'}
             </p>
           </div>
 
-          {!account?.providerConfigured && oauthSetup && (
+          {!account?.providerConfigured && account?.oauthReady && (
             <div className="mb-5 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4">
-              <p className="text-sm font-medium text-on_surface">Configuracion que espera este proyecto</p>
-              <div className="mt-3 space-y-3 text-xs text-on_surface_variant">
-                <div>
-                  <p className="text-outline uppercase tracking-widest">Tipo de app en Mercado Pago Developers</p>
-                  <p className="mt-1 text-on_surface">{oauthSetup.requiredIntegrationModel}</p>
-                </div>
-                <div>
-                  <p className="text-outline uppercase tracking-widest">Redirect URL a cargar</p>
-                  <p className="mt-1 break-all rounded-xl bg-surface_container_low px-3 py-2 text-on_surface">
-                    {oauthSetup.redirectUri || 'No disponible'}
-                  </p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <p className="text-outline uppercase tracking-widest">Host OAuth</p>
-                    <p className="mt-1 break-all text-on_surface">{oauthSetup.authorizationBaseUrl}</p>
-                  </div>
-                  <div>
-                    <p className="text-outline uppercase tracking-widest">PKCE segun backend</p>
-                    <p className="mt-1 text-on_surface">{oauthSetup.pkceEnabled ? 'Activado' : 'Desactivado'}</p>
-                  </div>
-                </div>
-                <div className="rounded-xl border border-primary/15 bg-primary/5 px-3 py-3 text-on_surface_variant">
-                  En Mercado Pago Developers crea una app de marketplace, carga esa Redirect URL exacta y luego vuelve a este boton.
-                </div>
-              </div>
+              <p className="text-sm font-medium text-on_surface">Como funciona la conexion</p>
+              <p className="mt-2 text-sm text-on_surface_variant">
+                Al tocar el boton se abre Mercado Pago para que autorices tu cuenta de cobro. Cuando
+                termines, vuelves a este panel y ya podes aceptar pagos online.
+              </p>
             </div>
           )}
 
@@ -414,7 +402,7 @@ export default function OwnerCollections() {
               type="button"
               onClick={handleConnect}
               disabled={connecting || !account?.secureStorageReady || !account?.oauthReady}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-5 py-3.5 font-semibold text-on_primary_fixed transition-all hover:brightness-110 disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-5 py-3.5 font-semibold text-on_primary transition-all hover:brightness-110 disabled:opacity-50"
             >
               {connecting ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
               {connecting
@@ -438,14 +426,14 @@ export default function OwnerCollections() {
           <form className="mt-5 space-y-4" onSubmit={handleSave}>
             <ToggleRow
               label="Cobrar reservas online"
-              description="Si lo apagás, las reservas se siguen creando pero no se podrán cobrar por Mercado Pago."
+              description="Si lo apagas, las reservas se siguen creando pero no se podran cobrar por Mercado Pago."
               checked={form.reservationsEnabled}
               onChange={(checked) => setForm((prev) => ({ ...prev, reservationsEnabled: checked }))}
             />
 
             <ToggleRow
               label="Cobrar tienda online"
-              description="Si lo apagás, el carrito de la tienda no abrirá checkout."
+              description="Si lo apagas, el carrito de la tienda no abrira checkout."
               checked={form.ordersEnabled}
               onChange={(checked) => setForm((prev) => ({ ...prev, ordersEnabled: checked }))}
             />
@@ -462,33 +450,29 @@ export default function OwnerCollections() {
         </section>
 
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_low p-6 sm:p-7">
-          <h3 className="mb-5 text-xl font-display font-medium text-on_surface">Estado de la conexión</h3>
+          <h3 className="mb-5 font-display text-xl font-medium text-on_surface">Estado de la cuenta</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <MiniStat label="Estado" value={account?.status || 'DISCONNECTED'} />
-            <MiniStat label="Modo" value={account?.mode || 'sandbox'} />
-            <MiniStat label="Tipo de conexión" value={account?.authType === 'oauth' ? 'OAuth' : 'Manual'} />
-            <MiniStat label="Collector ID" value={account?.collectorId || 'Sin validar'} />
-            <MiniStat label="Nickname" value={account?.collectorNickname || 'Sin validar'} />
-            <MiniStat label="Email cobrador" value={account?.collectorEmail || 'Sin validar'} />
-            <MiniStat label="Última validación" value={formatDate(account?.lastValidatedAt)} />
-            <MiniStat label="Token vigente hasta" value={formatDate(account?.tokenExpiresAt)} />
+            <MiniStat label="Estado" value={formatAccountStatus(account?.status)} />
+            <MiniStat label="Cuenta de cobro" value={account?.collectorNickname || 'Sin conectar'} />
+            <MiniStat label="Email de cobro" value={account?.collectorEmail || 'Sin conectar'} />
+            <MiniStat label="Ultima revision" value={formatDate(account?.lastValidatedAt)} />
           </div>
 
           {account?.lastValidationError && (
             <div className="mt-5 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-4 py-4">
               <p className="flex items-center gap-2 text-sm font-medium text-yellow-400">
                 <ShieldAlert size={16} />
-                Último problema informado por Mercado Pago
+                Problema con la cuenta de cobro
               </p>
               <p className="mt-2 text-sm text-on_surface_variant">{account.lastValidationError}</p>
             </div>
           )}
 
           <div className="mt-5 rounded-2xl border border-outline_variant/10 bg-surface_container p-4">
-            <p className="text-xs uppercase tracking-widest text-outline mb-2">Complejos vinculados</p>
+            <p className="mb-2 text-xs uppercase tracking-widest text-outline">Complejos vinculados</p>
             <div className="flex flex-wrap gap-2">
               {complexes.length === 0 ? (
-                <span className="text-sm text-on_surface_variant">No tenés complejos creados todavía.</span>
+                <span className="text-sm text-on_surface_variant">No tienes complejos creados todavia.</span>
               ) : (
                 complexes.map((complex) => (
                   <span
@@ -510,7 +494,7 @@ export default function OwnerCollections() {
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_high p-6 sm:p-7">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-xl font-display font-medium text-on_surface">Cobros de reservas</h3>
+              <h3 className="font-display text-xl font-medium text-on_surface">Cobros de reservas</h3>
               <p className="text-sm text-on_surface_variant">Historial de reservas y estado de cobro.</p>
             </div>
             <span className="text-xs uppercase tracking-widest text-outline">{reservations.length} reservas</span>
@@ -518,7 +502,7 @@ export default function OwnerCollections() {
 
           {reservations.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-outline_variant/15 bg-surface_container_low px-5 py-8 text-center text-sm text-on_surface_variant">
-              Todavía no hay reservas registradas.
+              Todavia no hay reservas registradas.
             </div>
           ) : (
             <div className="space-y-3">
@@ -527,10 +511,15 @@ export default function OwnerCollections() {
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="min-w-0">
                       <p className="font-medium text-on_surface">{reservation.user?.displayName || 'Cliente'}</p>
-                      <p className="text-sm text-outline">{reservation.complexId?.name || 'Complejo'} · {reservation.court?.name || 'Cancha'}</p>
+                      <p className="text-sm text-outline">
+                        {reservation.complexId?.name || 'Complejo'} · {reservation.court?.name || 'Cancha'}
+                      </p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 lg:min-w-[320px]">
-                      <MiniStat label="Pago" value={PAYMENT_STATUS_LABEL[reservation.paymentStatus] || reservation.paymentStatus} />
+                      <MiniStat
+                        label="Pago"
+                        value={PAYMENT_STATUS_LABEL[reservation.paymentStatus] || reservation.paymentStatus}
+                      />
                       <MiniStat label="Monto" value={formatMoney(reservation.totalPrice)} />
                       <MiniStat label="Fecha" value={formatDate(reservation.date)} />
                       <MiniStat label="MP" value={reservation.mercadoPagoStatus || 'Sin intento'} />
@@ -545,7 +534,7 @@ export default function OwnerCollections() {
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_high p-6 sm:p-7">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-xl font-display font-medium text-on_surface">Cobros de tienda</h3>
+              <h3 className="font-display text-xl font-medium text-on_surface">Cobros de tienda</h3>
               <p className="text-sm text-on_surface_variant">Pedidos de la tienda y su estado de pago.</p>
             </div>
             <span className="text-xs uppercase tracking-widest text-outline">{orders.length} pedidos</span>
@@ -553,7 +542,7 @@ export default function OwnerCollections() {
 
           {orders.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-outline_variant/15 bg-surface_container_low px-5 py-8 text-center text-sm text-on_surface_variant">
-              Todavía no hay pedidos registrados.
+              Todavia no hay pedidos registrados.
             </div>
           ) : (
             <div className="space-y-3">
@@ -562,7 +551,9 @@ export default function OwnerCollections() {
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="min-w-0">
                       <p className="font-medium text-on_surface">{order.userId?.displayName || 'Cliente'}</p>
-                      <p className="text-sm text-outline">{order.complexId?.name || 'Complejo'} · {order.items?.length || 0} item(s)</p>
+                      <p className="text-sm text-outline">
+                        {order.complexId?.name || 'Complejo'} · {order.items?.length || 0} item(s)
+                      </p>
                     </div>
                     <div className="grid grid-cols-2 gap-3 lg:min-w-[320px]">
                       <MiniStat label="Estado" value={ORDER_STATUS_LABEL[order.status] || order.status} />

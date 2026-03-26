@@ -85,6 +85,7 @@ function ToggleRow({ label, description, checked, onChange }) {
 export default function OwnerCollections() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [account, setAccount] = useState(null);
+  const [oauthSetup, setOauthSetup] = useState(null);
   const [complexes, setComplexes] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -118,6 +119,7 @@ export default function OwnerCollections() {
 
       const nextAccount = paymentAccountResponse.account || null;
       setAccount(nextAccount);
+      setOauthSetup(paymentAccountResponse.oauthSetup || null);
       setComplexes(Array.isArray(paymentAccountResponse.complexes) ? paymentAccountResponse.complexes : []);
       setReservations(Array.isArray(reservationsResponse) ? reservationsResponse : []);
       setOrders(Array.isArray(ordersResponse) ? ordersResponse : []);
@@ -181,6 +183,7 @@ export default function OwnerCollections() {
       });
 
       setAccount(response.account);
+      setOauthSetup(response.oauthSetup || null);
       setForm({
         reservationsEnabled: response.account?.reservationsEnabled ?? true,
         ordersEnabled: response.account?.ordersEnabled ?? true,
@@ -224,6 +227,7 @@ export default function OwnerCollections() {
       });
 
       setAccount(response.account);
+      setOauthSetup(response.oauthSetup || null);
       setForm({
         reservationsEnabled: response.account?.reservationsEnabled ?? true,
         ordersEnabled: response.account?.ordersEnabled ?? true,
@@ -350,6 +354,37 @@ export default function OwnerCollections() {
                 : 'Conectá tu cuenta para empezar a cobrar reservas y ventas online.'}
             </p>
           </div>
+
+          {!account?.providerConfigured && oauthSetup && (
+            <div className="mb-5 rounded-2xl border border-outline_variant/10 bg-surface_container px-4 py-4">
+              <p className="text-sm font-medium text-on_surface">Configuracion que espera este proyecto</p>
+              <div className="mt-3 space-y-3 text-xs text-on_surface_variant">
+                <div>
+                  <p className="text-outline uppercase tracking-widest">Tipo de app en Mercado Pago Developers</p>
+                  <p className="mt-1 text-on_surface">{oauthSetup.requiredIntegrationModel}</p>
+                </div>
+                <div>
+                  <p className="text-outline uppercase tracking-widest">Redirect URL a cargar</p>
+                  <p className="mt-1 break-all rounded-xl bg-surface_container_low px-3 py-2 text-on_surface">
+                    {oauthSetup.redirectUri || 'No disponible'}
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-outline uppercase tracking-widest">Host OAuth</p>
+                    <p className="mt-1 break-all text-on_surface">{oauthSetup.authorizationBaseUrl}</p>
+                  </div>
+                  <div>
+                    <p className="text-outline uppercase tracking-widest">PKCE segun backend</p>
+                    <p className="mt-1 text-on_surface">{oauthSetup.pkceEnabled ? 'Activado' : 'Desactivado'}</p>
+                  </div>
+                </div>
+                <div className="rounded-xl border border-primary/15 bg-primary/5 px-3 py-3 text-on_surface_variant">
+                  En Mercado Pago Developers crea una app de marketplace, carga esa Redirect URL exacta y luego vuelve a este boton.
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button

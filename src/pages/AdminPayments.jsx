@@ -31,6 +31,7 @@ const RESERVATION_PAYMENT_STYLE = {
   UNPAID: { label: 'Sin cobrar', cls: 'bg-red-400/10 text-red-400 border border-red-400/20' },
   PARTIAL: { label: 'Parcial', cls: 'bg-yellow-400/10 text-yellow-400 border border-yellow-400/20' },
   PAID: { label: 'Pagada', cls: 'bg-green-400/10 text-green-400 border border-green-400/20' },
+  REFUNDED: { label: 'Reembolsada', cls: 'bg-sky-400/10 text-sky-400 border border-sky-400/20' },
 };
 
 const ORDER_STATUS_STYLE = {
@@ -377,6 +378,7 @@ export default function AdminPayments() {
                 <option value="UNPAID">Sin cobrar</option>
                 <option value="PARTIAL">Parcial</option>
                 <option value="PAID">Pagada</option>
+                <option value="REFUNDED">Reembolsada</option>
               </>
             )}
             {tab === 'orders' && (

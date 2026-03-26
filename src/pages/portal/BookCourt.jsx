@@ -87,10 +87,24 @@ export default function BookCourt() {
       throw new Error('No hay una reserva pendiente para cobrar.');
     }
 
-    const response = await fetchAPI(`/reservations/${reservationId}/pay`, {
-      method: 'POST',
-      body: JSON.stringify({ formData, additionalData }),
-    });
+    let response;
+    try {
+      response = await fetchAPI(`/reservations/${reservationId}/pay`, {
+        method: 'POST',
+        body: JSON.stringify({ formData, additionalData }),
+      });
+    } catch (error) {
+      const nextMessage = error.message || 'No se pudo procesar el pago de la reserva.';
+
+      if (nextMessage.includes('La reserva fue cancelada') || nextMessage.includes('ya fue cancelada')) {
+        setCreatedReservation(null);
+        setPaymentSession(null);
+        setErrorMessage(nextMessage);
+        return;
+      }
+
+      throw error;
+    }
 
     setCreatedReservation(response.reservation || null);
     setPaymentSession(null);
@@ -101,7 +115,7 @@ export default function BookCourt() {
       return;
     }
 
-    setErrorMessage('La reserva se creo, pero el cobro quedo pendiente o fue rechazado.');
+    setErrorMessage(response.message || 'La reserva se creo, pero el cobro quedo pendiente.');
   };
 
   const court = courts.find((item) => item._id === selectedCourt);

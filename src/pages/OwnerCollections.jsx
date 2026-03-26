@@ -19,6 +19,7 @@ const PAYMENT_STATUS_LABEL = {
   UNPAID: 'Sin cobrar',
   PARTIAL: 'Parcial',
   PAID: 'Pagada',
+  REFUNDED: 'Reembolsada',
 };
 
 const ORDER_STATUS_LABEL = {
@@ -187,6 +188,9 @@ export default function OwnerCollections() {
 
   const stats = useMemo(() => {
     const paidReservations = reservations.filter((reservation) => reservation.paymentStatus === 'PAID');
+    const openReservations = reservations.filter((reservation) =>
+      ['UNPAID', 'PARTIAL'].includes(String(reservation.paymentStatus || '').toUpperCase()),
+    );
     const completedOrders = orders.filter((order) => order.status === 'completed');
 
     return {
@@ -195,7 +199,7 @@ export default function OwnerCollections() {
         0,
       ),
       paidReservations: paidReservations.length,
-      unpaidReservations: reservations.filter((reservation) => reservation.paymentStatus !== 'PAID').length,
+      unpaidReservations: openReservations.length,
       ordersRevenue: completedOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0),
       completedOrders: completedOrders.length,
       pendingOrders: orders.filter((order) => order.status === 'pending').length,

@@ -61,7 +61,7 @@ function isOwnerApprovalUnread(role, ownerStatus, ownerApprovedSeen) {
   return role === 'owner' && ownerStatus === 'APPROVED' && !ownerApprovedSeen;
 }
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ children = null }) {
   const { user, role, ownerStatus, ownerBilling } = useAuth();
   const location = useLocation();
 
@@ -396,7 +396,7 @@ export default function DashboardLayout() {
         </header>
 
         <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 sm:px-6 lg:px-10 pb-10 pt-5 sm:pt-6 lg:pb-12">
-          <Outlet />
+          {children ?? <Outlet />}
         </div>
       </main>
     </div>

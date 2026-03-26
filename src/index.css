@@ -6,12 +6,12 @@
 
 @layer base {
   :root {
-    --color-primary: #2f9e44;
-    --color-secondary: #f2b134;
+    --color-primary: #1f8f49;
+    --color-secondary: #c98a19;
   }
 
   html {
-    background: #f7faf4;
+    background: #f3f7ee;
   }
 
   body {
@@ -20,10 +20,11 @@
     min-height: 100vh;
     isolation: isolate;
     color-scheme: light;
+    line-height: 1.5;
     background-image:
-      radial-gradient(circle at top left, rgba(123, 207, 82, 0.12), transparent 30%),
-      radial-gradient(circle at top right, rgba(242, 177, 52, 0.10), transparent 24%),
-      linear-gradient(180deg, #fcfef9 0%, #f7faf4 52%, #f2f7ea 100%);
+      radial-gradient(circle at top left, rgba(114, 203, 84, 0.16), transparent 32%),
+      radial-gradient(circle at top right, rgba(201, 138, 25, 0.11), transparent 26%),
+      linear-gradient(180deg, #fbfdf8 0%, #f3f7ee 54%, #edf4e6 100%);
     background-attachment: fixed;
   }
 
@@ -33,16 +34,20 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.55;
+    opacity: 0.34;
     background:
-      radial-gradient(circle at center, rgba(255, 255, 255, 0.65), transparent 62%),
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.72), transparent 62%),
       repeating-linear-gradient(
         90deg,
         transparent 0,
         transparent 118px,
-        rgba(107, 168, 84, 0.028) 118px,
-        rgba(107, 168, 84, 0.028) 236px
+        rgba(82, 103, 79, 0.018) 118px,
+        rgba(82, 103, 79, 0.018) 236px
       );
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 
   #root {
@@ -62,22 +67,22 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-white/82 backdrop-blur-xl border border-outline_variant/45 shadow-[0_18px_50px_-32px_rgba(47,158,68,0.22)];
+    @apply bg-white/94 backdrop-blur-xl border border-outline_variant/55 shadow-[0_20px_48px_-34px_rgba(31,143,73,0.24)];
   }
 
   .btn-primary {
-    @apply bg-primary-gradient text-on_primary px-6 py-3 rounded-2xl font-semibold shadow-[0_16px_34px_-18px_rgba(47,158,68,0.36)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_-20px_rgba(47,158,68,0.42)];
+    @apply bg-primary-gradient text-on_primary px-6 py-3 rounded-2xl font-semibold shadow-[0_16px_34px_-18px_rgba(31,143,73,0.34)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_-20px_rgba(31,143,73,0.4)];
   }
 
   .btn-secondary {
-    @apply bg-white text-on_surface px-6 py-3 rounded-2xl font-medium border border-outline_variant/45 shadow-[0_12px_30px_-24px_rgba(24,36,24,0.18)] transition-all duration-300 hover:bg-surface_container_low;
+    @apply bg-white text-on_surface px-6 py-3 rounded-2xl font-medium border border-outline_variant/50 shadow-[0_12px_30px_-24px_rgba(24,36,24,0.18)] transition-all duration-300 hover:bg-surface_container_low;
   }
 
   .card {
-    @apply bg-white rounded-3xl p-6 border border-outline_variant/35 shadow-[0_18px_44px_-30px_rgba(24,36,24,0.18)];
+    @apply bg-white/95 rounded-3xl p-6 border border-outline_variant/40 shadow-[0_18px_44px_-30px_rgba(24,36,24,0.18)];
   }
 
   .input-field {
-    @apply bg-white w-full text-on_surface placeholder-on_surface_variant rounded-xl px-4 py-3 border border-outline_variant/40 focus:border-primary/35 focus:shadow-[0_0_0_4px_rgba(123,207,82,0.12)] outline-none transition-all duration-300;
+    @apply bg-white w-full text-on_surface placeholder-on_surface_variant rounded-xl px-4 py-3 border border-outline_variant/45 focus:border-primary/45 focus:shadow-[0_0_0_4px_rgba(114,203,84,0.14)] outline-none transition-all duration-300;
   }
 }

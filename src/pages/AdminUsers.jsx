@@ -22,7 +22,7 @@ const ROLES = ['client', 'owner', 'superadmin'];
 const ROLE_STYLE = {
   superadmin: { label: 'Super Admin', cls: 'bg-purple-400/15 text-purple-300 border border-purple-400/20' },
   owner: { label: 'Owner', cls: 'bg-primary/15 text-primary border border-primary/20' },
-  client: { label: 'Cliente', cls: 'bg-white/10 text-white/70 border border-white/10' },
+  client: { label: 'Cliente', cls: 'bg-surface_container_low text-on_surface_variant border border-outline_variant/20' },
 };
 
 const OWNER_STATUS_STYLE = {

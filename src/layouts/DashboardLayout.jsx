@@ -25,28 +25,28 @@ import BrandLogo from '../components/BrandLogo';
 const ROLE_META = {
   owner: {
     label: 'Dueno / Admin',
-    badgeClass: 'text-primary bg-primary/10',
-    eyebrow: 'Panel Administrativo',
-    searchPlaceholder: 'Buscar reservas, canchas, productos...',
+    badgeClass: 'border border-primary/15 bg-primary/10 text-primary',
+    eyebrow: 'Panel del complejo',
+    searchPlaceholder: 'Buscar reservas, canchas o productos...',
     nav: [
-      { name: 'Dashboard', path: '/dashboard', icon: Home },
+      { name: 'Inicio', path: '/dashboard', icon: Home },
       { name: 'Calendario', path: '/dashboard/reservations', icon: Calendar },
       { name: 'Canchas', path: '/dashboard/courts', icon: LayoutGrid },
       { name: 'Inventario', path: '/dashboard/products', icon: ShoppingBag },
       { name: 'Clientes', path: '/dashboard/customers', icon: Users },
       { name: 'Cobros', path: '/dashboard/collections', icon: CreditCard },
-      { name: 'Mensualidad', path: '/dashboard/billing', icon: Clock3 },
+      { name: 'Facturacion', path: '/dashboard/billing', icon: Clock3 },
       { name: 'Ajustes', path: '/dashboard/settings', icon: Settings },
     ],
   },
   superadmin: {
-    label: 'Super Admin',
-    badgeClass: 'text-tertiary bg-tertiary/10',
-    eyebrow: 'Control Global',
+    label: 'Superadmin',
+    badgeClass: 'border border-tertiary/15 bg-tertiary/10 text-tertiary_fixed_dim',
+    eyebrow: 'Control general',
     searchPlaceholder: 'Buscar owners, usuarios o complejos...',
     nav: [
       { name: 'Resumen', path: '/dashboard', icon: Home },
-      { name: 'Validaciones', path: '/dashboard/users', icon: Users },
+      { name: 'Usuarios', path: '/dashboard/users', icon: Users },
       { name: 'Complejos', path: '/dashboard/complexes', icon: Building2 },
       { name: 'Pagos', path: '/dashboard/payments', icon: CreditCard },
     ],
@@ -116,9 +116,9 @@ export default function DashboardLayout({ children = null }) {
       items.push({
         id: 'owner-approved',
         title: 'Cuenta aprobada',
-        description: 'Ya fuiste validado por un superadmin. Eres dueno de un complejo y ya podes usar el panel.',
+        description: 'Ya fuiste validado por un superadmin. Ya podes administrar tu complejo desde el panel.',
         icon: CheckCircle2,
-        tone: 'text-green-400 bg-green-400/10',
+        tone: 'border border-emerald-200 bg-emerald-50 text-emerald-700',
       });
     }
 
@@ -126,9 +126,9 @@ export default function DashboardLayout({ children = null }) {
       items.push({
         id: 'owner-billing-grace',
         title: 'Pago mensual pendiente',
-        description: `Tenes hasta ${new Date(ownerBilling.blockAt).toLocaleDateString('es-AR')} para pagar. Si no, se bloquea tu panel y tu complejo deja de aceptar reservas y compras.`,
+        description: `Tenes hasta ${new Date(ownerBilling.blockAt).toLocaleDateString('es-AR')} para pagar. Si no, se bloquea el panel y tu complejo deja de aceptar reservas y compras.`,
         icon: CreditCard,
-        tone: 'text-yellow-400 bg-yellow-400/10',
+        tone: 'border border-amber-200 bg-amber-50 text-amber-700',
         path: '/dashboard/billing',
       });
     }
@@ -143,12 +143,12 @@ export default function DashboardLayout({ children = null }) {
         description:
           diffDays <= 5
             ? `Tu acceso vence el ${expiresAt.toLocaleDateString('es-AR')}. Cuando termine el periodo se te va a pedir un nuevo pago mensual.`
-            : `Tu acceso owner esta activo hasta el ${expiresAt.toLocaleDateString('es-AR')}.`,
+            : `Tu acceso como owner esta activo hasta el ${expiresAt.toLocaleDateString('es-AR')}.`,
         icon: CreditCard,
         tone:
           diffDays <= 5
-            ? 'text-yellow-400 bg-yellow-400/10'
-            : 'text-green-400 bg-green-400/10',
+            ? 'border border-amber-200 bg-amber-50 text-amber-700'
+            : 'border border-emerald-200 bg-emerald-50 text-emerald-700',
         path: '/dashboard/billing',
       });
     }
@@ -159,7 +159,7 @@ export default function DashboardLayout({ children = null }) {
         title: 'Validaciones pendientes',
         description: `Tenes ${pendingOwnersCount} solicitud${pendingOwnersCount !== 1 ? 'es' : ''} de owner esperando aprobacion.`,
         icon: Clock3,
-        tone: 'text-yellow-400 bg-yellow-400/10',
+        tone: 'border border-amber-200 bg-amber-50 text-amber-700',
         path: '/dashboard/users',
       });
     }
@@ -178,6 +178,8 @@ export default function DashboardLayout({ children = null }) {
 
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
+
+  const currentPageTitle = meta.nav.find((item) => isActivePath(item.path))?.name ?? meta.label;
 
   const handleLogout = async () => {
     await logout();
@@ -203,14 +205,21 @@ export default function DashboardLayout({ children = null }) {
           key={item.name + item.path}
           to={item.path}
           onClick={() => mobile && setSidebarOpen(false)}
-          className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200 ${
+          className={`group flex items-center gap-4 rounded-2xl border px-4 py-3.5 transition-all duration-200 ${
             isActive
-              ? 'border border-primary/15 bg-white text-on_surface shadow-[0_16px_34px_-22px_rgba(47,158,68,0.28)]'
-              : 'text-on_surface_variant hover:bg-surface_container_low hover:text-on_surface'
+              ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgba(31,143,73,0.24)]'
+              : 'border-transparent bg-transparent text-on_surface_variant hover:border-outline_variant/20 hover:bg-white/80 hover:text-on_surface'
           }`}
         >
-          <Icon size={20} className={isActive ? 'text-primary' : ''} />
-          <span className="font-medium text-sm tracking-wide">{item.name}</span>
+          <Icon
+            size={20}
+            className={`shrink-0 transition-colors ${
+              isActive ? 'text-primary' : 'text-outline group-hover:text-primary'
+            }`}
+          />
+          <span className={`font-medium tracking-[0.01em] ${mobile ? 'text-[0.95rem]' : 'text-sm'}`}>
+            {item.name}
+          </span>
         </Link>
       );
     });
@@ -228,19 +237,21 @@ export default function DashboardLayout({ children = null }) {
           type="button"
           aria-label="Cerrar menu"
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
+          className="fixed inset-0 z-30 bg-[#102014]/58 backdrop-blur-[2px] lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 max-w-[85vw] flex-col border-r border-outline_variant/30 bg-white/92 shadow-[8px_0_30px_-18px_rgba(24,36,24,0.16)] backdrop-blur-xl transition-transform duration-300 lg:static lg:translate-x-0 lg:z-20 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-[min(20rem,88vw)] flex-col border-r border-outline_variant/30 bg-[linear-gradient(180deg,#fcfef9_0%,#f2f7ec_100%)] shadow-[12px_0_34px_-18px_rgba(20,32,22,0.22)] transition-transform duration-300 lg:static lg:w-72 lg:translate-x-0 lg:z-20 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="p-6 sm:p-8 flex items-start justify-between gap-4">
-          <div>
-            <BrandLogo imageClassName="h-14 w-auto" />
-            <p className="text-[0.65rem] text-on_surface_variant uppercase tracking-widest mt-2">
+        <div className="flex items-start justify-between gap-4 border-b border-outline_variant/18 px-6 pb-5 pt-6 sm:px-8">
+          <div className="min-w-0">
+            <div className="inline-flex rounded-[1.75rem] border border-outline_variant/20 bg-white/80 px-4 py-3 shadow-[0_16px_30px_-24px_rgba(20,32,22,0.2)]">
+              <BrandLogo imageClassName="h-14 w-auto" />
+            </div>
+            <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-outline">
               {meta.eyebrow}
             </p>
           </div>
@@ -248,47 +259,49 @@ export default function DashboardLayout({ children = null }) {
             type="button"
             aria-label="Cerrar menu"
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-xl text-outline hover:text-on_surface hover:bg-surface transition-colors"
+            className="lg:hidden rounded-2xl border border-outline_variant/20 bg-white/80 p-2.5 text-on_surface_variant transition-colors hover:bg-white hover:text-on_surface"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="px-6 sm:px-8 pb-3">
-          <p className="text-[0.65rem] text-outline uppercase tracking-[0.2em]">Menu</p>
+        <div className="px-6 pb-3 pt-5 sm:px-8">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-outline">Menu</p>
         </div>
 
-        <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 space-y-2 overflow-y-auto px-4 pb-4">
           {renderNavItems(true)}
         </nav>
 
-        <div className="p-6 mt-auto border-t border-outline_variant/10">
-          <div className="flex items-center gap-3 mb-4 px-2">
-            {user?.photoURL ? (
-              <img src={user.photoURL} alt="Avatar" className="w-10 h-10 rounded-full ring-2 ring-surface_container_highest" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-surface_container_highest flex items-center justify-center text-primary shrink-0">
-                <span className="font-display font-medium">{user?.displayName?.charAt(0) || 'U'}</span>
+        <div className="mt-auto border-t border-outline_variant/15 p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] sm:p-6">
+          <div className="rounded-[1.5rem] border border-outline_variant/15 bg-white/82 p-4 shadow-[0_20px_34px_-28px_rgba(20,32,22,0.28)]">
+            <div className="mb-4 flex items-center gap-3">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="Avatar" className="h-11 w-11 rounded-full ring-2 ring-surface_container_highest" />
+              ) : (
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface_container_highest text-primary">
+                  <span className="font-display font-medium">{user?.displayName?.charAt(0) || 'U'}</span>
+                </div>
+              )}
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <p className="truncate text-sm font-semibold text-on_surface">{user?.displayName}</p>
+                <p className="truncate text-xs text-on_surface_variant">{user?.email}</p>
               </div>
-            )}
-            <div className="overflow-hidden flex-1 min-w-0">
-              <p className="text-sm font-medium text-on_surface truncate">{user?.displayName}</p>
-              <p className="text-xs text-outline truncate">{user?.email}</p>
             </div>
-          </div>
 
-          <div className="mb-4 px-2">
-            <span className={`text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${meta.badgeClass}`}>
-              {meta.label}
-            </span>
-          </div>
+            <div className="mb-4">
+              <span className={`inline-flex rounded-full px-3 py-1 text-[0.68rem] font-bold uppercase tracking-widest ${meta.badgeClass}`}>
+                {meta.label}
+              </span>
+            </div>
 
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 text-on_surface_variant hover:text-error hover:bg-error/10 py-3 rounded-2xl transition-colors text-sm font-medium"
-          >
-            <LogOut size={16} /> Cerrar sesion
-          </button>
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-outline_variant/15 bg-surface_container_low py-3 text-sm font-semibold text-on_surface transition-colors hover:border-error/20 hover:bg-error/10 hover:text-error"
+            >
+              <LogOut size={16} /> Cerrar sesion
+            </button>
+          </div>
         </div>
       </aside>
 

@@ -15,7 +15,7 @@ function resolveNextPath(entity, complexId, status) {
     if (status === 'failure' && complexId) {
       return `/portal/complejo/${complexId}/tienda`;
     }
-    return '/portal';
+    return '/portal/mis-compras';
   }
 
   return '/portal';

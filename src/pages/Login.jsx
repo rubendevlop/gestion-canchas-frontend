@@ -6,67 +6,212 @@ import {
   CheckCircle2,
   Cookie,
   ExternalLink,
-  Lock,
+  FileText,
+  Globe,
+  KeyRound,
+  LayoutGrid,
   Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
   Shield,
   User as UserIcon,
   Users,
   X,
 } from 'lucide-react';
-import { auth, loginWithGoogle } from '../firebase';
+import {
+  auth,
+  loginWithEmailPassword,
+  loginWithGoogle,
+  registerWithEmailPassword,
+} from '../firebase';
 import { fetchAPI } from '../services/api';
 import BrandLogo from '../components/BrandLogo';
 import loginBackground from '../IMG/fondo.png';
+
+const OWNER_FORM_INITIAL = {
+  fullName: '',
+  contactPhone: '',
+  documentType: 'DNI',
+  documentNumber: '',
+  complexName: '',
+  complexAddress: '',
+  city: '',
+  courtsCount: '1',
+  sportsOffered: '',
+  websiteOrInstagram: '',
+  notes: '',
+};
+
+const CLIENT_FORM_INITIAL = {
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  phone: '',
+};
+
+const LOGIN_FORM_INITIAL = {
+  email: '',
+  password: '',
+};
+
+function normalizeEmail(value = '') {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isValidArgentinaPhone(value = '') {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (!digits) {
+    return false;
+  }
+
+  let normalized = digits;
+  if (normalized.startsWith('549')) {
+    normalized = normalized.slice(3);
+  } else if (normalized.startsWith('54')) {
+    normalized = normalized.slice(2);
+  } else if (normalized.startsWith('0')) {
+    normalized = normalized.slice(1);
+  }
+
+  return normalized.length >= 10 && normalized.length <= 11;
+}
 
 export default function Login() {
   const [mode, setMode] = useState('login');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [registeredSuccess, setRegisteredSuccess] = useState(false);
+  const [registeredSuccess, setRegisteredSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [ownerForm, setOwnerForm] = useState(OWNER_FORM_INITIAL);
+  const [clientForm, setClientForm] = useState(CLIENT_FORM_INITIAL);
+  const [loginForm, setLoginForm] = useState(LOGIN_FORM_INITIAL);
   const [cookieBannerDismissed, setCookieBannerDismissed] = useState(
     () => !!localStorage.getItem('cookies_accepted'),
   );
 
   const isRegistering = mode !== 'login';
 
-  const handleRegisterIntent = () => {
+  const switchMode = (nextMode) => {
+    setMode(nextMode);
+    setTermsAccepted(false);
+    setRegisteredSuccess('');
+    setShowConfirmModal(false);
+  };
+
+  const validateOwnerForm = () => {
+    const required = [
+      ['fullName', 'Completa el nombre del responsable.'],
+      ['contactPhone', 'Completa un telefono valido de contacto.'],
+      ['documentNumber', 'Completa el documento del responsable.'],
+      ['complexName', 'Completa el nombre del complejo.'],
+      ['complexAddress', 'Completa la direccion del complejo.'],
+      ['city', 'Completa la ciudad.'],
+      ['sportsOffered', 'Indica que deportes ofreces.'],
+    ];
+
+    for (const [field, message] of required) {
+      if (!String(ownerForm[field] || '').trim()) {
+        throw new Error(message);
+      }
+    }
+
+    if (!isValidArgentinaPhone(ownerForm.contactPhone)) {
+      throw new Error('Ingresa un telefono valido de Argentina.');
+    }
+
+    if (Number(ownerForm.courtsCount || 0) < 1) {
+      throw new Error('Indica al menos una cancha.');
+    }
+  };
+
+  const validateClientForm = () => {
+    if (!String(clientForm.username || '').trim()) {
+      throw new Error('Completa tu nombre de usuario.');
+    }
+
+    if (String(clientForm.username || '').trim().length < 3) {
+      throw new Error('El nombre de usuario debe tener al menos 3 caracteres.');
+    }
+
+    if (!normalizeEmail(clientForm.email)) {
+      throw new Error('Completa tu correo.');
+    }
+
+    if (clientForm.password.length < 6) {
+      throw new Error('La contrasena debe tener al menos 6 caracteres.');
+    }
+
+    if (clientForm.password !== clientForm.confirmPassword) {
+      throw new Error('Las contrasenas no coinciden.');
+    }
+
+    if (!clientForm.phone.trim()) {
+      throw new Error('Completa tu telefono.');
+    }
+
+    if (!isValidArgentinaPhone(clientForm.phone)) {
+      throw new Error('Ingresa un telefono valido de Argentina.');
+    }
+  };
+
+  const resetRegisterMarkers = () => {
+    localStorage.removeItem('auth_intent');
+    localStorage.removeItem('register_as');
+  };
+
+  const handleClientRegister = async () => {
     if (!termsAccepted) {
       alert('Debes aceptar los Terminos y Condiciones para continuar.');
       return;
     }
 
-    setShowConfirmModal(true);
-  };
+    try {
+      validateClientForm();
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
 
-  const handleConfirmedRegister = async () => {
-    setShowConfirmModal(false);
     setLoading(true);
+    setRegisteredSuccess('');
 
     try {
       localStorage.setItem('auth_intent', 'register');
-      localStorage.setItem('register_as', mode === 'register-owner' ? 'owner' : 'client');
+      localStorage.setItem('register_as', 'client');
 
-      await loginWithGoogle();
-
-      const registerAs = mode === 'register-owner' ? 'owner' : 'client';
-      await fetchAPI('/users/register', {
-        method: 'POST',
-        body: JSON.stringify({ registerAs }),
+      await registerWithEmailPassword({
+        email: clientForm.email,
+        password: clientForm.password,
+        displayName: clientForm.username,
       });
 
-      localStorage.removeItem('auth_intent');
-      localStorage.removeItem('register_as');
+      await fetchAPI('/users/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          registerAs: 'client',
+          displayName: clientForm.username,
+          phone: clientForm.phone,
+        }),
+      });
+
+      resetRegisterMarkers();
       sessionStorage.removeItem('role');
       await signOut(auth);
 
-      setRegisteredSuccess(true);
-      setMode('login');
+      setRegisteredSuccess('Cuenta creada con exito. Ya puedes iniciar sesion con tu correo y contrasena.');
+      setLoginForm((current) => ({
+        ...current,
+        email: normalizeEmail(clientForm.email),
+        password: '',
+      }));
+      setClientForm(CLIENT_FORM_INITIAL);
       setTermsAccepted(false);
+      setMode('login');
     } catch (error) {
       console.error('Error en registro:', error);
-      localStorage.removeItem('auth_intent');
-      localStorage.removeItem('register_as');
+      resetRegisterMarkers();
 
       try {
         await signOut(auth);
@@ -74,7 +219,69 @@ export default function Login() {
         // noop
       }
 
-      if (!error.message?.includes('popup-closed')) {
+      alert(`Error al registrarse: ${error.message || 'Intenta de nuevo.'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOwnerRegisterIntent = () => {
+    if (!termsAccepted) {
+      alert('Debes aceptar los Terminos y Condiciones para continuar.');
+      return;
+    }
+
+    try {
+      validateOwnerForm();
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmedOwnerRegister = async () => {
+    setShowConfirmModal(false);
+    setLoading(true);
+    setRegisteredSuccess('');
+
+    try {
+      localStorage.setItem('auth_intent', 'register');
+      localStorage.setItem('register_as', 'owner');
+
+      await loginWithGoogle();
+
+      await fetchAPI('/users/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          registerAs: 'owner',
+          displayName: ownerForm.fullName,
+          ownerApplication: ownerForm,
+        }),
+      });
+
+      resetRegisterMarkers();
+      sessionStorage.removeItem('role');
+      await signOut(auth);
+
+      setRegisteredSuccess(
+        'Solicitud enviada. Revisa tu correo: quedo pendiente de aprobacion.',
+      );
+      setMode('login');
+      setTermsAccepted(false);
+      setOwnerForm(OWNER_FORM_INITIAL);
+    } catch (error) {
+      console.error('Error en registro owner:', error);
+      resetRegisterMarkers();
+
+      try {
+        await signOut(auth);
+      } catch (_) {
+        // noop
+      }
+
+      if (error.message !== 'popup-closed-by-user') {
         alert(`Error al registrarse: ${error.message || 'Intenta de nuevo.'}`);
       }
     } finally {
@@ -82,15 +289,51 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleEmailLogin = async () => {
+    if (!normalizeEmail(loginForm.email) || !loginForm.password) {
+      alert('Completa correo y contrasena para ingresar.');
+      return;
+    }
+
     setLoading(true);
+    setRegisteredSuccess('');
 
     try {
-      localStorage.removeItem('auth_intent');
-      localStorage.removeItem('register_as');
-      await loginWithGoogle();
+      resetRegisterMarkers();
+      await loginWithEmailPassword({
+        email: loginForm.email,
+        password: loginForm.password,
+      });
+      await fetchAPI('/users/login', { method: 'POST' });
     } catch (error) {
-      if (!error.message?.includes('popup-closed')) {
+      try {
+        await signOut(auth);
+      } catch (_) {
+        // noop
+      }
+
+      alert(`Error al iniciar sesion: ${error.message || 'Intenta de nuevo.'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setRegisteredSuccess('');
+
+    try {
+      resetRegisterMarkers();
+      await loginWithGoogle();
+      await fetchAPI('/users/login', { method: 'POST' });
+    } catch (error) {
+      try {
+        await signOut(auth);
+      } catch (_) {
+        // noop
+      }
+
+      if (error.message !== 'popup-closed-by-user') {
         alert(`Error al iniciar sesion: ${error.message || 'Intenta de nuevo.'}`);
       }
     } finally {
@@ -105,7 +348,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background text-on_surface font-body lg:flex">
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)] p-6 xl:p-8">
+      <div className="hidden items-center justify-center overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)] p-6 lg:flex lg:w-1/2 xl:p-8">
         <img
           src={loginBackground}
           alt="Vista previa de la plataforma Clubes Tucuman"
@@ -123,10 +366,8 @@ export default function Login() {
             <div className="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
               <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-700" />
               <div>
-                <p className="text-sm font-semibold text-emerald-800">Cuenta creada con exito</p>
-                <p className="mt-0.5 text-xs text-emerald-700">
-                  Inicia sesion con Google para entrar a la plataforma.
-                </p>
+                <p className="text-sm font-semibold text-emerald-800">Proceso completado</p>
+                <p className="mt-0.5 text-xs text-emerald-700">{registeredSuccess}</p>
               </div>
             </div>
           )}
@@ -138,9 +379,12 @@ export default function Login() {
               {mode === 'register-owner' && 'Registrar mi complejo'}
             </h2>
             <p className="text-sm leading-relaxed text-on_surface_variant sm:text-base">
-              {mode === 'login' && 'Ingresa con Google para acceder a tu panel y gestionar reservas, cobros y clientes.'}
-              {mode === 'register-client' && 'Crea tu cuenta para reservar canchas y comprar en segundos.'}
-              {mode === 'register-owner' && 'Activa tu cuenta para administrar tu complejo desde un solo lugar.'}
+              {mode === 'login' &&
+                'Ingresa con tu correo y contrasena o usa Google si ya tienes una cuenta vinculada.'}
+              {mode === 'register-client' &&
+                'Crea tu cuenta con email para reservar canchas y comprar productos en segundos.'}
+              {mode === 'register-owner' &&
+                'Completa tu solicitud de owner. La autenticacion y validacion inicial se hace con Google.'}
             </p>
           </div>
 
@@ -151,39 +395,221 @@ export default function Login() {
                 title="Soy cliente"
                 desc="Quiero reservar canchas"
                 active={mode === 'register-client'}
-                onClick={() => setMode('register-client')}
+                onClick={() => switchMode('register-client')}
               />
               <AccountTypeCard
                 icon={<Building2 size={22} />}
                 title="Soy dueno"
                 desc="Tengo un complejo"
                 active={mode === 'register-owner'}
-                onClick={() => setMode('register-owner')}
+                onClick={() => switchMode('register-owner')}
               />
             </div>
           )}
 
           <div className="space-y-4">
-            {isRegistering && (
-              <FormField
-                icon={<UserIcon size={18} />}
-                placeholder={mode === 'register-owner' ? 'Nombre del complejo' : 'Tu nombre'}
-                label="Nombre"
-              />
+            {mode === 'login' && (
+              <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+                <FormField
+                  icon={<Mail size={18} />}
+                  placeholder="correo@ejemplo.com"
+                  label="Correo"
+                  type="email"
+                  autoComplete="email"
+                  value={loginForm.email}
+                  onChange={(value) =>
+                    setLoginForm((current) => ({ ...current, email: value }))
+                  }
+                />
+                <FormField
+                  icon={<KeyRound size={18} />}
+                  placeholder="Tu contrasena"
+                  label="Contrasena"
+                  type="password"
+                  autoComplete="current-password"
+                  value={loginForm.password}
+                  onChange={(value) =>
+                    setLoginForm((current) => ({ ...current, password: value }))
+                  }
+                />
+              </div>
             )}
 
-            <FormField
-              icon={<Mail size={18} />}
-              placeholder="ejemplo@correo.com"
-              label="Correo electronico"
-              type="email"
-            />
-            <FormField
-              icon={<Lock size={18} />}
-              placeholder="........"
-              label="Contrasena"
-              type="password"
-            />
+            {mode === 'register-client' && (
+              <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+                <FormField
+                  icon={<UserIcon size={18} />}
+                  placeholder="Tu nombre de usuario"
+                  label="Nombre de usuario *"
+                  autoComplete="nickname"
+                  value={clientForm.username}
+                  onChange={(value) =>
+                    setClientForm((current) => ({ ...current, username: value }))
+                  }
+                />
+                <FormField
+                  icon={<Mail size={18} />}
+                  placeholder="correo@ejemplo.com"
+                  label="Correo *"
+                  type="email"
+                  autoComplete="email"
+                  value={clientForm.email}
+                  onChange={(value) =>
+                    setClientForm((current) => ({ ...current, email: value }))
+                  }
+                />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    icon={<KeyRound size={18} />}
+                    placeholder="Minimo 6 caracteres"
+                    label="Contrasena *"
+                    type="password"
+                    autoComplete="new-password"
+                    value={clientForm.password}
+                    onChange={(value) =>
+                      setClientForm((current) => ({ ...current, password: value }))
+                    }
+                  />
+                  <FormField
+                    icon={<KeyRound size={18} />}
+                    placeholder="Repite la contrasena"
+                    label="Repetir contrasena *"
+                    type="password"
+                    autoComplete="new-password"
+                    value={clientForm.confirmPassword}
+                    onChange={(value) =>
+                      setClientForm((current) => ({ ...current, confirmPassword: value }))
+                    }
+                  />
+                </div>
+                <FormField
+                  icon={<Phone size={18} />}
+                  placeholder="+54 381 555-1234"
+                  label="Telefono *"
+                  type="tel"
+                  autoComplete="tel"
+                  value={clientForm.phone}
+                  onChange={(value) =>
+                    setClientForm((current) => ({ ...current, phone: value }))
+                  }
+                />
+              </div>
+            )}
+
+            {mode === 'register-owner' && (
+              <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    icon={<UserIcon size={18} />}
+                    placeholder="Nombre y apellido"
+                    label="Responsable *"
+                    value={ownerForm.fullName}
+                    onChange={(value) => setOwnerForm((prev) => ({ ...prev, fullName: value }))}
+                  />
+                  <FormField
+                    icon={<Phone size={18} />}
+                    placeholder="+54 381 555-1234"
+                    label="Telefono / WhatsApp *"
+                    type="tel"
+                    autoComplete="tel"
+                    value={ownerForm.contactPhone}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, contactPhone: value }))
+                    }
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <SelectField
+                    label="Documento *"
+                    value={ownerForm.documentType}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, documentType: value }))
+                    }
+                    options={['DNI', 'CUIT', 'CUIL', 'PASAPORTE']}
+                  />
+                  <FormField
+                    icon={<FileText size={18} />}
+                    placeholder="Numero de documento"
+                    label="Numero *"
+                    value={ownerForm.documentNumber}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, documentNumber: value }))
+                    }
+                  />
+                </div>
+
+                <FormField
+                  icon={<Building2 size={18} />}
+                  placeholder="Club Atletico Ejemplo"
+                  label="Nombre del complejo *"
+                  value={ownerForm.complexName}
+                  onChange={(value) =>
+                    setOwnerForm((prev) => ({ ...prev, complexName: value }))
+                  }
+                />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    icon={<MapPin size={18} />}
+                    placeholder="Direccion del complejo"
+                    label="Direccion *"
+                    value={ownerForm.complexAddress}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, complexAddress: value }))
+                    }
+                  />
+                  <FormField
+                    icon={<MapPin size={18} />}
+                    placeholder="Tucuman"
+                    label="Ciudad *"
+                    value={ownerForm.city}
+                    onChange={(value) => setOwnerForm((prev) => ({ ...prev, city: value }))}
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    icon={<LayoutGrid size={18} />}
+                    placeholder="Cantidad de canchas"
+                    label="Canchas *"
+                    type="number"
+                    value={ownerForm.courtsCount}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, courtsCount: value }))
+                    }
+                  />
+                  <FormField
+                    icon={<Users size={18} />}
+                    placeholder="Futbol 5, padel, tenis..."
+                    label="Deportes *"
+                    value={ownerForm.sportsOffered}
+                    onChange={(value) =>
+                      setOwnerForm((prev) => ({ ...prev, sportsOffered: value }))
+                    }
+                  />
+                </div>
+
+                <FormField
+                  icon={<Globe size={18} />}
+                  placeholder="Instagram, web o Google Maps"
+                  label="Web / Instagram"
+                  value={ownerForm.websiteOrInstagram}
+                  onChange={(value) =>
+                    setOwnerForm((prev) => ({ ...prev, websiteOrInstagram: value }))
+                  }
+                />
+
+                <FormField
+                  icon={<MessageSquare size={18} />}
+                  placeholder="Cuentanos algo del complejo, horarios, antiguedad o cualquier dato que ayude a validarlo."
+                  label="Notas"
+                  textarea
+                  value={ownerForm.notes}
+                  onChange={(value) => setOwnerForm((prev) => ({ ...prev, notes: value }))}
+                />
+              </div>
+            )}
 
             {isRegistering && (
               <label className="group mt-2 flex cursor-pointer items-start gap-3">
@@ -216,58 +642,74 @@ export default function Login() {
             )}
 
             <div className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
-              El acceso activo hoy se realiza con Google. Las opciones por email quedan visibles como referencia y se habilitaran mas adelante.
+              {mode === 'login' &&
+                'Si te registraste con email, entra con tu correo y contrasena. Si ya vinculaste Google, tambien puedes usar ese acceso.'}
+              {mode === 'register-client' &&
+                'La cuenta cliente queda activa apenas completas el registro. Luego podras cambiar tus datos desde Mi perfil.'}
+              {mode === 'register-owner' &&
+                'El alta owner sigue con Google porque requiere validar la identidad y revisar la solicitud antes de habilitar el panel.'}
             </div>
 
             <button
               type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                alert('El acceso por email estara disponible pronto. Usa Google por ahora.');
-              }}
+              onClick={
+                mode === 'login'
+                  ? handleEmailLogin
+                  : mode === 'register-client'
+                    ? handleClientRegister
+                    : handleOwnerRegisterIntent
+              }
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] transition-all hover:brightness-110 disabled:opacity-50"
               disabled={loading}
             >
-              {mode === 'login' ? 'Acceso por email (proximamente)' : 'Registro por email (proximamente)'}
-              <ArrowRight size={18} />
+              {loading ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
+              ) : mode === 'login' ? (
+                <ArrowRight size={18} />
+              ) : mode === 'register-client' ? (
+                <CheckCircle2 size={18} />
+              ) : (
+                <GoogleIcon />
+              )}
+              {loading
+                ? 'Procesando...'
+                : mode === 'login'
+                  ? 'Ingresar con email'
+                  : mode === 'register-client'
+                    ? 'Crear cuenta'
+                    : 'Continuar con Google'}
             </button>
           </div>
 
-          <div className="my-6 flex items-center before:flex-1 before:border-t before:border-outline_variant/20 after:flex-1 after:border-t after:border-outline_variant/20">
-            <span className="px-4 text-xs font-semibold uppercase tracking-wider text-outline">
-              O continuar con
-            </span>
-          </div>
+          {mode === 'login' && (
+            <>
+              <div className="my-6 flex items-center before:flex-1 before:border-t before:border-outline_variant/20 after:flex-1 after:border-t after:border-outline_variant/20">
+                <span className="px-4 text-xs font-semibold uppercase tracking-wider text-outline">
+                  O continuar con
+                </span>
+              </div>
 
-          <button
-            type="button"
-            onClick={isRegistering ? handleRegisterIntent : handleGoogleLogin}
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-outline_variant/30 bg-white py-3 text-on_surface transition-colors hover:bg-surface_container_low disabled:opacity-50"
-          >
-            {loading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_surface_variant border-t-transparent" />
-            ) : (
-              <GoogleIcon />
-            )}
-            {loading
-              ? 'Procesando...'
-              : mode === 'login'
-                ? 'Ingresar con Google'
-                : mode === 'register-owner'
-                  ? 'Registrar complejo con Google'
-                  : 'Registrarse con Google'}
-          </button>
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-outline_variant/30 bg-white py-3 text-on_surface transition-colors hover:bg-surface_container_low disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_surface_variant border-t-transparent" />
+                ) : (
+                  <GoogleIcon />
+                )}
+                {loading ? 'Procesando...' : 'Ingresar con Google'}
+              </button>
+            </>
+          )}
 
           <p className="mt-6 text-center text-sm text-on_surface_variant">
             {isRegistering ? 'Ya tienes cuenta?' : 'No tienes cuenta?'}
             <button
               type="button"
-              onClick={() => {
-                setMode(isRegistering ? 'login' : 'register-client');
-                setTermsAccepted(false);
-                setRegisteredSuccess(false);
-              }}
+              onClick={() => switchMode(isRegistering ? 'login' : 'register-client')}
               className="ml-2 border-none bg-transparent p-0 font-semibold text-primary hover:underline"
             >
               {isRegistering ? 'Iniciar sesion' : 'Registrarse'}
@@ -279,7 +721,7 @@ export default function Login() {
               Tienes un complejo?
               <button
                 type="button"
-                onClick={() => setMode('register-owner')}
+                onClick={() => switchMode('register-owner')}
                 className="ml-2 border-none bg-transparent p-0 font-semibold text-secondary hover:underline"
               >
                 Registrar mi complejo
@@ -309,10 +751,8 @@ export default function Login() {
             </h3>
             <p className="mb-6 text-center text-sm text-on_surface_variant">
               Vas a crear una cuenta como{' '}
-              <span className="font-semibold text-primary">
-                {mode === 'register-owner' ? 'Dueno de Complejo' : 'Cliente'}
-              </span>
-              . Se abrira Google para autenticarte.
+              <span className="font-semibold text-primary">Dueno de Complejo</span>. Se abrira
+              Google para autenticarte.
             </p>
 
             <div className="mb-6 space-y-2 rounded-2xl bg-surface_container p-4 text-xs text-on_surface_variant">
@@ -322,7 +762,7 @@ export default function Login() {
               </p>
               <p className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="shrink-0 text-green-500" />
-                Puedes cancelar en cualquier momento
+                La solicitud queda pendiente de revision
               </p>
               <p className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="shrink-0 text-green-500" />
@@ -332,7 +772,7 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={handleConfirmedRegister}
+              onClick={handleConfirmedOwnerRegister}
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-bold text-on_primary transition-all hover:brightness-110"
             >
               <GoogleIcon /> Continuar con Google
@@ -411,22 +851,69 @@ function AccountTypeCard({ icon, title, desc, active, onClick }) {
   );
 }
 
-function FormField({ icon, placeholder, label, type = 'text' }) {
+function FormField({
+  icon,
+  placeholder,
+  label,
+  type = 'text',
+  value = '',
+  onChange = () => {},
+  textarea = false,
+  autoComplete,
+}) {
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.03em] text-outline">
         {label}
       </label>
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-outline_variant">
+        <div
+          className={`pointer-events-none absolute left-0 text-outline_variant ${
+            textarea ? 'top-3.5 pl-4' : 'inset-y-0 flex items-center pl-4'
+          }`}
+        >
           {icon}
         </div>
-        <input
-          type={type}
-          placeholder={placeholder}
-          className="w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
-        />
+        {textarea ? (
+          <textarea
+            rows={4}
+            placeholder={placeholder}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            className="w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          />
+        ) : (
+          <input
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            autoComplete={autoComplete}
+            onChange={(event) => onChange(event.target.value)}
+            className="w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+          />
+        )}
       </div>
+    </div>
+  );
+}
+
+function SelectField({ label, value, onChange, options = [] }) {
+  return (
+    <div>
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.03em] text-outline">
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-xl border border-outline_variant/30 bg-white px-4 py-3 text-on_surface transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

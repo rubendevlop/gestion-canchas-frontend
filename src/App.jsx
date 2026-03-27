@@ -26,6 +26,7 @@ import BookCourt from './pages/portal/BookCourt';
 import ComplexStore from './pages/portal/ComplexStore';
 import Cart from './pages/portal/Cart';
 import MyReservations from './pages/portal/MyReservations';
+import MyOrders from './pages/portal/MyOrders';
 import PortalPaymentResult from './pages/portal/PortalPaymentResult';
 import PortalProfile from './pages/portal/PortalProfile';
 
@@ -177,6 +178,7 @@ function AppRoutes() {
 
         {/* Área personal del cliente */}
         <Route path="mis-reservas" element={<MyReservations />} />
+        <Route path="mis-compras" element={<MyOrders />} />
         <Route path="perfil" element={<PortalProfile />} />
       </Route>
 

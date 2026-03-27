@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { CalendarRange, Home, LogOut, Search, User } from 'lucide-react';
+import { CalendarRange, Home, LogOut, Search, ShoppingBag, User } from 'lucide-react';
 import { logout } from '../auth';
 import { useAuth } from '../contexts/AuthContext';
 import BrandLogo from '../components/BrandLogo';
@@ -7,6 +7,7 @@ import BrandLogo from '../components/BrandLogo';
 const NAV = [
   { name: 'Inicio', path: '/portal', icon: Home },
   { name: 'Mis Reservas', path: '/portal/mis-reservas', icon: CalendarRange },
+  { name: 'Mis Compras', path: '/portal/mis-compras', icon: ShoppingBag },
   { name: 'Mi Perfil', path: '/portal/perfil', icon: User },
 ];
 

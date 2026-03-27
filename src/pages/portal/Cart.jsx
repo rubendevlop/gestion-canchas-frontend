@@ -1,8 +1,6 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { ChevronLeft, CheckCircle2, Loader2, Trash2 } from 'lucide-react';
-import MercadoPagoCardModal from '../../components/MercadoPagoCardModal';
-import { useAuth } from '../../contexts/AuthContext';
 import { fetchAPI } from '../../services/api';
 
 function formatMoney(value) {
@@ -17,15 +15,12 @@ export default function Cart() {
   const { complexId } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const { cart = {}, products = [] } = state || {};
   const [localCart, setLocalCart] = useState(cart);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
-  const [draftOrder, setDraftOrder] = useState(null);
-  const [paymentSession, setPaymentSession] = useState(null);
 
   const cartItems = useMemo(() => products.filter((product) => localCart[product._id]), [localCart, products]);
   const total = cartItems.reduce((sum, product) => sum + product.price * (localCart[product._id] || 0), 0);
@@ -56,37 +51,17 @@ export default function Cart() {
         throw new Error('Mercado Pago no esta configurado para cobrar este pedido.');
       }
 
-      setDraftOrder(response.order);
-      setPaymentSession(response.paymentSession);
+      if (!response.paymentSession?.checkoutUrl) {
+        throw new Error('No se pudo generar el checkout de Mercado Pago.');
+      }
+
+      window.location.assign(response.paymentSession.checkoutUrl);
+      return;
     } catch (error) {
       setMessage(error.message || 'Error al preparar el pedido.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePayOrder = async (formData, additionalData) => {
-    const orderId = paymentSession?.orderId || draftOrder?._id;
-    if (!orderId) {
-      throw new Error('No hay un pedido listo para cobrar.');
-    }
-
-    const response = await fetchAPI(`/orders/${orderId}/pay`, {
-      method: 'POST',
-      body: JSON.stringify({ formData, additionalData }),
-    });
-
-    setDraftOrder(response.order);
-    setPaymentSession(null);
-
-    if (response.order?.status === 'completed') {
-      setSuccess(true);
-      setMessage('El pedido ya fue cobrado y confirmado.');
-      setTimeout(() => navigate('/portal'), 2200);
-      return;
-    }
-
-    setMessage('El pedido fue creado. Si el cobro queda pendiente, podras verlo luego en el historial del complejo.');
   };
 
   if (success) {
@@ -164,32 +139,7 @@ export default function Cart() {
           {loading ? <Loader2 className="animate-spin" size={18} /> : null}
           {loading ? 'Preparando pago...' : 'Pagar pedido'}
         </button>
-
-        {draftOrder && (
-          <div className="mt-4 rounded-2xl bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
-            Pedido: <span className="font-medium text-on_surface">{draftOrder._id}</span>
-          </div>
-        )}
       </div>
-
-      <MercadoPagoCardModal
-        open={Boolean(paymentSession)}
-        title="Pagar pedido del ecommerce"
-        amount={Number(paymentSession?.amount || total)}
-        currency={paymentSession?.currency || 'ARS'}
-        payerEmail={paymentSession?.payer?.email || user?.email || ''}
-        publicKey={paymentSession?.publicKey || ''}
-        allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
-        payerEmailHelpText={
-          paymentSession?.payer?.requiresTestUser
-            ? 'La cuenta de cobro esta en modo prueba. Usa un comprador de prueba de Mercado Pago. Si no configuraste un email de prueba en el backend, no uses tu email real.'
-            : ''
-        }
-        submitLabel="pedido"
-        maxInstallments={3}
-        onClose={() => setPaymentSession(null)}
-        onSubmit={handlePayOrder}
-      />
     </div>
   );
 }

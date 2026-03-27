@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, ChevronLeft, Loader2 } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
-import { useAuth } from '../../contexts/AuthContext';
-import MercadoPagoCardModal from '../../components/MercadoPagoCardModal';
 import { normalizeBookingHours } from '../../utils/bookingHours';
 
 export default function BookCourt() {
   const { complexId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const preselectedCourtId = searchParams.get('courtId') || '';
 
@@ -23,8 +20,6 @@ export default function BookCourt() {
   const [booking, setBooking] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [paymentSession, setPaymentSession] = useState(null);
-  const [createdReservation, setCreatedReservation] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -67,9 +62,9 @@ export default function BookCourt() {
         body: JSON.stringify({ courtId: selectedCourt, date: selectedDate, startTime: selectedHour }),
       });
 
-      if (response.paymentSession?.reservationId && response.providerConfigured) {
-        setCreatedReservation(response.reservation || null);
-        setPaymentSession(response.paymentSession);
+      if (response.paymentSession?.checkoutUrl && response.providerConfigured) {
+        window.location.assign(response.paymentSession.checkoutUrl);
+        return;
       } else {
         setSuccess(true);
         setTimeout(() => navigate('/portal/mis-reservas'), 2000);
@@ -79,43 +74,6 @@ export default function BookCourt() {
     } finally {
       setBooking(false);
     }
-  };
-
-  const handleReservationPayment = async (formData, additionalData) => {
-    const reservationId = paymentSession?.reservationId || createdReservation?._id;
-    if (!reservationId) {
-      throw new Error('No hay una reserva pendiente para cobrar.');
-    }
-
-    let response;
-    try {
-      response = await fetchAPI(`/reservations/${reservationId}/pay`, {
-        method: 'POST',
-        body: JSON.stringify({ formData, additionalData }),
-      });
-    } catch (error) {
-      const nextMessage = error.message || 'No se pudo procesar el pago de la reserva.';
-
-      if (nextMessage.includes('La reserva fue cancelada') || nextMessage.includes('ya fue cancelada')) {
-        setCreatedReservation(null);
-        setPaymentSession(null);
-        setErrorMessage(nextMessage);
-        return;
-      }
-
-      throw error;
-    }
-
-    setCreatedReservation(response.reservation || null);
-    setPaymentSession(null);
-
-    if (response.reservation?.paymentStatus === 'PAID') {
-      setSuccess(true);
-      setTimeout(() => navigate('/portal/mis-reservas'), 2000);
-      return;
-    }
-
-    setErrorMessage(response.message || 'La reserva se creo, pero el cobro quedo pendiente.');
   };
 
   const court = courts.find((item) => item._id === selectedCourt);
@@ -286,23 +244,6 @@ export default function BookCourt() {
         )}
       </div>
 
-      <MercadoPagoCardModal
-        open={Boolean(paymentSession)}
-        title="Pagar reserva"
-        amount={Number(paymentSession?.amount || court?.pricePerHour || 0)}
-        currency={paymentSession?.currency || 'ARS'}
-        payerEmail={paymentSession?.payer?.email || user?.email || ''}
-        publicKey={paymentSession?.publicKey || ''}
-        allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
-        payerEmailHelpText={
-          paymentSession?.payer?.requiresTestUser
-            ? 'La cuenta de cobro esta en modo prueba. Usa un comprador de prueba de Mercado Pago. Si no configuraste un email de prueba en el backend, no uses tu email real.'
-            : ''
-        }
-        submitLabel="reserva"
-        onClose={() => setPaymentSession(null)}
-        onSubmit={handleReservationPayment}
-      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, Package, ShoppingBag, Store } from 'lucide-react';
+import { Loader2, MapPin, Package, ShoppingBag, Store } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 
 const STATUS_STYLES = {
@@ -81,6 +81,13 @@ export default function MyOrders() {
           Revisa que compraste, en que complejo y como quedo cada pedido.
         </p>
       </header>
+
+      <div className="mb-8 rounded-2xl border border-primary/15 bg-primary/10 px-5 py-4">
+        <p className="flex items-start gap-3 text-sm text-on_surface">
+          <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+          Recuerda que cada compra se retira en el complejo donde fue realizada. La app no gestiona entregas a domicilio.
+        </p>
+      </div>
 
       <div className="space-y-10">
         {completedOrders.length > 0 && (
@@ -176,13 +183,18 @@ function OrderCard({ order }) {
       </div>
 
       {complex?._id && (
-        <Link
-          to={`/portal/complejo/${complex._id}/tienda`}
-          className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:bg-surface_container_low"
-        >
-          <ShoppingBag size={16} />
-          Volver a esta tienda
-        </Link>
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
+            Entrega y retiro en <span className="font-semibold text-on_surface">{complex?.name || 'el complejo'}</span>.
+          </p>
+          <Link
+            to={`/portal/complejo/${complex._id}/tienda`}
+            className="inline-flex items-center gap-2 rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:bg-surface_container_low"
+          >
+            <ShoppingBag size={16} />
+            Volver a esta tienda
+          </Link>
+        </div>
       )}
     </article>
   );

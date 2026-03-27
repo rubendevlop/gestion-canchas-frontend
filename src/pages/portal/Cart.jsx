@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import { ChevronLeft, CheckCircle2, Loader2, Trash2 } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Loader2, MapPin, Trash2 } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 
 function formatMoney(value) {
@@ -99,6 +99,13 @@ export default function Cart() {
           {message}
         </div>
       )}
+
+      <div className="mb-6 rounded-2xl border border-primary/15 bg-primary/10 px-5 py-4">
+        <p className="flex items-start gap-3 text-sm text-on_surface">
+          <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+          Estos productos se retiran en el complejo donde los compraste. No se realizan envios ni delivery.
+        </p>
+      </div>
 
       <div className="mb-8 space-y-3">
         {cartItems.map((product) => (

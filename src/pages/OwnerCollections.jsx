@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   CreditCard,
   Loader2,
+  MapPin,
   RefreshCw,
   Save,
   Settings2,
@@ -350,6 +351,13 @@ export default function OwnerCollections() {
         />
       </div>
 
+      <div className="mb-8 rounded-[1.5rem] border border-primary/15 bg-primary/10 px-5 py-4">
+        <p className="flex items-start gap-3 text-sm text-on_surface">
+          <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+          Las ventas de tienda se retiran y se entregan en tu complejo. Este sistema no opera como delivery ni coordina envios.
+        </p>
+      </div>
+
       <div className="mb-8 grid grid-cols-1 gap-8 xl:grid-cols-[0.95fr_1.05fr]">
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_low p-6 sm:p-7">
           <div className="mb-5 flex items-center gap-3">
@@ -539,7 +547,9 @@ export default function OwnerCollections() {
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
               <h3 className="font-display text-xl font-medium text-on_surface">Cobros de tienda</h3>
-              <p className="text-sm text-on_surface_variant">Pedidos de la tienda y su estado de pago.</p>
+              <p className="text-sm text-on_surface_variant">
+                Pedidos de la tienda y su estado de pago. La entrega siempre se realiza en el complejo.
+              </p>
             </div>
             <span className="text-xs uppercase tracking-widest text-outline">{orders.length} pedidos</span>
           </div>

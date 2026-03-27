@@ -7,6 +7,7 @@ import {
   Filter,
   Image as ImageIcon,
   Loader2,
+  MapPin,
   PackageOpen,
   Pencil,
   Plus,
@@ -263,6 +264,13 @@ export default function Inventory() {
         <StatCard label="Stock bajo" value={stats.low} hint="menos de 5 unidades" accent="warning" />
         <StatCard label="Valor estimado" value={`$${stats.value.toLocaleString('es-AR')}`} hint="precio x stock actual" />
       </section>
+
+      <div className="mb-6 rounded-[1.5rem] border border-primary/15 bg-primary/10 px-5 py-4">
+        <p className="flex items-start gap-3 text-sm text-on_surface">
+          <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+          Todo producto vendido desde este complejo debe entregarse aca mismo. La plataforma no es un servicio de delivery.
+        </p>
+      </div>
 
       {(stats.critical > 0 || stats.low > 0) && (
         <div className="mb-6 rounded-[1.5rem] border border-red-400/15 bg-red-400/5 px-5 py-4">

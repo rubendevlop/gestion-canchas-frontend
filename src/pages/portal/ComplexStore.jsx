@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronLeft, Loader2, Minus, Plus, ShoppingCart, Tag } from 'lucide-react';
+import { ChevronLeft, Loader2, MapPin, Minus, Plus, ShoppingCart, Tag } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 
 export default function ComplexStore() {
@@ -79,6 +79,13 @@ export default function ComplexStore() {
             {item}
           </button>
         ))}
+      </div>
+
+      <div className="mb-6 rounded-2xl border border-primary/15 bg-primary/10 px-5 py-4">
+        <p className="flex items-start gap-3 text-sm text-on_surface">
+          <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
+          Todo producto comprado en este complejo se retira presencialmente aca. La tienda no funciona como delivery.
+        </p>
       </div>
 
       {loading ? (

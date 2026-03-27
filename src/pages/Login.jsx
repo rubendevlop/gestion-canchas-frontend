@@ -56,6 +56,12 @@ const LOGIN_FORM_INITIAL = {
   password: '',
 };
 
+const GOOGLE_CLIENT_FORM_INITIAL = {
+  username: '',
+  email: '',
+  phone: '',
+};
+
 function normalizeEmail(value = '') {
   return String(value || '').trim().toLowerCase();
 }
@@ -86,7 +92,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [ownerForm, setOwnerForm] = useState(OWNER_FORM_INITIAL);
   const [clientForm, setClientForm] = useState(CLIENT_FORM_INITIAL);
+  const [googleClientForm, setGoogleClientForm] = useState(GOOGLE_CLIENT_FORM_INITIAL);
   const [loginForm, setLoginForm] = useState(LOGIN_FORM_INITIAL);
+  const [showGoogleClientModal, setShowGoogleClientModal] = useState(false);
   const [cookieBannerDismissed, setCookieBannerDismissed] = useState(
     () => !!localStorage.getItem('cookies_accepted'),
   );
@@ -98,6 +106,7 @@ export default function Login() {
     setTermsAccepted(false);
     setRegisteredSuccess('');
     setShowConfirmModal(false);
+    setShowGoogleClientModal(false);
   };
 
   const validateOwnerForm = () => {
@@ -156,9 +165,36 @@ export default function Login() {
     }
   };
 
+  const validateGoogleClientForm = () => {
+    if (!String(googleClientForm.username || '').trim()) {
+      throw new Error('Completa tu nombre de usuario.');
+    }
+
+    if (String(googleClientForm.username || '').trim().length < 3) {
+      throw new Error('El nombre de usuario debe tener al menos 3 caracteres.');
+    }
+
+    if (!normalizeEmail(googleClientForm.email)) {
+      throw new Error('No se pudo obtener el correo de Google.');
+    }
+
+    if (!googleClientForm.phone.trim()) {
+      throw new Error('Completa tu telefono.');
+    }
+
+    if (!isValidArgentinaPhone(googleClientForm.phone)) {
+      throw new Error('Ingresa un telefono valido de Argentina.');
+    }
+  };
+
   const resetRegisterMarkers = () => {
     localStorage.removeItem('auth_intent');
     localStorage.removeItem('register_as');
+  };
+
+  const resetGoogleClientFlow = () => {
+    setShowGoogleClientModal(false);
+    setGoogleClientForm(GOOGLE_CLIENT_FORM_INITIAL);
   };
 
   const handleClientRegister = async () => {
@@ -223,6 +259,100 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleClientRegisterStart = async () => {
+    if (!termsAccepted) {
+      alert('Debes aceptar los Terminos y Condiciones para continuar.');
+      return;
+    }
+
+    setLoading(true);
+    setRegisteredSuccess('');
+
+    try {
+      localStorage.setItem('auth_intent', 'register');
+      localStorage.setItem('register_as', 'client');
+
+      const user = await loginWithGoogle();
+      setGoogleClientForm({
+        username: user?.displayName || '',
+        email: normalizeEmail(user?.email || ''),
+        phone: '',
+      });
+      setShowGoogleClientModal(true);
+    } catch (error) {
+      resetRegisterMarkers();
+
+      try {
+        await signOut(auth);
+      } catch (_) {
+        // noop
+      }
+
+      if (error.message !== 'popup-closed-by-user') {
+        alert(`Error al iniciar Google: ${error.message || 'Intenta de nuevo.'}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompleteGoogleClientRegister = async () => {
+    try {
+      validateGoogleClientForm();
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await fetchAPI('/users/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          registerAs: 'client',
+          displayName: googleClientForm.username,
+          phone: googleClientForm.phone,
+        }),
+      });
+
+      resetRegisterMarkers();
+      sessionStorage.removeItem('role');
+      await signOut(auth);
+      resetGoogleClientFlow();
+
+      setRegisteredSuccess('Cuenta creada con Google. Ya puedes iniciar sesion con Google.');
+      setMode('login');
+      setTermsAccepted(false);
+    } catch (error) {
+      console.error('Error completando registro con Google:', error);
+      resetRegisterMarkers();
+
+      try {
+        await signOut(auth);
+      } catch (_) {
+        // noop
+      }
+
+      resetGoogleClientFlow();
+      alert(`Error al registrarse con Google: ${error.message || 'Intenta de nuevo.'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelGoogleClientRegister = async () => {
+    resetRegisterMarkers();
+
+    try {
+      await signOut(auth);
+    } catch (_) {
+      // noop
+    }
+
+    resetGoogleClientFlow();
   };
 
   const handleOwnerRegisterIntent = () => {
@@ -645,7 +775,7 @@ export default function Login() {
               {mode === 'login' &&
                 'Si te registraste con email, entra con tu correo y contrasena. Si ya vinculaste Google, tambien puedes usar ese acceso.'}
               {mode === 'register-client' &&
-                'La cuenta cliente queda activa apenas completas el registro. Luego podras cambiar tus datos desde Mi perfil.'}
+                'Puedes crear la cuenta con email o con Google. Si eliges Google, despues te pediremos nombre de usuario y telefono antes de activar la cuenta.'}
               {mode === 'register-owner' &&
                 'El alta owner sigue con Google porque requiere validar la identidad y revisar la solicitud antes de habilitar el panel.'}
             </div>
@@ -679,6 +809,30 @@ export default function Login() {
                     ? 'Crear cuenta'
                     : 'Continuar con Google'}
             </button>
+
+            {mode === 'register-client' && (
+              <>
+                <div className="my-1 flex items-center before:flex-1 before:border-t before:border-outline_variant/20 after:flex-1 after:border-t after:border-outline_variant/20">
+                  <span className="px-4 text-xs font-semibold uppercase tracking-wider text-outline">
+                    O registrarte con
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleGoogleClientRegisterStart}
+                  disabled={loading}
+                  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-outline_variant/30 bg-white py-3 text-on_surface transition-colors hover:bg-surface_container_low disabled:opacity-50"
+                >
+                  {loading ? (
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_surface_variant border-t-transparent" />
+                  ) : (
+                    <GoogleIcon />
+                  )}
+                  {loading ? 'Procesando...' : 'Registrarme con Google'}
+                </button>
+              </>
+            )}
           </div>
 
           {mode === 'login' && (
@@ -788,6 +942,90 @@ export default function Login() {
         </div>
       )}
 
+      {showGoogleClientModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgba(24,36,24,0.28)] sm:p-8">
+            <button
+              type="button"
+              onClick={handleCancelGoogleClientRegister}
+              className="absolute right-4 top-4 text-outline transition-colors hover:text-on_surface"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="mb-6">
+              <h3 className="text-2xl font-display font-bold text-on_surface">
+                Completa tu cuenta
+              </h3>
+              <p className="mt-2 text-sm text-on_surface_variant">
+                Google ya valido tu acceso. Antes de terminar, necesitamos tu nombre de usuario y un telefono valido de Argentina.
+              </p>
+            </div>
+
+            <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+              <FormField
+                icon={<UserIcon size={18} />}
+                placeholder="Tu nombre de usuario"
+                label="Nombre de usuario *"
+                autoComplete="nickname"
+                value={googleClientForm.username}
+                onChange={(value) =>
+                  setGoogleClientForm((current) => ({ ...current, username: value }))
+                }
+              />
+              <FormField
+                icon={<Mail size={18} />}
+                placeholder="correo@ejemplo.com"
+                label="Correo de Google"
+                type="email"
+                autoComplete="email"
+                value={googleClientForm.email}
+                onChange={() => {}}
+                disabled
+              />
+              <FormField
+                icon={<Phone size={18} />}
+                placeholder="+54 381 555-1234"
+                label="Telefono *"
+                type="tel"
+                autoComplete="tel"
+                value={googleClientForm.phone}
+                onChange={(value) =>
+                  setGoogleClientForm((current) => ({ ...current, phone: value }))
+                }
+              />
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
+              Este paso completa los datos que faltan para tu perfil de cliente.
+            </div>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={handleCompleteGoogleClientRegister}
+                disabled={loading}
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary transition-all hover:brightness-110 disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
+                ) : (
+                  <CheckCircle2 size={18} />
+                )}
+                {loading ? 'Guardando...' : 'Finalizar registro'}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelGoogleClientRegister}
+                className="rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface_variant transition-colors hover:border-outline hover:text-on_surface"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!cookieBannerDismissed && (
         <div className="fixed bottom-4 left-4 right-4 z-40 rounded-2xl border border-outline_variant/25 bg-white p-5 shadow-[0_26px_60px_-34px_rgba(24,36,24,0.28)] md:left-auto md:right-6 md:max-w-sm">
           <div className="mb-4 flex items-start gap-3">
@@ -860,6 +1098,7 @@ function FormField({
   onChange = () => {},
   textarea = false,
   autoComplete,
+  disabled = false,
 }) {
   return (
     <div>
@@ -879,8 +1118,11 @@ function FormField({
             rows={4}
             placeholder={placeholder}
             value={value}
+            disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
-            className="w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+            className={`w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
+              disabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
           />
         ) : (
           <input
@@ -888,8 +1130,11 @@ function FormField({
             placeholder={placeholder}
             value={value}
             autoComplete={autoComplete}
+            disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
-            className="w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+            className={`w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
+              disabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
           />
         )}
       </div>

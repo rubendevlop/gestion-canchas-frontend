@@ -10,13 +10,28 @@ import {
   updateProfile,
 } from 'firebase/auth';
 
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyBHX4BYV_SvI4xGxBjvxKBDhkLQqTpj5N4',
+  authDomain: 'gestion-ga-a9b09.firebaseapp.com',
+  projectId: 'gestion-ga-a9b09',
+  storageBucket: 'gestion-ga-a9b09.firebasestorage.app',
+  messagingSenderId: '673120676406',
+  appId: '1:673120676406:web:f68c2ac5f01e3d6489c697',
+  measurementId: 'G-PDWJQMJ4E9',
+};
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'mock_key',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'mock_domain',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'mock_id',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'mock_bucket',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || 'mock_sender',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || 'mock_appid',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId,
+  storageBucket:
+    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket,
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ||
+    DEFAULT_FIREBASE_CONFIG.messagingSenderId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId,
+  measurementId:
+    import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || DEFAULT_FIREBASE_CONFIG.measurementId,
 };
 
 const app = initializeApp(firebaseConfig);

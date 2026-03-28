@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { CalendarRange, ChevronRight, Clock, Loader2, MapPin, ShoppingBag, Star } from 'lucide-react';
+import { CalendarRange, ChevronRight, Clock, Loader2, Mail, MapPin, Phone, ShoppingBag, Star } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 
 export default function ComplexDetail() {
@@ -36,6 +36,10 @@ export default function ComplexDetail() {
   if (!complex) {
     return <div className="py-20 text-center text-on_surface_variant/70">{errorMessage || 'Complejo no encontrado.'}</div>;
   }
+
+  const ownerPhone = String(complex.ownerContact?.phone || '').trim();
+  const ownerEmail = String(complex.ownerContact?.email || '').trim();
+  const hasOwnerContact = Boolean(ownerPhone || ownerEmail);
 
   return (
     <div>
@@ -81,6 +85,22 @@ export default function ComplexDetail() {
           Ver tienda
         </Link>
       </div>
+
+      {hasOwnerContact && (
+        <section className="mb-10 rounded-3xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_46px_-32px_rgba(24,36,24,0.2)]">
+          <div className="mb-5">
+            <h2 className="text-2xl font-display font-semibold text-on_surface">Contacto</h2>
+            <p className="mt-2 text-sm text-on_surface_variant">
+              Si necesitas resolver algo con tu reserva o compra, estos son los datos del owner del complejo.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <ContactRow icon={Phone} label="Telefono" value={ownerPhone} />
+            <ContactRow icon={Mail} label="Correo" value={ownerEmail} />
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 className="mb-5 text-2xl font-display font-semibold text-on_surface">Canchas disponibles</h2>
@@ -139,6 +159,22 @@ export default function ComplexDetail() {
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function ContactRow({ icon: Icon, label, value }) {
+  return (
+    <div className="rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Icon size={18} />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-on_surface_variant/70">{label}</p>
+          <p className="mt-1 break-all text-sm font-medium text-on_surface">{value || 'No disponible'}</p>
+        </div>
+      </div>
     </div>
   );
 }

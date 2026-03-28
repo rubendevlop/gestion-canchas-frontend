@@ -45,7 +45,13 @@ export default function ComplexDetail() {
     <div>
       <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/20 bg-gradient-to-br from-white via-surface_container_low to-secondary/10 shadow-[0_24px_70px_-42px_rgba(24,36,24,0.18)]">
         {complex.imageUrl ? (
-          <img src={complex.imageUrl} alt={complex.name} className="h-full w-full object-cover" />
+          <img
+            src={complex.imageUrl}
+            alt={complex.name}
+            decoding="async"
+            fetchPriority="high"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <span className="text-8xl">Futbol</span>
         )}
@@ -116,7 +122,13 @@ export default function ComplexDetail() {
               >
                 <div className="h-44 bg-gradient-to-br from-surface_container to-surface_container_high md:h-full">
                   {imageUrl ? (
-                    <img src={imageUrl} alt={court.name} className="h-full w-full object-cover" />
+                    <img
+                      src={imageUrl}
+                      alt={court.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <div className="flex h-full items-center justify-center text-5xl text-on_surface_variant/25">Cancha</div>
                   )}

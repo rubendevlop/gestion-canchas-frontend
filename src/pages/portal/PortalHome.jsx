@@ -74,7 +74,13 @@ function ComplexCard({ complex }) {
     >
       <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/20 via-primary_container/20 to-secondary/15">
         {complex.imageUrl ? (
-          <img src={complex.imageUrl} alt={complex.name} className="h-full w-full object-cover" />
+          <img
+            src={complex.imageUrl}
+            alt={complex.name}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <span className="text-5xl">Futbol</span>
         )}

@@ -118,7 +118,13 @@ function ProductCard({ product, quantity, onAdd, onRemove }) {
     <div className="overflow-hidden rounded-3xl border border-outline_variant/20 bg-white transition-all hover:border-primary/25 hover:bg-surface_container_low">
       <div className="flex h-40 items-center justify-center bg-gradient-to-br from-surface_container_low to-surface_container">
         {imageUrl ? (
-          <img src={imageUrl} alt={product.name} className="h-full w-full object-cover" />
+          <img
+            src={imageUrl}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         ) : (
           <span className="text-5xl text-on_surface_variant/30">Carrito</span>
         )}

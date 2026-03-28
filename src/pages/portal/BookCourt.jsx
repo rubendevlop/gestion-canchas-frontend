@@ -140,7 +140,13 @@ export default function BookCourt() {
               >
                 <div className="h-40 bg-gradient-to-br from-surface_container_low to-surface_container">
                   {imageUrl ? (
-                    <img src={imageUrl} alt={item.name} className="h-full w-full object-cover" />
+                    <img
+                      src={imageUrl}
+                      alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <div className="flex h-full items-center justify-center text-5xl text-on_surface_variant/30">Cancha</div>
                   )}
@@ -207,7 +213,13 @@ export default function BookCourt() {
           <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_40px_-26px_rgba(24,36,24,0.18)]">
             <div className="mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-surface_container_low to-surface_container">
               {selectedCourtImage ? (
-                <img src={selectedCourtImage} alt={court?.name} className="h-44 w-full object-cover" />
+                <img
+                  src={selectedCourtImage}
+                  alt={court?.name}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-44 w-full object-cover"
+                />
               ) : (
                 <div className="flex h-44 items-center justify-center text-5xl text-on_surface_variant/30">Cancha</div>
               )}

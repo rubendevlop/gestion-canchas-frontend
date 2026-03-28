@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import {
   Clock,
@@ -12,8 +12,8 @@ import {
 import { logout } from '../auth';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAPI } from '../services/api';
-import MercadoPagoCardModal from './MercadoPagoCardModal';
-import DashboardLayout from '../layouts/DashboardLayout';
+
+const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
 
 const LOADING_SCREEN = (
   <div className="min-h-screen flex items-center justify-center bg-background px-6">
@@ -26,11 +26,13 @@ const LOADING_SCREEN = (
 
 function AdminPanelState({ children }) {
   return (
-    <DashboardLayout>
-      <div className="mx-auto flex min-h-[70vh] w-full max-w-3xl items-center justify-center">
-        {children}
-      </div>
-    </DashboardLayout>
+    <Suspense fallback={LOADING_SCREEN}>
+      <DashboardLayout>
+        <div className="mx-auto flex min-h-[70vh] w-full max-w-3xl items-center justify-center">
+          {children}
+        </div>
+      </DashboardLayout>
+    </Suspense>
   );
 }
 
@@ -98,11 +100,10 @@ function RejectedScreen({ note }) {
   );
 }
 
-function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
+function BillingRequiredScreen({ ownerBilling, refreshProfile }) {
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [loadingRefresh, setLoadingRefresh] = useState(false);
   const [message, setMessage] = useState('');
-  const [paymentSession, setPaymentSession] = useState(null);
 
   const currentInvoice = ownerBilling?.currentInvoice;
   const amountLabel =
@@ -116,32 +117,16 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
 
     try {
       const response = await fetchAPI('/owner-billing/checkout', { method: 'POST' });
-      if (!response.paymentSession?.invoiceId) {
-        throw new Error('No se pudo preparar la sesion de pago.');
+      if (!response.paymentSession?.checkoutUrl) {
+        throw new Error('No se pudo generar el checkout de Mercado Pago.');
       }
-      setPaymentSession(response.paymentSession);
+
+      window.location.assign(response.paymentSession.checkoutUrl);
+      return;
     } catch (error) {
       setMessage(error.message || 'No se pudo iniciar el pago.');
     } finally {
       setLoadingCheckout(false);
-    }
-  };
-
-  const handleProcessPayment = async (formData, additionalData) => {
-    const response = await fetchAPI('/owner-billing/checkout/process-order', {
-      method: 'POST',
-      body: JSON.stringify({
-        invoiceId: paymentSession?.invoiceId || currentInvoice?.id,
-        formData,
-        additionalData,
-      }),
-    });
-
-    setPaymentSession(null);
-    await refreshProfile();
-
-    if (response.invoice?.status !== 'PAID') {
-      setMessage('El pago fue enviado. Actualiza el estado en unos segundos para confirmar la acreditacion.');
     }
   };
 
@@ -222,20 +207,6 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile, user }) {
 
           <LogoutButton className="sm:w-auto sm:px-5" />
         </div>
-
-        <MercadoPagoCardModal
-          open={Boolean(paymentSession)}
-          title="Pagar mensualidad"
-          subtitle="Completa el pago desde este bloqueo para volver a habilitar el panel."
-          amount={Number(paymentSession?.amount || ownerBilling?.amount || 0)}
-          currency={paymentSession?.currency || ownerBilling?.currency || 'ARS'}
-          payerEmail={paymentSession?.payer?.email || user?.email || ''}
-          allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
-          payerEmailHelpText="Si estas usando credenciales de prueba, carga el email de un comprador de prueba de Mercado Pago. No uses tu email real."
-          submitLabel="mensualidad"
-          onClose={() => setPaymentSession(null)}
-          onSubmit={handleProcessPayment}
-        />
       </div>
     </AdminPanelState>
   );
@@ -269,7 +240,7 @@ function formatDate(value) {
   });
 }
 
-export default function ProtectedRoute({ children, allowedRoles }) {
+export default function ProtectedRoute({ children, allowedRoles, skipOwnerBillingCheck = false }) {
   const { user, role, ownerStatus, ownerStatusNote, ownerBilling, loading, refreshProfile } = useAuth();
 
   if (loading) return LOADING_SCREEN;
@@ -279,8 +250,8 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   if (role === 'owner' && allowedRoles?.includes('owner')) {
     if (ownerStatus === 'PENDING') return <PendingApprovalScreen />;
     if (ownerStatus === 'REJECTED') return <RejectedScreen note={ownerStatusNote} />;
-    if (ownerStatus === 'APPROVED' && ownerBilling?.required && !ownerBilling?.hasAccess) {
-      return <BillingRequiredScreen ownerBilling={ownerBilling} refreshProfile={refreshProfile} user={user} />;
+    if (!skipOwnerBillingCheck && ownerStatus === 'APPROVED' && ownerBilling?.required && !ownerBilling?.hasAccess) {
+      return <BillingRequiredScreen ownerBilling={ownerBilling} refreshProfile={refreshProfile} />;
     }
   }
 

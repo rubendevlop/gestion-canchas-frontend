@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAPI } from '../services/api';
-import MercadoPagoCardModal from '../components/MercadoPagoCardModal';
 
 const STATUS_META = {
   ACTIVE: {
@@ -101,14 +100,13 @@ function getStatusMessage(billing, pendingInvoice) {
 }
 
 export default function OwnerBilling() {
-  const { user, ownerBilling: sessionBilling, refreshProfile } = useAuth();
+  const { ownerBilling: sessionBilling, refreshProfile } = useAuth();
   const [billing, setBilling] = useState(sessionBilling);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [refreshLoading, setRefreshLoading] = useState(false);
-  const [paymentSession, setPaymentSession] = useState(null);
 
   useEffect(() => {
     setBilling(sessionBilling);
@@ -171,11 +169,12 @@ export default function OwnerBilling() {
         setBilling(response.ownerBilling);
       }
 
-      if (!response.paymentSession?.invoiceId) {
-        throw new Error('No se pudo preparar la sesion de pago.');
+      if (!response.paymentSession?.checkoutUrl) {
+        throw new Error('No se pudo generar el checkout de Mercado Pago.');
       }
 
-      setPaymentSession(response.paymentSession);
+      window.location.assign(response.paymentSession.checkoutUrl);
+      return;
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo preparar el pago.');
       setCheckoutLoading(false);
@@ -183,33 +182,6 @@ export default function OwnerBilling() {
     }
 
     setCheckoutLoading(false);
-  };
-
-  const handleProcessPayment = async (formData, additionalData) => {
-    const invoiceId = paymentSession?.invoiceId || billing?.currentInvoice?.id;
-    if (!invoiceId) {
-      throw new Error('No hay una factura pendiente para cobrar.');
-    }
-
-    const response = await fetchAPI('/owner-billing/checkout/process-order', {
-      method: 'POST',
-      body: JSON.stringify({
-        invoiceId,
-        formData,
-        additionalData,
-      }),
-    });
-
-    await refreshProfile();
-
-    const [currentBilling, invoices] = await Promise.all([
-      fetchAPI('/owner-billing/current'),
-      fetchAPI('/owner-billing/history'),
-    ]);
-
-    setBilling(currentBilling);
-    setHistory(Array.isArray(invoices) ? invoices : []);
-    setPaymentSession(null);
   };
 
   const handleRefresh = async () => {
@@ -456,20 +428,6 @@ export default function OwnerBilling() {
         )}
       </section>
 
-      <MercadoPagoCardModal
-        open={Boolean(paymentSession)}
-        title="Completar mensualidad"
-
-        amount={Number(paymentSession?.amount || billing?.amount || 0)}
-        currency={paymentSession?.currency || billing?.currency || 'ARS'}
-        payerEmail={paymentSession?.payer?.email || user?.email || ''}
-        publicKey={paymentSession?.publicKey || ''}
-        allowPayerEmailEdit={!paymentSession?.payer?.usesConfiguredTestEmail}
-        payerEmailHelpText="Si estas usando credenciales de prueba, carga el email de un comprador de prueba de Mercado Pago. No uses tu email real."
-        submitLabel="mensualidad"
-        onClose={() => setPaymentSession(null)}
-        onSubmit={handleProcessPayment}
-      />
     </div>
   );
 }

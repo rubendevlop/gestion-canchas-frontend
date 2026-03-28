@@ -13,20 +13,6 @@ function resolveApiUrl() {
     return '/api';
   }
 
-  if (typeof window !== 'undefined' && import.meta.env.PROD) {
-    try {
-      const parsed = new URL(envUrl, window.location.origin);
-      if (parsed.origin !== window.location.origin) {
-        console.warn(
-          `VITE_API_URL apunta a otro origen (${parsed.origin}). Se usa /api del sitio actual.`,
-        );
-        return '/api';
-      }
-    } catch {
-      return envUrl.startsWith('/') ? envUrl : '/api';
-    }
-  }
-
   return envUrl;
 }
 

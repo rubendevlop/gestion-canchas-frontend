@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, ChevronLeft, Loader2 } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, CreditCard, DollarSign, Loader2 } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 import { normalizeBookingHours } from '../../utils/bookingHours';
+
+const DEFAULT_PAYMENT_OPTIONS = {
+  defaultMethod: 'ON_SITE',
+  onSiteEnabled: true,
+  onlineEnabled: false,
+  provider: '',
+  providerMode: '',
+};
 
 export default function BookCourt() {
   const { complexId } = useParams();
@@ -11,29 +19,53 @@ export default function BookCourt() {
 
   const preselectedCourtId = searchParams.get('courtId') || '';
 
+  const [complex, setComplex] = useState(null);
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(preselectedCourtId);
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedHour, setSelectedHour] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState(DEFAULT_PAYMENT_OPTIONS.defaultMethod);
   const [takenSlots, setTakenSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [booking, setBooking] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successTitle, setSuccessTitle] = useState('Reserva creada');
+  const [successMessage, setSuccessMessage] = useState('Redirigiendo a tus reservas...');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const paymentOptions = complex?.reservationPaymentOptions || DEFAULT_PAYMENT_OPTIONS;
 
   useEffect(() => {
     setLoading(true);
-    fetchAPI(`/courts?complexId=${complexId}&clientVisible=true`)
-      .then((data) => {
-        setCourts(data);
+    Promise.all([
+      fetchAPI(`/complexes/${complexId}?clientVisible=true`),
+      fetchAPI(`/courts?complexId=${complexId}&clientVisible=true`),
+    ])
+      .then(([complexData, courtsData]) => {
+        setComplex(complexData);
+        setCourts(courtsData);
+        const nextPaymentMethod =
+          complexData?.reservationPaymentOptions?.onlineEnabled === true
+            ? String(complexData.reservationPaymentOptions.defaultMethod || 'ONLINE').toUpperCase()
+            : 'ON_SITE';
+        setPaymentMethod(nextPaymentMethod === 'ONLINE' ? 'ONLINE' : 'ON_SITE');
         setErrorMessage('');
       })
       .catch((error) => {
+        setComplex(null);
         setCourts([]);
         setErrorMessage(error.message || 'Este complejo no esta disponible para reservas.');
       })
       .finally(() => setLoading(false));
   }, [complexId]);
+
+  useEffect(() => {
+    if (paymentOptions.onlineEnabled) {
+      return;
+    }
+
+    setPaymentMethod('ON_SITE');
+  }, [paymentOptions.onlineEnabled]);
 
   useEffect(() => {
     if (!selectedCourt || !selectedDate) return;
@@ -59,13 +91,24 @@ export default function BookCourt() {
     try {
       const response = await fetchAPI('/reservations', {
         method: 'POST',
-        body: JSON.stringify({ courtId: selectedCourt, date: selectedDate, startTime: selectedHour }),
+        body: JSON.stringify({
+          courtId: selectedCourt,
+          date: selectedDate,
+          startTime: selectedHour,
+          paymentMethod,
+        }),
       });
 
       if (response.paymentSession?.checkoutUrl && response.providerConfigured) {
         window.location.assign(response.paymentSession.checkoutUrl);
         return;
       } else {
+        setSuccessTitle(paymentMethod === 'ON_SITE' ? 'Reserva creada' : 'Reserva confirmada');
+        setSuccessMessage(
+          paymentMethod === 'ON_SITE'
+            ? 'Tu reserva quedo registrada. Podras pagarla directamente en el complejo.'
+            : 'Redirigiendo a tus reservas...',
+        );
         setSuccess(true);
         setTimeout(() => navigate('/portal/mis-reservas'), 2000);
       }
@@ -96,8 +139,8 @@ export default function BookCourt() {
     return (
       <div className="flex flex-col items-center justify-center py-32 text-center">
         <CheckCircle2 size={72} className="mb-6 text-green-500" />
-        <h2 className="mb-2 font-display text-3xl font-bold text-on_surface">Reserva confirmada</h2>
-        <p className="text-on_surface_variant">Redirigiendo a tus reservas...</p>
+        <h2 className="mb-2 font-display text-3xl font-bold text-on_surface">{successTitle}</h2>
+        <p className="text-on_surface_variant">{successMessage}</p>
       </div>
     );
   }
@@ -207,6 +250,36 @@ export default function BookCourt() {
               </p>
             )}
           </Step>
+
+          <Step number={4} title="Como quieres pagar">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <PaymentMethodCard
+                icon={DollarSign}
+                title="Pagar en cancha"
+                description="Reservas tu horario ahora y lo abonas cuando llegues al complejo."
+                selected={paymentMethod === 'ON_SITE'}
+                onClick={() => setPaymentMethod('ON_SITE')}
+              />
+              <PaymentMethodCard
+                icon={CreditCard}
+                title="Pagar online"
+                description={
+                  paymentOptions.onlineEnabled
+                    ? 'Te enviamos al checkout de Mercado Pago para dejar la reserva abonada.'
+                    : 'Por ahora este complejo no tiene cobro online activo para reservas.'
+                }
+                selected={paymentMethod === 'ONLINE'}
+                disabled={!paymentOptions.onlineEnabled}
+                onClick={() => setPaymentMethod('ONLINE')}
+              />
+            </div>
+            {!paymentOptions.onlineEnabled && (
+              <p className="mt-4 rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
+                Este complejo acepta reservas con pago en cancha. Cuando el owner active Mercado Pago,
+                tambien podras abonarlas online.
+              </p>
+            )}
+          </Step>
         </div>
 
         {selectedCourt && selectedDate && selectedHour && (
@@ -239,6 +312,12 @@ export default function BookCourt() {
                 <span>Hora</span>
                 <span className="font-medium text-on_surface">{selectedHour}</span>
               </div>
+              <div className="flex justify-between gap-4">
+                <span>Pago</span>
+                <span className="font-medium text-on_surface">
+                  {paymentMethod === 'ONLINE' ? 'Online con Mercado Pago' : 'En cancha'}
+                </span>
+              </div>
               <div className="mt-3 flex justify-between text-base font-semibold">
                 <span className="text-on_surface">Total</span>
                 <span className="text-primary">${court?.pricePerHour?.toLocaleString('es-AR')}</span>
@@ -250,7 +329,11 @@ export default function BookCourt() {
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-4 font-bold text-on_primary transition-all hover:brightness-110 disabled:opacity-50"
             >
               {booking ? <Loader2 className="animate-spin" size={18} /> : null}
-              {booking ? 'Procesando...' : 'Confirmar reserva'}
+              {booking
+                ? 'Procesando...'
+                : paymentMethod === 'ONLINE'
+                  ? 'Reservar y pagar online'
+                  : 'Reservar y pagar en cancha'}
             </button>
           </div>
         )}
@@ -271,5 +354,43 @@ function Step({ number, title, children }) {
       </div>
       {children}
     </div>
+  );
+}
+
+function PaymentMethodCard({
+  icon: Icon,
+  title,
+  description,
+  selected = false,
+  disabled = false,
+  onClick,
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={`rounded-2xl border px-5 py-4 text-left transition-all ${
+        disabled
+          ? 'cursor-not-allowed border-outline_variant/15 bg-surface_container_low text-outline'
+          : selected
+            ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(47,158,68,0.22)]'
+            : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
+            disabled ? 'bg-surface_container text-outline' : 'bg-primary/10 text-primary'
+          }`}
+        >
+          <Icon size={20} />
+        </div>
+        <div>
+          <p className="font-semibold">{title}</p>
+          <p className="mt-1 text-sm leading-6">{description}</p>
+        </div>
+      </div>
+    </button>
   );
 }

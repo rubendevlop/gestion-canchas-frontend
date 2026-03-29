@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { fetchAPI } from '../services/api';
 import { normalizeBookingHours } from '../utils/bookingHours';
+import { getReservationPaymentMethodMeta } from '../utils/reservationPayments';
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
 const MONTHS = [
   'Enero',
@@ -521,6 +522,7 @@ function DayAgendaCard({ date, isToday, reservations, onSelect }) {
 function ReservationDetail({ reservation, onConfirm, onCancel, onRefund, processing = false }) {
   const style = STATUS_STYLE[reservation.status] || STATUS_STYLE.PENDING;
   const paymentMeta = PAYMENT_STYLE[reservation.paymentStatus] || PAYMENT_STYLE.UNPAID;
+  const paymentMethodMeta = getReservationPaymentMethodMeta(reservation);
   const canRefund = reservation.paymentStatus === 'PAID' && Boolean(reservation.mercadoPagoOrderId);
 
   return (
@@ -532,6 +534,9 @@ function ReservationDetail({ reservation, onConfirm, onCancel, onRefund, process
           </span>
           <span className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider ${paymentMeta.cls}`}>
             {paymentMeta.label}
+          </span>
+          <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${paymentMethodMeta.cls}`}>
+            {paymentMethodMeta.label}
           </span>
         </div>
         <span className="text-sm font-medium text-primary">${Number(reservation.totalPrice || 0).toLocaleString('es-AR')}</span>
@@ -549,6 +554,7 @@ function ReservationDetail({ reservation, onConfirm, onCancel, onRefund, process
           <InfoRow icon={<User size={15} />} label="Alta" value={new Date(reservation.user.createdAt).toLocaleDateString('es-AR')} />
         )}
         <InfoRow icon={<DollarSign size={15} />} label="Pago" value={paymentMeta.label} />
+        <InfoRow icon={<DollarSign size={15} />} label="Cobro" value={paymentMethodMeta.label} />
         {reservation.refundedAt && (
           <InfoRow icon={<RotateCcw size={15} />} label="Reembolso" value={formatDateTime(reservation.refundedAt)} />
         )}

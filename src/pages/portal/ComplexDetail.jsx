@@ -40,6 +40,10 @@ export default function ComplexDetail() {
   const ownerPhone = String(complex.ownerContact?.phone || '').trim();
   const ownerEmail = String(complex.ownerContact?.email || '').trim();
   const hasOwnerContact = Boolean(ownerPhone || ownerEmail);
+  const reservationPaymentOptions = complex.reservationPaymentOptions || {
+    onSiteEnabled: true,
+    onlineEnabled: false,
+  };
 
   return (
     <div>
@@ -90,6 +94,22 @@ export default function ComplexDetail() {
           <ShoppingBag size={22} />
           Ver tienda
         </Link>
+      </div>
+
+      <div className="mb-10 flex flex-wrap items-center gap-3 rounded-2xl border border-outline_variant/20 bg-white px-5 py-4 text-sm text-on_surface_variant">
+        <span className="font-medium text-on_surface">Reservas:</span>
+        {reservationPaymentOptions.onSiteEnabled && (
+          <span className="rounded-full bg-amber-400/10 px-3 py-1 font-semibold text-amber-700">
+            Pagar en cancha
+          </span>
+        )}
+        {reservationPaymentOptions.onlineEnabled ? (
+          <span className="rounded-full bg-sky-400/10 px-3 py-1 font-semibold text-sky-700">
+            Pago online
+          </span>
+        ) : (
+          <span>El pago online todavia no esta habilitado en este complejo.</span>
+        )}
       </div>
 
       {hasOwnerContact && (

@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { fetchAPI } from '../../services/api';
-import { CalendarRange, Clock, MapPin, XCircle, Loader2 } from 'lucide-react';
+import { CalendarRange, Clock, CreditCard, MapPin, XCircle, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+  getReservationPaymentMethodMeta,
+  resolveReservationPaymentMethod,
+} from '../../utils/reservationPayments';
 
 const STATUS_STYLES = {
   confirmed: { label: 'Confirmada', cls: 'bg-green-400/10 text-green-500' },
@@ -43,6 +47,7 @@ function formatReservationDate(value) {
 export default function MyReservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [payingReservationId, setPayingReservationId] = useState('');
 
   useEffect(() => {
     fetchAPI('/reservations/mine')
@@ -60,6 +65,23 @@ export default function MyReservations() {
       );
     } catch (err) {
       alert(err.message || 'Error al cancelar.');
+    }
+  };
+
+  const handlePayOnline = async (id) => {
+    setPayingReservationId(id);
+
+    try {
+      const response = await fetchAPI(`/reservations/${id}/pay`, { method: 'POST' });
+      if (!response.paymentSession?.checkoutUrl) {
+        throw new Error('No se pudo generar el checkout de Mercado Pago.');
+      }
+
+      window.location.assign(response.paymentSession.checkoutUrl);
+    } catch (err) {
+      alert(err.message || 'No se pudo iniciar el pago online.');
+    } finally {
+      setPayingReservationId('');
     }
   };
 
@@ -101,7 +123,13 @@ export default function MyReservations() {
               </h2>
               <div className="space-y-3">
                 {upcoming.map((r) => (
-                  <ReservationCard key={r._id} r={r} onCancel={handleCancel} />
+                  <ReservationCard
+                    key={r._id}
+                    r={r}
+                    onCancel={handleCancel}
+                    onPayOnline={handlePayOnline}
+                    paying={payingReservationId === r._id}
+                  />
                 ))}
               </div>
             </section>
@@ -124,12 +152,17 @@ export default function MyReservations() {
   );
 }
 
-function ReservationCard({ r, onCancel }) {
+function ReservationCard({ r, onCancel, onPayOnline, paying = false }) {
   const normalizedStatus = String(r.status || '').toLowerCase();
   const s = STATUS_STYLES[normalizedStatus] || STATUS_STYLES.pending;
   const payment = PAYMENT_STYLES[String(r.paymentStatus || '').toUpperCase()] || PAYMENT_STYLES.UNPAID;
+  const paymentMethodMeta = getReservationPaymentMethodMeta(r);
   const reservationDateTime = getReservationDateTime(r);
   const canCancel = normalizedStatus !== 'cancelled' && reservationDateTime && reservationDateTime > new Date();
+  const canPayOnline =
+    canCancel &&
+    String(r.paymentStatus || '').toUpperCase() === 'UNPAID' &&
+    resolveReservationPaymentMethod(r) === 'ONLINE';
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-outline_variant/20 bg-white px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
@@ -154,6 +187,20 @@ function ReservationCard({ r, onCancel }) {
       <div className="flex flex-wrap items-center gap-3 sm:justify-end">
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${s.cls}`}>{s.label}</span>
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${payment.cls}`}>{payment.label}</span>
+        <span className={`rounded-full px-3 py-1 text-xs font-medium ${paymentMethodMeta.cls}`}>
+          {paymentMethodMeta.shortLabel}
+        </span>
+        {canPayOnline && onPayOnline && (
+          <button
+            type="button"
+            onClick={() => onPayOnline(r._id)}
+            disabled={paying}
+            className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/15 disabled:opacity-60"
+          >
+            {paying ? <Loader2 size={14} className="animate-spin" /> : <CreditCard size={14} />}
+            {paying ? 'Procesando...' : 'Pagar online'}
+          </button>
+        )}
         {canCancel && onCancel && (
           <button onClick={() => onCancel(r._id)} className="text-outline transition-colors hover:text-error" title="Cancelar">
             <XCircle size={18} />

@@ -15,6 +15,7 @@ import {
   Unplug,
 } from 'lucide-react';
 import { fetchAPI } from '../services/api';
+import { getOrderPaymentMethodMeta } from '../utils/orderPayments';
 
 const PAYMENT_STATUS_LABEL = {
   UNPAID: 'Sin cobrar',
@@ -573,7 +574,7 @@ export default function OwnerCollections() {
                       <MiniStat label="Estado" value={ORDER_STATUS_LABEL[order.status] || order.status} />
                       <MiniStat label="Monto" value={formatMoney(order.totalAmount)} />
                       <MiniStat label="Fecha" value={formatDate(order.createdAt)} />
-                      <MiniStat label="MP" value={order.mercadoPagoStatus || 'Sin intento'} />
+                      <MiniStat label="Cobro" value={getOrderPaymentMethodMeta(order).shortLabel} />
                     </div>
                   </div>
                 </article>

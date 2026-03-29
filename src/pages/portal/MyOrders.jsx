@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, MapPin, Package, ShoppingBag, Store } from 'lucide-react';
+import { CreditCard, Loader2, MapPin, Package, ShoppingBag, Store } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
+import {
+  getOrderPaymentMethodMeta,
+  resolveOrderPaymentMethod,
+} from '../../utils/orderPayments';
 
 const STATUS_STYLES = {
   completed: { label: 'Pagado', cls: 'bg-green-400/10 text-green-600' },
@@ -34,6 +38,7 @@ function formatMoney(value) {
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [payingOrderId, setPayingOrderId] = useState('');
 
   useEffect(() => {
     fetchAPI('/orders')
@@ -41,6 +46,23 @@ export default function MyOrders() {
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, []);
+
+  const handlePayOnline = async (orderId) => {
+    setPayingOrderId(orderId);
+
+    try {
+      const response = await fetchAPI(`/orders/${orderId}/pay`, { method: 'POST' });
+      if (!response.paymentSession?.checkoutUrl) {
+        throw new Error('No se pudo generar el checkout de Mercado Pago.');
+      }
+
+      window.location.assign(response.paymentSession.checkoutUrl);
+    } catch (error) {
+      alert(error.message || 'No se pudo iniciar el pago online del pedido.');
+    } finally {
+      setPayingOrderId('');
+    }
+  };
 
   const { completedOrders, otherOrders } = useMemo(
     () => ({
@@ -95,12 +117,12 @@ export default function MyOrders() {
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-on_surface_variant">
               Compras confirmadas
             </h2>
-            <div className="space-y-4">
-              {completedOrders.map((order) => (
-                <OrderCard key={order._id} order={order} />
-              ))}
-            </div>
-          </section>
+              <div className="space-y-4">
+                {completedOrders.map((order) => (
+                  <OrderCard key={order._id} order={order} />
+                ))}
+              </div>
+            </section>
         )}
 
         {otherOrders.length > 0 && (
@@ -108,22 +130,31 @@ export default function MyOrders() {
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-on_surface_variant">
               Otros pedidos
             </h2>
-            <div className="space-y-4">
-              {otherOrders.map((order) => (
-                <OrderCard key={order._id} order={order} />
-              ))}
-            </div>
-          </section>
+              <div className="space-y-4">
+                {otherOrders.map((order) => (
+                  <OrderCard
+                    key={order._id}
+                    order={order}
+                    onPayOnline={handlePayOnline}
+                    paying={payingOrderId === order._id}
+                  />
+                ))}
+              </div>
+            </section>
         )}
       </div>
     </div>
   );
 }
 
-function OrderCard({ order }) {
+function OrderCard({ order, onPayOnline, paying = false }) {
   const status = STATUS_STYLES[String(order.status || '').toLowerCase()] || STATUS_STYLES.pending;
+  const paymentMethodMeta = getOrderPaymentMethodMeta(order);
   const complex = order.complexId;
   const items = Array.isArray(order.items) ? order.items : [];
+  const canPayOnline =
+    String(order.status || '').toLowerCase() === 'pending' &&
+    resolveOrderPaymentMethod(order) === 'ONLINE';
 
   return (
     <article className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_20px_44px_-34px_rgba(24,36,24,0.2)]">
@@ -132,6 +163,9 @@ function OrderCard({ order }) {
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${status.cls}`}>
               {status.label}
+            </span>
+            <span className={`rounded-full px-3 py-1 text-xs font-semibold ${paymentMethodMeta.cls}`}>
+              {paymentMethodMeta.shortLabel}
             </span>
             <span className="rounded-full bg-surface_container px-3 py-1 text-xs font-semibold uppercase tracking-wider text-on_surface_variant">
               Pedido #{String(order._id).slice(-6).toUpperCase()}
@@ -151,7 +185,7 @@ function OrderCard({ order }) {
           <Metric label="Total" value={formatMoney(order.totalAmount)} strong />
           <Metric label="Creado" value={formatDate(order.createdAt)} />
           <Metric label="Pagado" value={formatDate(order.paidAt)} />
-          <Metric label="Items" value={String(items.length)} />
+          <Metric label="Cobro" value={paymentMethodMeta.shortLabel} />
         </div>
       </div>
 
@@ -187,13 +221,26 @@ function OrderCard({ order }) {
           <p className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
             Entrega y retiro en <span className="font-semibold text-on_surface">{complex?.name || 'el complejo'}</span>.
           </p>
-          <Link
-            to={`/portal/complejo/${complex._id}/tienda`}
-            className="inline-flex items-center gap-2 rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:bg-surface_container_low"
-          >
-            <ShoppingBag size={16} />
-            Volver a esta tienda
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {canPayOnline && onPayOnline && (
+              <button
+                type="button"
+                onClick={() => onPayOnline(order._id)}
+                disabled={paying}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/15 disabled:opacity-60"
+              >
+                {paying ? <Loader2 size={16} className="animate-spin" /> : <CreditCard size={16} />}
+                {paying ? 'Procesando...' : 'Pagar online'}
+              </button>
+            )}
+            <Link
+              to={`/portal/complejo/${complex._id}/tienda`}
+              className="inline-flex items-center gap-2 rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:bg-surface_container_low"
+            >
+              <ShoppingBag size={16} />
+              Volver a esta tienda
+            </Link>
+          </div>
         </div>
       )}
     </article>

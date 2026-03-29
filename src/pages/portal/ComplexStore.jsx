@@ -3,8 +3,14 @@ import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Minus, Plus, ShoppingCart, Tag } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
 
+const DEFAULT_PAYMENT_OPTIONS = {
+  onSiteEnabled: true,
+  onlineEnabled: false,
+};
+
 export default function ComplexStore() {
   const { complexId } = useParams();
+  const [complex, setComplex] = useState(null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
   const [loading, setLoading] = useState(true);
@@ -12,9 +18,16 @@ export default function ComplexStore() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    fetchAPI(`/products?complexId=${complexId}&clientVisible=true`)
-      .then(setProducts)
+    Promise.all([
+      fetchAPI(`/complexes/${complexId}?clientVisible=true`),
+      fetchAPI(`/products?complexId=${complexId}&clientVisible=true`),
+    ])
+      .then(([complexData, productsData]) => {
+        setComplex(complexData);
+        setProducts(productsData);
+      })
       .catch((error) => {
+        setComplex(null);
         setProducts([]);
         setErrorMessage(error.message || 'La tienda de este complejo no esta disponible.');
       })
@@ -23,6 +36,7 @@ export default function ComplexStore() {
 
   const categories = ['Todos', ...new Set(products.map((product) => product.category).filter(Boolean))];
   const filtered = category === 'Todos' ? products : products.filter((product) => product.category === category);
+  const storePaymentOptions = complex?.storePaymentOptions || DEFAULT_PAYMENT_OPTIONS;
 
   const addToCart = (id) => setCart((current) => ({ ...current, [id]: (current[id] || 0) + 1 }));
   const removeFromCart = (id) =>
@@ -53,7 +67,7 @@ export default function ComplexStore() {
         {totalItems > 0 && (
           <Link
             to={`/portal/complejo/${complexId}/tienda/carrito`}
-            state={{ cart, products }}
+            state={{ cart, products, complex }}
             className="relative flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-6 py-3 font-semibold text-on_primary transition-all hover:brightness-110"
           >
             <ShoppingCart size={18} />
@@ -86,6 +100,22 @@ export default function ComplexStore() {
           <MapPin size={18} className="mt-0.5 shrink-0 text-primary" />
           Todo producto comprado en este complejo se retira presencialmente aca. La tienda no funciona como delivery.
         </p>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {storePaymentOptions.onSiteEnabled && (
+            <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-700">
+              Pagar al retirar
+            </span>
+          )}
+          {storePaymentOptions.onlineEnabled ? (
+            <span className="rounded-full bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-700">
+              Pago online
+            </span>
+          ) : (
+            <span className="text-xs text-on_surface_variant">
+              El pago online todavia no esta habilitado en esta tienda.
+            </span>
+          )}
+        </div>
       </div>
 
       {loading ? (

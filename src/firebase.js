@@ -10,28 +10,35 @@ import {
   updateProfile,
 } from 'firebase/auth';
 
-const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyBHX4BYV_SvI4xGxBjvxKBDhkLQqTpj5N4',
-  authDomain: 'gestion-ga-a9b09.firebaseapp.com',
-  projectId: 'gestion-ga-a9b09',
-  storageBucket: 'gestion-ga-a9b09.firebasestorage.app',
-  messagingSenderId: '673120676406',
-  appId: '1:673120676406:web:f68c2ac5f01e3d6489c697',
-  measurementId: 'G-PDWJQMJ4E9',
+const firebaseEnv = {
+  apiKey: String(import.meta.env.VITE_FIREBASE_API_KEY || '').trim(),
+  authDomain: String(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '').trim(),
+  projectId: String(import.meta.env.VITE_FIREBASE_PROJECT_ID || '').trim(),
+  storageBucket: String(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '').trim(),
+  messagingSenderId: String(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '').trim(),
+  appId: String(import.meta.env.VITE_FIREBASE_APP_ID || '').trim(),
+  measurementId: String(import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || '').trim(),
 };
 
+const requiredFirebaseEnvEntries = Object.entries(firebaseEnv).filter(
+  ([key, value]) => key !== 'measurementId' && !value,
+);
+
+if (requiredFirebaseEnvEntries.length > 0) {
+  const missingVars = requiredFirebaseEnvEntries.map(([key]) => `VITE_FIREBASE_${toEnvKeySuffix(key)}`);
+  throw new Error(
+    `Faltan variables de Firebase en frontend/.env.local: ${missingVars.join(', ')}`,
+  );
+}
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId,
-  storageBucket:
-    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket,
-  messagingSenderId:
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ||
-    DEFAULT_FIREBASE_CONFIG.messagingSenderId,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId,
-  measurementId:
-    import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || DEFAULT_FIREBASE_CONFIG.measurementId,
+  apiKey: firebaseEnv.apiKey,
+  authDomain: firebaseEnv.authDomain,
+  projectId: firebaseEnv.projectId,
+  storageBucket: firebaseEnv.storageBucket,
+  messagingSenderId: firebaseEnv.messagingSenderId,
+  appId: firebaseEnv.appId,
+  ...(firebaseEnv.measurementId ? { measurementId: firebaseEnv.measurementId } : {}),
 };
 
 const app = initializeApp(firebaseConfig);
@@ -121,4 +128,8 @@ function getFirebaseAuthErrorMessage(error) {
     default:
       return error?.message || 'No se pudo completar la autenticacion.';
   }
+}
+
+function toEnvKeySuffix(value) {
+  return value.replace(/[A-Z]/g, (match) => `_${match}`).toUpperCase();
 }

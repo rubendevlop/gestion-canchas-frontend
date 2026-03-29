@@ -8,6 +8,7 @@ const Login = lazy(() => import('./pages/Login'));
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
 const DashboardHome = lazy(() => import('./pages/DashboardHome'));
 const Inventory = lazy(() => import('./pages/Inventory'));
+const OwnerOrders = lazy(() => import('./pages/OwnerOrders'));
 const Courts = lazy(() => import('./pages/Courts'));
 const Reservations = lazy(() => import('./pages/Reservations'));
 const OwnerBilling = lazy(() => import('./pages/OwnerBilling'));
@@ -113,6 +114,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute allowedRoles={['owner']}>
                 <Inventory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="orders"
+            element={
+              <ProtectedRoute allowedRoles={['owner']}>
+                <OwnerOrders />
               </ProtectedRoute>
             }
           />

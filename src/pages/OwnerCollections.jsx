@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   CheckCircle2,
   CreditCard,
@@ -547,13 +547,20 @@ export default function OwnerCollections() {
         <section className="rounded-[1.75rem] border border-outline_variant/10 bg-surface_container_high p-6 sm:p-7">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h3 className="font-display text-xl font-medium text-on_surface">Cobros de tienda</h3>
+              <h3 className="font-display text-xl font-medium text-on_surface">Pedidos de tienda</h3>
               <p className="text-sm text-on_surface_variant">
-                Pedidos de la tienda y su estado de pago. La entrega siempre se realiza en el complejo.
+                La gestion de pedidos ahora tiene un panel propio para marcar cobros, revisar estados y resolver retiros.
               </p>
             </div>
             <span className="text-xs uppercase tracking-widest text-outline">{orders.length} pedidos</span>
           </div>
+
+          <Link
+            to="/dashboard/orders"
+            className="mb-5 inline-flex items-center justify-center rounded-2xl border border-outline_variant/15 bg-surface_container px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:bg-surface_container_highest"
+          >
+            Abrir panel de pedidos
+          </Link>
 
           {orders.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-outline_variant/15 bg-surface_container_low px-5 py-8 text-center text-sm text-on_surface_variant">

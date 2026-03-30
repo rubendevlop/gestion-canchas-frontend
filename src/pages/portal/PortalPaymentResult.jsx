@@ -5,7 +5,7 @@ import { fetchAPI } from '../../services/api';
 
 function resolveNextPath(entity, complexId, status) {
   if (entity === 'reservation') {
-    if (status === 'success' || status === 'pending') {
+    if (status === 'success') {
       return '/portal/mis-reservas';
     }
     return complexId ? `/portal/complejo/${complexId}/reservar` : '/portal';
@@ -23,7 +23,10 @@ function resolveNextPath(entity, complexId, status) {
 
 function resolveVisualState(entity, payload) {
   if (entity === 'reservation') {
-    if (payload?.reservation?.paymentStatus === 'PAID') {
+    if (
+      payload?.reservation?.paymentStatus === 'PAID' &&
+      ['ACTIVE', undefined].includes(payload?.reservation?.bookingState)
+    ) {
       return {
         tone: 'success',
         title: 'Pago acreditado',
@@ -31,7 +34,10 @@ function resolveVisualState(entity, payload) {
       };
     }
 
-    if (payload?.reservation?.status === 'CANCELLED') {
+    if (
+      payload?.reservation?.status === 'CANCELLED' ||
+      ['CHECKOUT_FAILED', 'CHECKOUT_EXPIRED'].includes(payload?.reservation?.bookingState)
+    ) {
       return {
         tone: 'failure',
         title: 'Reserva cancelada',
@@ -42,7 +48,7 @@ function resolveVisualState(entity, payload) {
     return {
       tone: 'pending',
       title: 'Pago pendiente',
-      description: 'La reserva sigue pendiente hasta que Mercado Pago confirme la acreditacion.',
+      description: 'La reserva todavia no fue confirmada. Si no completas el pago, el horario se liberara automaticamente.',
     };
   }
 

@@ -12,7 +12,7 @@ function resolveNextPath(entity, complexId, status) {
   }
 
   if (entity === 'order') {
-    if (status === 'failure' && complexId) {
+    if (status !== 'success' && complexId) {
       return `/portal/complejo/${complexId}/tienda`;
     }
     return '/portal/mis-compras';
@@ -53,7 +53,10 @@ function resolveVisualState(entity, payload) {
   }
 
   if (entity === 'order') {
-    if (payload?.order?.status === 'completed') {
+    if (
+      payload?.order?.status === 'completed' &&
+      ['ACTIVE', undefined].includes(payload?.order?.checkoutState)
+    ) {
       return {
         tone: 'success',
         title: 'Pago acreditado',
@@ -61,18 +64,21 @@ function resolveVisualState(entity, payload) {
       };
     }
 
-    if (['failed', 'cancelled'].includes(String(payload?.order?.status || ''))) {
+    if (
+      ['failed', 'cancelled'].includes(String(payload?.order?.status || '')) ||
+      ['CHECKOUT_FAILED', 'CHECKOUT_EXPIRED'].includes(payload?.order?.checkoutState)
+    ) {
       return {
         tone: 'failure',
         title: 'Pago no acreditado',
-        description: 'El pedido no pudo confirmarse con Mercado Pago.',
+        description: 'Mercado Pago no confirmo el pago y el pedido no fue registrado.',
       };
     }
 
     return {
       tone: 'pending',
       title: 'Pago pendiente',
-      description: 'El pedido sigue pendiente hasta que Mercado Pago confirme la acreditacion.',
+      description: 'El pedido todavia no fue confirmado. Si no completas el pago, el checkout se liberara automaticamente.',
     };
   }
 

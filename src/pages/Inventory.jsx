@@ -15,6 +15,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 import ImageUploadField from '../components/ImageUploadField';
 import { uploadImageToCloudinary } from '../services/cloudinary';
@@ -52,6 +53,7 @@ export default function Inventory() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [deleteProduct, setDeleteProduct] = useState(null);
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => () => {
     if (imagePreviewUrl?.startsWith('blob:')) {
@@ -71,7 +73,11 @@ export default function Inventory() {
           setNoComplex(true);
           return;
         }
-        alert(error.message || 'No se pudo cargar la informacion del complejo.');
+        setDialogModal({
+          title: 'No se pudo cargar la informacion',
+          description: error.message || 'No se pudo cargar la informacion del complejo.',
+          tone: 'error',
+        });
       })
       .finally(() => setLoading(false));
   }, []);
@@ -203,7 +209,11 @@ export default function Inventory() {
       }
       closeModal();
     } catch (error) {
-      alert(error.message || 'No se pudo guardar el producto.');
+      setDialogModal({
+        title: 'No se pudo guardar el producto',
+        description: error.message || 'No se pudo guardar el producto.',
+        tone: 'error',
+      });
     } finally {
       setUploadingImage(false);
       setSaving(false);
@@ -217,7 +227,11 @@ export default function Inventory() {
       setProducts((current) => current.filter((product) => product._id !== deleteProduct._id));
       setDeleteProduct(null);
     } catch (error) {
-      alert(error.message || 'No se pudo eliminar el producto.');
+      setDialogModal({
+        title: 'No se pudo eliminar el producto',
+        description: error.message || 'No se pudo eliminar el producto.',
+        tone: 'error',
+      });
     }
   };
 
@@ -518,6 +532,14 @@ export default function Inventory() {
           </div>
         </Modal>
       )}
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 
 const ROLES = ['client', 'owner', 'superadmin'];
 
@@ -68,6 +69,7 @@ export default function AdminUsers() {
   const [billingFilter, setBillingFilter] = useState('ALL');
   const [rejectModal, setRejectModal] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [dialogModal, setDialogModal] = useState(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -154,7 +156,11 @@ export default function AdminUsers() {
       });
       await loadData();
     } catch (error) {
-      alert(error.message || 'Error aprobando.');
+      setDialogModal({
+        title: 'No se pudo aprobar la cuenta',
+        description: error.message || 'Error aprobando.',
+        tone: 'error',
+      });
     } finally {
       setUpdating(null);
     }
@@ -175,7 +181,11 @@ export default function AdminUsers() {
       setRejectReason('');
       await loadData();
     } catch (error) {
-      alert(error.message || 'Error rechazando.');
+      setDialogModal({
+        title: 'No se pudo rechazar la cuenta',
+        description: error.message || 'Error rechazando.',
+        tone: 'error',
+      });
     } finally {
       setUpdating(null);
     }
@@ -196,7 +206,11 @@ export default function AdminUsers() {
       });
       await loadData();
     } catch (error) {
-      alert(error.message || 'Error actualizando rol.');
+      setDialogModal({
+        title: 'No se pudo actualizar el rol',
+        description: error.message || 'Error actualizando rol.',
+        tone: 'error',
+      });
     } finally {
       setUpdating(null);
     }
@@ -397,6 +411,14 @@ export default function AdminUsers() {
           </div>
         </div>
       )}
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

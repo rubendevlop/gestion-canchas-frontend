@@ -17,6 +17,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 import ImageUploadField from '../components/ImageUploadField';
 import { uploadImageToCloudinary } from '../services/cloudinary';
@@ -57,6 +58,7 @@ export default function Courts() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [deleteCourt, setDeleteCourt] = useState(null);
   const [togglingId, setTogglingId] = useState('');
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => () => {
     if (imagePreviewUrl?.startsWith('blob:')) {
@@ -76,7 +78,11 @@ export default function Courts() {
           setNoComplex(true);
           return;
         }
-        alert(error.message || 'No se pudo cargar la informacion del complejo.');
+        setDialogModal({
+          title: 'No se pudo cargar la informacion',
+          description: error.message || 'No se pudo cargar la informacion del complejo.',
+          tone: 'error',
+        });
       })
       .finally(() => setLoading(false));
   }, []);
@@ -200,7 +206,11 @@ export default function Courts() {
 
       closeModal();
     } catch (error) {
-      alert(error.message || 'No se pudo guardar la cancha.');
+      setDialogModal({
+        title: 'No se pudo guardar la cancha',
+        description: error.message || 'No se pudo guardar la cancha.',
+        tone: 'error',
+      });
     } finally {
       setUploadingImage(false);
       setSaving(false);
@@ -216,7 +226,11 @@ export default function Courts() {
       });
       setCourts((current) => current.map((item) => (item._id === updated._id ? updated : item)));
     } catch (error) {
-      alert(error.message || 'No se pudo actualizar la disponibilidad.');
+      setDialogModal({
+        title: 'No se pudo actualizar la disponibilidad',
+        description: error.message || 'No se pudo actualizar la disponibilidad.',
+        tone: 'error',
+      });
     } finally {
       setTogglingId('');
     }
@@ -229,7 +243,11 @@ export default function Courts() {
       setCourts((current) => current.filter((court) => court._id !== deleteCourt._id));
       setDeleteCourt(null);
     } catch (error) {
-      alert(error.message || 'No se pudo eliminar la cancha.');
+      setDialogModal({
+        title: 'No se pudo eliminar la cancha',
+        description: error.message || 'No se pudo eliminar la cancha.',
+        tone: 'error',
+      });
     }
   };
 
@@ -575,6 +593,14 @@ export default function Courts() {
           </div>
         </Modal>
       )}
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CreditCard, Loader2, MapPin, Package, ShoppingBag, Store } from 'lucide-react';
+import AppModal from '../../components/AppModal';
 import { fetchAPI } from '../../services/api';
 import {
   getOrderPaymentMethodMeta,
@@ -39,6 +40,7 @@ export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [payingOrderId, setPayingOrderId] = useState('');
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => {
     fetchAPI('/orders')
@@ -58,7 +60,11 @@ export default function MyOrders() {
 
       window.location.assign(response.paymentSession.checkoutUrl);
     } catch (error) {
-      alert(error.message || 'No se pudo iniciar el pago online del pedido.');
+      setDialogModal({
+        title: 'No se pudo iniciar el pago online',
+        description: error.message || 'No se pudo iniciar el pago online del pedido.',
+        tone: 'error',
+      });
     } finally {
       setPayingOrderId('');
     }
@@ -143,6 +149,14 @@ export default function MyOrders() {
             </section>
         )}
       </div>
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Phone,
   Save,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 import ImageUploadField from '../components/ImageUploadField';
 import { useAuth } from '../contexts/AuthContext';
 import { uploadImageToCloudinary } from '../services/cloudinary';
@@ -41,6 +42,7 @@ export default function Settings() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => () => {
     if (imagePreviewUrl?.startsWith('blob:')) {
@@ -68,7 +70,11 @@ export default function Settings() {
           return;
         }
 
-        alert(error.message || 'No se pudo cargar la configuracion del complejo.');
+        setDialogModal({
+          title: 'No se pudo cargar la configuracion',
+          description: error.message || 'No se pudo cargar la configuracion del complejo.',
+          tone: 'error',
+        });
       })
       .finally(() => setLoading(false));
   }, []);
@@ -161,7 +167,11 @@ export default function Settings() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
-      alert(error.message || 'Error al guardar la configuracion del complejo.');
+      setDialogModal({
+        title: 'No se pudo guardar la configuracion',
+        description: error.message || 'Error al guardar la configuracion del complejo.',
+        tone: 'error',
+      });
     } finally {
       setUploadingImage(false);
       setSaving(false);
@@ -337,6 +347,14 @@ export default function Settings() {
                 : 'Guardar cambios'}
         </button>
       </form>
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

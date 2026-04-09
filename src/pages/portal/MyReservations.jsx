@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchAPI } from '../../services/api';
 import { CalendarRange, Clock, CreditCard, MapPin, XCircle, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import AppModal from '../../components/AppModal';
 import {
   getReservationPaymentMethodMeta,
   resolveReservationPaymentMethod,
@@ -48,6 +49,7 @@ export default function MyReservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [payingReservationId, setPayingReservationId] = useState('');
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => {
     fetchAPI('/reservations/mine')
@@ -57,15 +59,33 @@ export default function MyReservations() {
   }, []);
 
   const handleCancel = async (id) => {
-    if (!confirm('Cancelar esta reserva?')) return;
-    try {
-      await fetchAPI(`/reservations/${id}/cancel`, { method: 'PATCH' });
-      setReservations((prev) =>
-        prev.map((r) => (r._id === id ? { ...r, status: 'cancelled' } : r)),
-      );
-    } catch (err) {
-      alert(err.message || 'Error al cancelar.');
-    }
+    setDialogModal({
+      title: 'Cancelar reserva',
+      description: 'Se cancelara esta reserva y el horario volvera a liberarse.',
+      tone: 'error',
+      actions: [
+        { label: 'Volver', variant: 'secondary', onClick: () => setDialogModal(null) },
+        {
+          label: 'Cancelar reserva',
+          autoFocus: true,
+          onClick: async () => {
+            setDialogModal(null);
+            try {
+              await fetchAPI(`/reservations/${id}/cancel`, { method: 'PATCH' });
+              setReservations((prev) =>
+                prev.map((r) => (r._id === id ? { ...r, status: 'cancelled' } : r)),
+              );
+            } catch (err) {
+              setDialogModal({
+                title: 'No se pudo cancelar la reserva',
+                description: err.message || 'Error al cancelar.',
+                tone: 'error',
+              });
+            }
+          },
+        },
+      ],
+    });
   };
 
   const handlePayOnline = async (id) => {
@@ -79,7 +99,11 @@ export default function MyReservations() {
 
       window.location.assign(response.paymentSession.checkoutUrl);
     } catch (err) {
-      alert(err.message || 'No se pudo iniciar el pago online.');
+      setDialogModal({
+        title: 'No se pudo iniciar el pago online',
+        description: err.message || 'No se pudo iniciar el pago online.',
+        tone: 'error',
+      });
     } finally {
       setPayingReservationId('');
     }
@@ -148,6 +172,15 @@ export default function MyReservations() {
           )}
         </div>
       )}
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        actions={dialogModal?.actions || []}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

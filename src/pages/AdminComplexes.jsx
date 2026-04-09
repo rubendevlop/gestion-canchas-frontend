@@ -9,6 +9,7 @@ import {
   Search,
   UserRound,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 
 const FILTERS = [
@@ -33,6 +34,7 @@ export default function AdminComplexes() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [togglingId, setTogglingId] = useState(null);
+  const [dialogModal, setDialogModal] = useState(null);
 
   const loadComplexes = async (showLoader = true) => {
     if (showLoader) {
@@ -99,7 +101,11 @@ export default function AdminComplexes() {
         prev.map((item) => (item._id === complex._id ? { ...item, isActive: updated.isActive } : item))
       );
     } catch (error) {
-      alert(error.message || 'No se pudo actualizar el complejo.');
+      setDialogModal({
+        title: 'No se pudo actualizar el complejo',
+        description: error.message || 'No se pudo actualizar el complejo.',
+        tone: 'error',
+      });
     } finally {
       setTogglingId(null);
     }
@@ -228,6 +234,14 @@ export default function AdminComplexes() {
           </div>
         )}
       </div>
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

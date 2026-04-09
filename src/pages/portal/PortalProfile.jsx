@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   UserRound,
 } from 'lucide-react';
+import AppModal from '../../components/AppModal';
 import { logout } from '../../auth';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendPasswordResetLink, updateFirebaseUserProfile } from '../../firebase';
@@ -27,6 +28,7 @@ export default function PortalProfile() {
   const [saving, setSaving] = useState(false);
   const [sendingReset, setSendingReset] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [dialogModal, setDialogModal] = useState(null);
 
   useEffect(() => {
     setForm({
@@ -62,7 +64,11 @@ export default function PortalProfile() {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
-      alert(error.message || 'No se pudo actualizar tu perfil.');
+      setDialogModal({
+        title: 'No se pudo actualizar tu perfil',
+        description: error.message || 'No se pudo actualizar tu perfil.',
+        tone: 'error',
+      });
     } finally {
       setSaving(false);
     }
@@ -81,9 +87,17 @@ export default function PortalProfile() {
     setSendingReset(true);
     try {
       await sendPasswordResetLink(user.email);
-      alert('Te enviamos un correo para cambiar tu contrasena.');
+      setDialogModal({
+        title: 'Correo enviado',
+        description: 'Te enviamos un correo para cambiar tu contrasena.',
+        tone: 'success',
+      });
     } catch (error) {
-      alert(error.message || 'No se pudo enviar el correo de recuperacion.');
+      setDialogModal({
+        title: 'No se pudo enviar el correo',
+        description: error.message || 'No se pudo enviar el correo de recuperacion.',
+        tone: 'error',
+      });
     } finally {
       setSendingReset(false);
     }
@@ -239,6 +253,14 @@ export default function PortalProfile() {
           </section>
         </aside>
       </div>
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        onClose={() => setDialogModal(null)}
+      />
     </div>
   );
 }

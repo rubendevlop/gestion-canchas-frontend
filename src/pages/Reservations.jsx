@@ -14,6 +14,7 @@ import {
   User,
   X,
 } from 'lucide-react';
+import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 import { normalizeBookingHours } from '../utils/bookingHours';
 import { getReservationPaymentMethodMeta } from '../utils/reservationPayments';
@@ -63,6 +64,7 @@ export default function Reservations() {
   const [reservationActionId, setReservationActionId] = useState('');
   const [takenHours, setTakenHours] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
+  const [dialogModal, setDialogModal] = useState(null);
   const selectedCourt = useMemo(
     () => courts.find((court) => court._id === form.courtId) || null,
     [courts, form.courtId],
@@ -71,6 +73,41 @@ export default function Reservations() {
     () => normalizeBookingHours(selectedCourt?.bookingHours),
     [selectedCourt],
   );
+
+  const closeDialogModal = () => {
+    setDialogModal(null);
+  };
+
+  const openErrorModal = (description, title = 'No se pudo completar la accion') => {
+    setDialogModal({
+      title,
+      description,
+      tone: 'error',
+    });
+  };
+
+  const openConfirmModal = ({ title, description, confirmLabel, onConfirm, tone = 'info' }) => {
+    setDialogModal({
+      title,
+      description,
+      tone,
+      actions: [
+        {
+          label: 'Volver',
+          variant: 'secondary',
+          onClick: closeDialogModal,
+        },
+        {
+          label: confirmLabel,
+          onClick: async () => {
+            closeDialogModal();
+            await onConfirm();
+          },
+          autoFocus: true,
+        },
+      ],
+    });
+  };
 
   useEffect(() => {
     fetchAPI('/complexes/mine')
@@ -88,7 +125,7 @@ export default function Reservations() {
           setNoComplex(true);
           return;
         }
-        alert(error.message || 'No se pudo cargar la informacion del calendario.');
+        openErrorModal(error.message || 'No se pudo cargar la informacion del calendario.');
       })
       .finally(() => setLoading(false));
   }, []);
@@ -195,7 +232,7 @@ export default function Reservations() {
       await refetchReservations();
       closeCreateModal();
     } catch (error) {
-      alert(error.message || 'No se pudo crear la reserva.');
+      openErrorModal(error.message || 'No se pudo crear la reserva.');
       setSaving(false);
     }
   };
@@ -207,42 +244,51 @@ export default function Reservations() {
       await refetchReservations();
       setSelectedReservation(null);
     } catch (error) {
-      alert(error.message || 'No se pudo confirmar la reserva.');
+      openErrorModal(error.message || 'No se pudo confirmar la reserva.');
     } finally {
       setReservationActionId('');
     }
   };
 
   const handleCancel = async (reservationId) => {
-    const shouldCancel = confirm('Se va a cancelar esta reserva. Quieres continuar?');
-    if (!shouldCancel) return;
-
-    setReservationActionId(reservationId);
-    try {
-      await fetchAPI(`/reservations/${reservationId}/cancel`, { method: 'PATCH' });
-      await refetchReservations();
-      setSelectedReservation(null);
-    } catch (error) {
-      alert(error.message || 'No se pudo cancelar la reserva.');
-    } finally {
-      setReservationActionId('');
-    }
+    openConfirmModal({
+      title: 'Cancelar reserva',
+      description: 'Se va a cancelar esta reserva. Esta accion impacta el horario y el estado del cliente.',
+      confirmLabel: 'Cancelar reserva',
+      tone: 'error',
+      onConfirm: async () => {
+        setReservationActionId(reservationId);
+        try {
+          await fetchAPI(`/reservations/${reservationId}/cancel`, { method: 'PATCH' });
+          await refetchReservations();
+          setSelectedReservation(null);
+        } catch (error) {
+          openErrorModal(error.message || 'No se pudo cancelar la reserva.');
+        } finally {
+          setReservationActionId('');
+        }
+      },
+    });
   };
 
   const handleRefund = async (reservationId) => {
-    const shouldRefund = confirm('Se va a reembolsar el pago de esta reserva. Quieres continuar?');
-    if (!shouldRefund) return;
-
-    setReservationActionId(reservationId);
-    try {
-      await fetchAPI(`/reservations/${reservationId}/refund`, { method: 'POST' });
-      await refetchReservations();
-      setSelectedReservation(null);
-    } catch (error) {
-      alert(error.message || 'No se pudo reembolsar la reserva.');
-    } finally {
-      setReservationActionId('');
-    }
+    openConfirmModal({
+      title: 'Reembolsar reserva',
+      description: 'Se va a reembolsar el pago de esta reserva. Confirma solo si el complejo ya aprobo el reintegro.',
+      confirmLabel: 'Reembolsar',
+      onConfirm: async () => {
+        setReservationActionId(reservationId);
+        try {
+          await fetchAPI(`/reservations/${reservationId}/refund`, { method: 'POST' });
+          await refetchReservations();
+          setSelectedReservation(null);
+        } catch (error) {
+          openErrorModal(error.message || 'No se pudo reembolsar la reserva.');
+        } finally {
+          setReservationActionId('');
+        }
+      },
+    });
   };
 
   if (loading) {
@@ -450,6 +496,15 @@ export default function Reservations() {
           />
         </Modal>
       )}
+
+      <AppModal
+        open={Boolean(dialogModal)}
+        title={dialogModal?.title || ''}
+        description={dialogModal?.description || ''}
+        tone={dialogModal?.tone || 'error'}
+        actions={dialogModal?.actions || []}
+        onClose={closeDialogModal}
+      />
     </div>
   );
 }

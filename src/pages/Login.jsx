@@ -25,6 +25,7 @@ import {
   loginWithGoogle,
   registerWithEmailPassword,
 } from '../firebase';
+import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 import BrandLogo from '../components/BrandLogo';
 import loginBackground from '../IMG/fondo.png';
@@ -84,6 +85,18 @@ function isValidArgentinaPhone(value = '') {
   return normalized.length >= 10 && normalized.length <= 11;
 }
 
+function getLoginErrorMessage(error) {
+  if (error?.code === 'USER_NOT_REGISTERED' || error?.data?.error === 'USER_NOT_REGISTERED') {
+    return 'Debes registrarte antes de iniciar sesion.';
+  }
+
+  return error?.message || 'Intenta de nuevo.';
+}
+
+function isUserNotRegisteredError(error) {
+  return error?.code === 'USER_NOT_REGISTERED' || error?.data?.error === 'USER_NOT_REGISTERED';
+}
+
 export default function Login() {
   const [mode, setMode] = useState('login');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -95,11 +108,20 @@ export default function Login() {
   const [googleClientForm, setGoogleClientForm] = useState(GOOGLE_CLIENT_FORM_INITIAL);
   const [loginForm, setLoginForm] = useState(LOGIN_FORM_INITIAL);
   const [showGoogleClientModal, setShowGoogleClientModal] = useState(false);
+  const [messageModal, setMessageModal] = useState(null);
   const [cookieBannerDismissed, setCookieBannerDismissed] = useState(
     () => !!localStorage.getItem('cookies_accepted'),
   );
 
   const isRegistering = mode !== 'login';
+
+  const openMessageModal = ({ title, description, tone = 'error' }) => {
+    setMessageModal({ title, description, tone });
+  };
+
+  const closeMessageModal = () => {
+    setMessageModal(null);
+  };
 
   const switchMode = (nextMode) => {
     setMode(nextMode);
@@ -107,6 +129,7 @@ export default function Login() {
     setRegisteredSuccess('');
     setShowConfirmModal(false);
     setShowGoogleClientModal(false);
+    closeMessageModal();
   };
 
   const validateOwnerForm = () => {
@@ -197,16 +220,42 @@ export default function Login() {
     setGoogleClientForm(GOOGLE_CLIENT_FORM_INITIAL);
   };
 
+  const redirectGoogleLoginToRegister = (googleUser) => {
+    localStorage.setItem('auth_intent', 'register');
+    localStorage.setItem('register_as', 'client');
+    setMode('register-client');
+    setTermsAccepted(true);
+    setRegisteredSuccess('');
+    setGoogleClientForm({
+      username: googleUser?.displayName || '',
+      email: normalizeEmail(googleUser?.email || ''),
+      phone: '',
+    });
+    setShowGoogleClientModal(true);
+    openMessageModal({
+      title: 'Debes registrarte primero',
+      description:
+        'No encontramos una cuenta asociada a ese Google. Completa tu registro para continuar.',
+      tone: 'info',
+    });
+  };
+
   const handleClientRegister = async () => {
     if (!termsAccepted) {
-      alert('Debes aceptar los Terminos y Condiciones para continuar.');
+      openMessageModal({
+        title: 'Debes aceptar los terminos',
+        description: 'Debes aceptar los Terminos y Condiciones para continuar.',
+      });
       return;
     }
 
     try {
       validateClientForm();
     } catch (error) {
-      alert(error.message);
+      openMessageModal({
+        title: 'Revisa tus datos',
+        description: error.message,
+      });
       return;
     }
 
@@ -255,7 +304,10 @@ export default function Login() {
         // noop
       }
 
-      alert(`Error al registrarse: ${error.message || 'Intenta de nuevo.'}`);
+      openMessageModal({
+        title: 'No se pudo completar el registro',
+        description: error.message || 'Intenta de nuevo.',
+      });
     } finally {
       setLoading(false);
     }
@@ -263,7 +315,10 @@ export default function Login() {
 
   const handleGoogleClientRegisterStart = async () => {
     if (!termsAccepted) {
-      alert('Debes aceptar los Terminos y Condiciones para continuar.');
+      openMessageModal({
+        title: 'Debes aceptar los terminos',
+        description: 'Debes aceptar los Terminos y Condiciones para continuar.',
+      });
       return;
     }
 
@@ -291,7 +346,10 @@ export default function Login() {
       }
 
       if (error.message !== 'popup-closed-by-user') {
-        alert(`Error al iniciar Google: ${error.message || 'Intenta de nuevo.'}`);
+        openMessageModal({
+          title: 'No se pudo iniciar Google',
+          description: error.message || 'Intenta de nuevo.',
+        });
       }
     } finally {
       setLoading(false);
@@ -302,7 +360,10 @@ export default function Login() {
     try {
       validateGoogleClientForm();
     } catch (error) {
-      alert(error.message);
+      openMessageModal({
+        title: 'Revisa tus datos',
+        description: error.message,
+      });
       return;
     }
 
@@ -337,7 +398,10 @@ export default function Login() {
       }
 
       resetGoogleClientFlow();
-      alert(`Error al registrarse con Google: ${error.message || 'Intenta de nuevo.'}`);
+      openMessageModal({
+        title: 'No se pudo completar el registro con Google',
+        description: error.message || 'Intenta de nuevo.',
+      });
     } finally {
       setLoading(false);
     }
@@ -357,14 +421,20 @@ export default function Login() {
 
   const handleOwnerRegisterIntent = () => {
     if (!termsAccepted) {
-      alert('Debes aceptar los Terminos y Condiciones para continuar.');
+      openMessageModal({
+        title: 'Debes aceptar los terminos',
+        description: 'Debes aceptar los Terminos y Condiciones para continuar.',
+      });
       return;
     }
 
     try {
       validateOwnerForm();
     } catch (error) {
-      alert(error.message);
+      openMessageModal({
+        title: 'Revisa los datos del complejo',
+        description: error.message,
+      });
       return;
     }
 
@@ -412,7 +482,10 @@ export default function Login() {
       }
 
       if (error.message !== 'popup-closed-by-user') {
-        alert(`Error al registrarse: ${error.message || 'Intenta de nuevo.'}`);
+        openMessageModal({
+          title: 'No se pudo completar el registro',
+          description: error.message || 'Intenta de nuevo.',
+        });
       }
     } finally {
       setLoading(false);
@@ -421,7 +494,10 @@ export default function Login() {
 
   const handleEmailLogin = async () => {
     if (!normalizeEmail(loginForm.email) || !loginForm.password) {
-      alert('Completa correo y contrasena para ingresar.');
+      openMessageModal({
+        title: 'Faltan datos',
+        description: 'Completa correo y contrasena para ingresar.',
+      });
       return;
     }
 
@@ -442,7 +518,10 @@ export default function Login() {
         // noop
       }
 
-      alert(`Error al iniciar sesion: ${error.message || 'Intenta de nuevo.'}`);
+      openMessageModal({
+        title: 'No se pudo iniciar sesion',
+        description: getLoginErrorMessage(error),
+      });
     } finally {
       setLoading(false);
     }
@@ -454,9 +533,15 @@ export default function Login() {
 
     try {
       resetRegisterMarkers();
-      await loginWithGoogle();
+      const googleUser = await loginWithGoogle();
       await fetchAPI('/users/login', { method: 'POST' });
     } catch (error) {
+      if (isUserNotRegisteredError(error)) {
+        redirectGoogleLoginToRegister(auth.currentUser);
+        setLoading(false);
+        return;
+      }
+
       try {
         await signOut(auth);
       } catch (_) {
@@ -464,7 +549,10 @@ export default function Login() {
       }
 
       if (error.message !== 'popup-closed-by-user') {
-        alert(`Error al iniciar sesion: ${error.message || 'Intenta de nuevo.'}`);
+        openMessageModal({
+          title: 'No se pudo iniciar sesion',
+          description: getLoginErrorMessage(error),
+        });
       }
     } finally {
       setLoading(false);
@@ -753,7 +841,13 @@ export default function Login() {
                   Al registrarme acepto los{' '}
                   <button
                     type="button"
-                    onClick={() => alert('Terminos y Condiciones: version demo.')}
+                    onClick={() =>
+                      openMessageModal({
+                        title: 'Terminos y Condiciones',
+                        description: 'Terminos y Condiciones: version demo.',
+                        tone: 'info',
+                      })
+                    }
                     className="text-primary underline underline-offset-2 transition-colors hover:text-primary_fixed"
                   >
                     Terminos y Condiciones
@@ -761,7 +855,13 @@ export default function Login() {
                   y la{' '}
                   <button
                     type="button"
-                    onClick={() => alert('Politica de Privacidad: version demo.')}
+                    onClick={() =>
+                      openMessageModal({
+                        title: 'Politica de Privacidad',
+                        description: 'Politica de Privacidad: version demo.',
+                        tone: 'info',
+                      })
+                    }
                     className="text-primary underline underline-offset-2 transition-colors hover:text-primary_fixed"
                   >
                     Politica de Privacidad
@@ -1026,6 +1126,14 @@ export default function Login() {
         </div>
       )}
 
+      <AppModal
+        open={Boolean(messageModal)}
+        title={messageModal?.title || ''}
+        description={messageModal?.description || ''}
+        tone={messageModal?.tone || 'error'}
+        onClose={closeMessageModal}
+      />
+
       {!cookieBannerDismissed && (
         <div className="fixed bottom-4 left-4 right-4 z-40 rounded-2xl border border-outline_variant/25 bg-white p-5 shadow-[0_26px_60px_-34px_rgba(24,36,24,0.28)] md:left-auto md:right-6 md:max-w-sm">
           <div className="mb-4 flex items-start gap-3">
@@ -1049,7 +1157,11 @@ export default function Login() {
             <button
               type="button"
               onClick={() => {
-                alert('Politica de cookies: version demo.');
+                openMessageModal({
+                  title: 'Politica de cookies',
+                  description: 'Politica de cookies: version demo.',
+                  tone: 'info',
+                });
               }}
               className="flex items-center gap-1 px-3 text-sm text-outline transition-colors hover:text-on_surface"
             >

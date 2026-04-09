@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, ChevronLeft, CreditCard, DollarSign, Loader2 } from 'lucide-react';
 import { fetchAPI } from '../../services/api';
-import { normalizeBookingHours } from '../../utils/bookingHours';
+import {
+  getPastBookingHoursForDate,
+  getTodayBookingDate,
+  normalizeBookingHours,
+} from '../../utils/bookingHours';
 
 const DEFAULT_PAYMENT_OPTIONS = {
   defaultMethod: 'ON_SITE',
@@ -16,13 +20,14 @@ export default function BookCourt() {
   const { complexId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const today = getTodayBookingDate();
 
   const preselectedCourtId = searchParams.get('courtId') || '';
 
   const [complex, setComplex] = useState(null);
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(preselectedCourtId);
-  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(() => today);
   const [selectedHour, setSelectedHour] = useState('');
   const [paymentMethod, setPaymentMethod] = useState(DEFAULT_PAYMENT_OPTIONS.defaultMethod);
   const [takenSlots, setTakenSlots] = useState([]);
@@ -121,7 +126,17 @@ export default function BookCourt() {
 
   const court = courts.find((item) => item._id === selectedCourt);
   const availableHours = normalizeBookingHours(court?.bookingHours);
+  const unavailableHours = new Set([
+    ...takenSlots,
+    ...getPastBookingHoursForDate(availableHours, selectedDate),
+  ]);
   const selectedCourtImage = court?.imageUrl || court?.image || court?.images?.[0] || '';
+
+  useEffect(() => {
+    if (selectedHour && unavailableHours.has(selectedHour)) {
+      setSelectedHour('');
+    }
+  }, [selectedHour, unavailableHours]);
 
   if (loading) {
     return (
@@ -213,7 +228,7 @@ export default function BookCourt() {
             <input
               type="date"
               value={selectedDate}
-              min={new Date().toISOString().split('T')[0]}
+              min={today}
               onChange={(event) => {
                 setSelectedDate(event.target.value);
                 setSelectedHour('');
@@ -225,7 +240,7 @@ export default function BookCourt() {
           <Step number={3} title="Elegi el horario">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {availableHours.map((hour) => {
-                const taken = takenSlots.includes(hour);
+                const taken = unavailableHours.has(hour);
                 return (
                   <button
                     key={hour}

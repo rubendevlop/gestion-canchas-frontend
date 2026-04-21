@@ -224,7 +224,7 @@ function Row({ label, value }) {
 function LogoutButton({ className = '' }) {
   return (
     <button
-      onClick={() => logout().then(() => { window.location.href = '/login'; })}
+      onClick={() => logout().then(() => { window.location.href = '/'; })}
       className={`flex items-center justify-center gap-2 w-full bg-surface_container border border-outline_variant/20 text-on_surface_variant py-3 rounded-2xl hover:bg-surface_container_highest transition-colors text-sm ${className}`.trim()}
     >
       <LogOut size={16} /> Cerrar sesion
@@ -244,8 +244,8 @@ export default function ProtectedRoute({ children, allowedRoles, skipOwnerBillin
   const { user, role, ownerStatus, ownerStatusNote, ownerBilling, loading, refreshProfile } = useAuth();
 
   if (loading) return LOADING_SCREEN;
-  if (!user) return <Navigate to="/login" replace />;
-  if (!role) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
+  if (!role) return <Navigate to="/" replace />;
 
   if (role === 'owner' && allowedRoles?.includes('owner')) {
     if (ownerStatus === 'PENDING') return <PendingApprovalScreen />;

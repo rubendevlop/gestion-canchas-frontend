@@ -3,8 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
-const Login = lazy(() => import('./pages/Login'));
+// Public pages
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 
+// Dashboard (owner / superadmin)
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
 const DashboardHome = lazy(() => import('./pages/DashboardHome'));
 const Inventory = lazy(() => import('./pages/Inventory'));
@@ -20,6 +23,7 @@ const AdminComplexes = lazy(() => import('./pages/AdminComplexes'));
 const AdminPayments = lazy(() => import('./pages/AdminPayments'));
 const Settings = lazy(() => import('./pages/Settings'));
 
+// Portal (client)
 const PortalLayout = lazy(() => import('./layouts/PortalLayout'));
 const PortalHome = lazy(() => import('./pages/portal/PortalHome'));
 const ComplexDetail = lazy(() => import('./pages/portal/ComplexDetail'));
@@ -42,7 +46,8 @@ function RouteLoader() {
   );
 }
 
-function LoginGuard({ children }) {
+/** Redirects authenticated users away from the landing / register pages. */
+function PublicGuard({ children }) {
   const { user, role, loading } = useAuth();
   if (loading) return null;
   if (user && role) {
@@ -52,10 +57,15 @@ function LoginGuard({ children }) {
   return children;
 }
 
+/** Catch-all: authenticated → role home, anonymous → landing. */
 function RoleRedirect() {
   const { user, role, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background text-primary">Cargando...</div>;
-  if (!user || !role) return <Navigate to="/login" replace />;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-background text-primary">
+      Cargando...
+    </div>
+  );
+  if (!user || !role) return <Navigate to="/" replace />;
   if (role === 'client') return <Navigate to="/portal" replace />;
   return <Navigate to="/dashboard" replace />;
 }
@@ -64,17 +74,27 @@ function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoader />}>
       <Routes>
+        {/* ── Public ── */}
         <Route
-          path="/login"
+          path="/"
           element={
-            <LoginGuard>
-              <Login />
-            </LoginGuard>
+            <PublicGuard>
+              <LandingPage />
+            </PublicGuard>
           }
         />
+        <Route
+          path="/register"
+          element={
+            <PublicGuard>
+              <RegisterPage />
+            </PublicGuard>
+          }
+        />
+        {/* /login legacy redirect */}
+        <Route path="/login" element={<Navigate to="/" replace />} />
 
-        <Route path="/" element={<RoleRedirect />} />
-
+        {/* ── Owner billing result (skip billing check) ── */}
         <Route
           path="/dashboard/billing/resultado"
           element={
@@ -84,6 +104,7 @@ function AppRoutes() {
           }
         />
 
+        {/* ── Dashboard ── */}
         <Route
           path="/dashboard"
           element={
@@ -93,96 +114,20 @@ function AppRoutes() {
           }
         >
           <Route index element={<DashboardHome />} />
-          <Route
-            path="courts"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <Courts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="reservations"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <Reservations />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="products"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <Inventory />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="orders"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <OwnerOrders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="collections"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <OwnerCollections />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="billing"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <OwnerBilling />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="customers"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <OwnerCustomers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute allowedRoles={['owner']}>
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="users"
-            element={
-              <ProtectedRoute allowedRoles={['superadmin']}>
-                <AdminUsers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="complexes"
-            element={
-              <ProtectedRoute allowedRoles={['superadmin']}>
-                <AdminComplexes />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="payments"
-            element={
-              <ProtectedRoute allowedRoles={['superadmin']}>
-                <AdminPayments />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="courts" element={<ProtectedRoute allowedRoles={['owner']}><Courts /></ProtectedRoute>} />
+          <Route path="reservations" element={<ProtectedRoute allowedRoles={['owner']}><Reservations /></ProtectedRoute>} />
+          <Route path="products" element={<ProtectedRoute allowedRoles={['owner']}><Inventory /></ProtectedRoute>} />
+          <Route path="orders" element={<ProtectedRoute allowedRoles={['owner']}><OwnerOrders /></ProtectedRoute>} />
+          <Route path="collections" element={<ProtectedRoute allowedRoles={['owner']}><OwnerCollections /></ProtectedRoute>} />
+          <Route path="billing" element={<ProtectedRoute allowedRoles={['owner']}><OwnerBilling /></ProtectedRoute>} />
+          <Route path="customers" element={<ProtectedRoute allowedRoles={['owner']}><OwnerCustomers /></ProtectedRoute>} />
+          <Route path="settings" element={<ProtectedRoute allowedRoles={['owner']}><Settings /></ProtectedRoute>} />
+          <Route path="users" element={<ProtectedRoute allowedRoles={['superadmin']}><AdminUsers /></ProtectedRoute>} />
+          <Route path="complexes" element={<ProtectedRoute allowedRoles={['superadmin']}><AdminComplexes /></ProtectedRoute>} />
+          <Route path="payments" element={<ProtectedRoute allowedRoles={['superadmin']}><AdminPayments /></ProtectedRoute>} />
         </Route>
 
+        {/* ── Portal (client) ── */}
         <Route
           path="/portal"
           element={
@@ -202,6 +147,7 @@ function AppRoutes() {
           <Route path="perfil" element={<PortalProfile />} />
         </Route>
 
+        {/* Catch-all */}
         <Route path="*" element={<RoleRedirect />} />
       </Routes>
     </Suspense>

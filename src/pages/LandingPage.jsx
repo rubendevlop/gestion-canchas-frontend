@@ -278,68 +278,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section
-          id="complexes-section"
-          className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 sm:pt-10"
-        >
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="poster-chip">Reserva online</p>
-                <h2 className="mt-4 font-['Teko'] text-[clamp(3.5rem,10vw,6rem)] uppercase leading-[0.86] tracking-[0.02em] text-white">
-                  Complejos destacados
-                </h2>
-                <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-                  Busca un complejo, mira disponibilidad y entra a reservar desde una experiencia
-                  mucho mas visual.
-                </p>
-              </div>
-
-              <div className="w-full lg:max-w-md">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.26em] text-primary">
-                  Buscar complejo o zona
-                </label>
-                <div className="relative">
-                  <Search
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary"
-                    size={18}
-                  />
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Ej.: Yerba Buena, Tucuman Lawn Tennis..."
-                    className="neon-input pl-11"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {loadingData ? (
-              <div className="flex justify-center py-24">
-                <Loader2 className="animate-spin text-primary" size={40} />
-              </div>
-            ) : filteredComplexes.length === 0 ? (
-              <div className="py-24 text-center">
-                <p className="font-['Barlow_Condensed'] text-4xl uppercase text-white">
-                  No se encontraron complejos
-                </p>
-                <p className="mt-3 text-slate-300">
-                  Prueba con otro nombre, barrio o ciudad para seguir buscando.
-                </p>
-              </div>
-            ) : (
-              <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {filteredComplexes.map((complex) => (
-                  <ComplexCard
-                    key={complex._id}
-                    complex={complex}
-                    onNeedAuth={() => setLoginOpen(true)}
-                  />
-                ))}
-              </div>
-            )}
-        </section>
-
 
         <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-primary/70 sm:px-6">
           Mas reservas - Mas juego - Mejor experiencia

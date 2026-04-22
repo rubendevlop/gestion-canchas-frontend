@@ -21,9 +21,9 @@ export default function PortalHome() {
 
   return (
     <div>
-      <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-outline_variant/20 bg-[linear-gradient(145deg,var(--text-white),rgb(var(--surface-container-rgb)))] px-6 py-16 text-center shadow-[0_26px_70px_-42px_rgba(0,16,44,0.18)] sm:px-10">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(0,16,44,0.08),transparent_28%)]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-35 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_94px,rgba(115,209,29,0.07)_94px,rgba(115,209,29,0.07)_188px)]" />
+      <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-outline_variant/20 bg-[linear-gradient(145deg,var(--text-white),rgb(var(--surface-container-rgb)))] px-6 py-16 text-center shadow-[0_26px_70px_-42px_rgb(var(--bg-main-rgb)/0.18)] sm:px-10">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgb(var(--bg-main-rgb)/0.08),transparent_28%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-full opacity-35 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_94px,rgb(var(--primary-green-rgb)/0.07)_94px,rgb(var(--primary-green-rgb)/0.07)_188px)]" />
 
         <div className="relative mx-auto max-w-3xl">
           <h1 className="mb-4 text-5xl font-display font-bold leading-tight text-on_surface">

@@ -47,7 +47,7 @@ export default function ComplexDetail() {
 
   return (
     <div>
-      <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/20 bg-gradient-to-br from-white via-surface_container_low to-secondary/10 shadow-[0_24px_70px_-42px_rgba(0,16,44,0.14)]">
+      <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/20 bg-gradient-to-br from-white via-surface_container_low to-secondary/10 shadow-[0_24px_70px_-42px_rgb(var(--bg-main-rgb)/0.14)]">
         {complex.imageUrl ? (
           <img
             src={complex.imageUrl}
@@ -82,7 +82,7 @@ export default function ComplexDetail() {
       <div className="mb-10 grid grid-cols-2 gap-4">
         <Link
           to={`/portal/complejo/${complexId}/reservar`}
-          className="flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-5 text-lg font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(115,209,29,0.26)] transition-all hover:scale-[1.01] hover:brightness-110"
+          className="flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-5 text-lg font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgb(var(--primary-green-rgb)/0.26)] transition-all hover:scale-[1.01] hover:brightness-110"
         >
           <CalendarRange size={22} />
           Reservar cancha
@@ -113,7 +113,7 @@ export default function ComplexDetail() {
       </div>
 
       {hasOwnerContact && (
-        <section className="mb-10 rounded-3xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_46px_-32px_rgba(0,16,44,0.16)]">
+        <section className="mb-10 rounded-3xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_46px_-32px_rgb(var(--bg-main-rgb)/0.16)]">
           <div className="mb-5">
             <h2 className="text-2xl font-display font-semibold text-on_surface">Contacto</h2>
             <p className="mt-2 text-sm text-on_surface_variant">

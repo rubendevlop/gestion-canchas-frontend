@@ -265,7 +265,7 @@ export default function Inventory() {
         <button
           type="button"
           onClick={openCreate}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-6 py-3 font-semibold text-on_primary_fixed shadow-[0_8px_30px_-10px_rgba(115,209,29,0.32)] transition-all hover:scale-[1.01] hover:brightness-110 sm:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-6 py-3 font-semibold text-on_primary_fixed shadow-[0_8px_30px_-10px_rgb(var(--primary-green-rgb)/0.32)] transition-all hover:scale-[1.01] hover:brightness-110 sm:w-auto"
         >
           <Plus size={20} />
           Nuevo producto

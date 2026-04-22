@@ -574,8 +574,8 @@ export default function Login() {
         />
       </div>
 
-      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(0,16,44,0.1),transparent_28%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] p-5 sm:p-8 lg:w-1/2 lg:p-10">
-        <div className="w-full max-w-md rounded-[2rem] border border-outline_variant/20 bg-white/92 p-6 shadow-[0_32px_64px_-42px_rgba(0,16,44,0.22)] backdrop-blur-sm sm:p-8">
+      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgb(var(--bg-main-rgb)/0.1),transparent_28%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] p-5 sm:p-8 lg:w-1/2 lg:p-10">
+        <div className="w-full max-w-md rounded-[2rem] border border-outline_variant/20 bg-white/92 p-6 shadow-[0_32px_64px_-42px_rgb(var(--bg-main-rgb)/0.22)] backdrop-blur-sm sm:p-8">
           <div className="mb-8 flex justify-center lg:hidden">
             <BrandLogo imageClassName="h-16 w-auto" />
           </div>
@@ -889,7 +889,7 @@ export default function Login() {
                     ? handleClientRegister
                     : handleOwnerRegisterIntent
               }
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(115,209,29,0.26)] transition-all hover:brightness-110 disabled:opacity-50"
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgb(var(--primary-green-rgb)/0.26)] transition-all hover:brightness-110 disabled:opacity-50"
               disabled={loading}
             >
               {loading ? (
@@ -987,7 +987,7 @@ export default function Login() {
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.22)]">
+          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.22)]">
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
@@ -1044,7 +1044,7 @@ export default function Login() {
 
       {showGoogleClientModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.22)] sm:p-8">
+          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.22)] sm:p-8">
             <button
               type="button"
               onClick={handleCancelGoogleClientRegister}
@@ -1135,7 +1135,7 @@ export default function Login() {
       />
 
       {!cookieBannerDismissed && (
-        <div className="fixed bottom-4 left-4 right-4 z-40 rounded-2xl border border-outline_variant/25 bg-white p-5 shadow-[0_26px_60px_-34px_rgba(0,16,44,0.22)] md:left-auto md:right-6 md:max-w-sm">
+        <div className="fixed bottom-4 left-4 right-4 z-40 rounded-2xl border border-outline_variant/25 bg-white p-5 shadow-[0_26px_60px_-34px_rgb(var(--bg-main-rgb)/0.22)] md:left-auto md:right-6 md:max-w-sm">
           <div className="mb-4 flex items-start gap-3">
             <Cookie size={20} className="mt-0.5 shrink-0 text-primary" />
             <div>

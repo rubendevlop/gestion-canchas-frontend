@@ -171,7 +171,7 @@ function OrderCard({ order, onPayOnline, paying = false }) {
     resolveOrderPaymentMethod(order) === 'ONLINE';
 
   return (
-    <article className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_20px_44px_-34px_rgba(0,16,44,0.16)]">
+    <article className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_20px_44px_-34px_rgb(var(--bg-main-rgb)/0.16)]">
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="mb-3 flex flex-wrap items-center gap-2">

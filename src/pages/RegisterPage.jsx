@@ -215,7 +215,7 @@ function AccountTypeCard({ icon, title, desc, active, onClick }) {
       onClick={onClick}
       className={`flex items-start gap-3 rounded-[1.4rem] border p-4 text-left transition-all ${
         active
-          ? 'border-primary/30 bg-[linear-gradient(135deg,rgba(115,209,29,0.14),rgba(115,209,29,0.04))] text-on_surface shadow-[0_18px_38px_-28px_rgba(115,209,29,0.3)]'
+          ? 'border-primary/30 bg-[linear-gradient(135deg,rgb(var(--primary-green-rgb)/0.14),rgb(var(--primary-green-rgb)/0.04))] text-on_surface shadow-[0_18px_38px_-28px_rgb(var(--primary-green-rgb)/0.3)]'
           : 'border-outline_variant/25 bg-white text-on_surface_variant hover:border-primary/30 hover:text-on_surface'
       }`}
     >
@@ -597,7 +597,7 @@ export default function RegisterPage() {
     mode === 'register-client' ? REGISTER_BENEFITS.client : REGISTER_BENEFITS.owner;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.14),transparent_32%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] font-body text-on_surface">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.14),transparent_32%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] font-body text-on_surface">
       <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
           <Link to="/">
@@ -640,7 +640,7 @@ export default function RegisterPage() {
           <section className="poster-panel-dark poster-grid px-6 py-7 sm:px-8 sm:py-8">
             <p className="poster-chip">Clubes Tucuman</p>
             <div className="mt-6 max-w-[15rem]">
-              <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(115,209,29,0.24)]" />
+              <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgb(var(--primary-green-rgb)/0.24)]" />
             </div>
             <h1 className="mt-8 font-['Teko'] text-[clamp(3.6rem,8vw,5.6rem)] uppercase leading-[0.86] tracking-[0.02em] text-white">
               {mode === 'register-client' ? 'Entra a jugar mejor' : 'Suma tu complejo hoy'}
@@ -668,7 +668,7 @@ export default function RegisterPage() {
             </div>
           </section>
 
-          <div className="rounded-[2rem] border border-outline_variant/20 bg-white/95 p-6 shadow-[0_28px_60px_-36px_rgba(0,16,44,0.18)] backdrop-blur-sm sm:p-8">
+          <div className="rounded-[2rem] border border-outline_variant/20 bg-white/95 p-6 shadow-[0_28px_60px_-36px_rgb(var(--bg-main-rgb)/0.18)] backdrop-blur-sm sm:p-8">
             <h2 className="mb-2 text-3xl font-display font-bold">Crear cuenta</h2>
             <p className="mb-6 text-sm text-on_surface_variant">
               {mode === 'register-client'
@@ -924,7 +924,7 @@ export default function RegisterPage() {
             type="button"
             onClick={mode === 'register-client' ? handleClientRegister : handleOwnerIntent}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(115,209,29,0.32)] transition hover:brightness-110 disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgb(var(--primary-green-rgb)/0.32)] transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
@@ -970,7 +970,7 @@ export default function RegisterPage() {
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.18)]">
+          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.18)]">
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
@@ -1024,7 +1024,7 @@ export default function RegisterPage() {
 
       {showGoogleClientModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.18)] sm:p-8">
+          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.18)] sm:p-8">
             <button
               type="button"
               onClick={handleCancelGoogleClient}

@@ -204,7 +204,7 @@ export default function Cart() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_38px_-26px_rgba(0,16,44,0.14)]">
+      <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_38px_-26px_rgb(var(--bg-main-rgb)/0.14)]">
         <div className="mb-5">
           <p className="mb-3 text-sm font-semibold text-on_surface">Como quieres pagar</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -269,7 +269,7 @@ function PaymentMethodCard({
         disabled
           ? 'cursor-not-allowed border-outline_variant/15 bg-surface_container_low text-outline'
           : selected
-            ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(115,209,29,0.22)]'
+            ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgb(var(--primary-green-rgb)/0.22)]'
             : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
       }`}
     >

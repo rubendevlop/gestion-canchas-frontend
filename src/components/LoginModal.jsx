@@ -173,7 +173,7 @@ export default function LoginModal({ open, onClose }) {
           <div className="mb-1 flex justify-center">
             <BrandLogo imageClassName="h-12 w-auto" />
           </div>
-          <h2 className="mb-1 text-center text-2xl font-display font-bold text-on_surface">
+          <h2 className="mb-1 text-center text-2xl font-display font-bold text-white">
             Bienvenido de nuevo
           </h2>
           <p className="mb-6 text-center text-sm text-slate-300">

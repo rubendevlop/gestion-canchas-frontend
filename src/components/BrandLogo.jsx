@@ -1,4 +1,4 @@
-import brandLogo from '../IMG/logo-brand.png';
+import brandLogo from '../IMG/logo-nuevo.png';
 
 export default function BrandLogo({
   className = '',

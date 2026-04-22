@@ -201,6 +201,19 @@ export default function LandingPage() {
                     <ClientStepCard key={item.title} {...item} />
                   ))}
                 </div>
+
+                {/* ── CTA dueños ── */}
+                <button
+                  type="button"
+                  onClick={() => navigate('/register?tipo=owner')}
+                  className="mt-6 flex w-full items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/[0.06] px-5 py-4 text-left transition hover:border-primary/36 hover:bg-primary/[0.10]"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-white">¿Sos dueño de un complejo?</p>
+                    <p className="mt-0.5 text-xs text-slate-400">Registrá tus canchas y empezá a recibir reservas online.</p>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 text-primary" />
+                </button>
               </div>
 
               <div className="neon-card light-scan p-5 sm:p-6">

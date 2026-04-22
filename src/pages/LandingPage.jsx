@@ -161,7 +161,7 @@ export default function LandingPage() {
                   <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(115,209,29,0.24)]" />
                 </div>
 
-                <h1 className="mt-8 max-w-[8ch] font-['Teko'] text-[clamp(4.2rem,12vw,7rem)] uppercase leading-[0.84] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,0,0,0.48)]">
+                <h1 className="mt-8 max-w-[8ch] font-['Teko'] text-[clamp(4.2rem,12vw,7rem)] uppercase leading-[0.84] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,16,44,0.48)]">
                   Reserva
                   <span className="block text-primary [text-shadow:0_0_24px_rgba(115,209,29,0.42)]">
                     canchas
@@ -414,7 +414,7 @@ function ComplexCard({ complex, onNeedAuth }) {
             </span>
           </div>
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgba(2,8,14,0.12)_45%,rgba(2,8,14,0.8)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgba(0,16,44,0.12)_45%,rgba(0,16,44,0.8)_100%)]" />
         <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
           <span className="rounded-full border border-white/10 bg-brand_bg/78 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
             {complex.courtsCount ?? '-'} canchas

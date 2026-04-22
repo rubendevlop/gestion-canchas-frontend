@@ -182,7 +182,7 @@ export default function PortalPaymentResult() {
 
   if (errorMessage) {
     return (
-      <div className="mx-auto max-w-2xl rounded-[2rem] border border-red-400/20 bg-white p-8 text-center shadow-[0_24px_60px_-34px_rgba(24,36,24,0.18)]">
+      <div className="mx-auto max-w-2xl rounded-[2rem] border border-red-400/20 bg-white p-8 text-center shadow-[0_24px_60px_-34px_rgba(0,16,44,0.14)]">
         <AlertCircle size={52} className="mx-auto text-red-500" />
         <h1 className="mt-5 text-3xl font-display font-bold text-on_surface">No se pudo validar el pago</h1>
         <p className="mt-3 text-on_surface_variant">{errorMessage}</p>
@@ -204,7 +204,7 @@ export default function PortalPaymentResult() {
       : AlertCircle;
 
   return (
-    <div className="mx-auto max-w-2xl rounded-[2rem] border border-outline_variant/20 bg-white p-8 text-center shadow-[0_24px_60px_-34px_rgba(24,36,24,0.18)]">
+    <div className="mx-auto max-w-2xl rounded-[2rem] border border-outline_variant/20 bg-white p-8 text-center shadow-[0_24px_60px_-34px_rgba(0,16,44,0.14)]">
       <Icon size={56} className={`mx-auto ${visualState.tone === 'success' ? 'text-primary' : visualState.tone === 'pending' ? 'text-yellow-500' : 'text-red-500'}`} />
       <h1 className="mt-5 text-3xl font-display font-bold text-on_surface">{visualState.title}</h1>
       <p className="mt-3 text-on_surface_variant">{visualState.description}</p>

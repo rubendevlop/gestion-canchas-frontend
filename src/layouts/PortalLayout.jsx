@@ -18,7 +18,7 @@ export default function PortalLayout() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-on_surface font-body">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.1),transparent_48%)]" />
+        <div className="absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.1),transparent_48%)]" />
         <div className="absolute left-[-6rem] top-[6rem] h-[18rem] w-[18rem] rounded-full bg-primary/8 blur-3xl" />
         <div className="absolute bottom-[-8rem] right-[-6rem] h-[22rem] w-[22rem] rounded-full bg-secondary/10 blur-3xl" />
       </div>
@@ -26,7 +26,7 @@ export default function PortalLayout() {
       <header className="sticky top-0 z-30 border-b border-outline_variant/25 bg-white/84 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-3">
-            <Link to="/portal" className="shrink-0 rounded-2xl border border-outline_variant/15 bg-white/85 px-3 py-2 shadow-[0_12px_24px_-20px_rgba(20,32,22,0.24)]">
+            <Link to="/portal" className="shrink-0 rounded-2xl border border-outline_variant/15 bg-white/85 px-3 py-2 shadow-[0_12px_24px_-20px_rgba(0,16,44,0.18)]">
               <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
             </Link>
 
@@ -75,7 +75,7 @@ export default function PortalLayout() {
                       to={item.path}
                       className={`flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-medium transition-colors ${
                         isActive
-                          ? 'border-primary/20 bg-primary/10 text-on_surface shadow-[0_10px_22px_-18px_rgba(31,143,73,0.26)]'
+                          ? 'border-primary/20 bg-primary/10 text-on_surface shadow-[0_10px_22px_-18px_rgba(115,209,29,0.24)]'
                           : 'border-outline_variant/15 bg-white/85 text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
                       }`}
                     >

@@ -192,7 +192,7 @@ export default function BookCourt() {
                 }}
                 className={`overflow-hidden rounded-2xl border text-left transition-all ${
                   selectedCourt === item._id
-                    ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(47,158,68,0.22)]'
+                    ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(115,209,29,0.22)]'
                     : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
                 }`}
               >
@@ -298,7 +298,7 @@ export default function BookCourt() {
         </div>
 
         {selectedCourt && selectedDate && selectedHour && (
-          <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_40px_-26px_rgba(24,36,24,0.18)]">
+          <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_40px_-26px_rgba(0,16,44,0.14)]">
             <div className="mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-surface_container_low to-surface_container">
               {selectedCourtImage ? (
                 <img
@@ -389,7 +389,7 @@ function PaymentMethodCard({
         disabled
           ? 'cursor-not-allowed border-outline_variant/15 bg-surface_container_low text-outline'
           : selected
-            ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(47,158,68,0.22)]'
+            ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgba(115,209,29,0.22)]'
             : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
       }`}
     >

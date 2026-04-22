@@ -231,7 +231,7 @@ export default function OwnerBilling() {
             type="button"
             onClick={handleCheckout}
             disabled={checkoutLoading || !billing?.providerConfigured}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-semibold px-5 py-3 rounded-2xl shadow-[0_8px_30px_-10px_rgba(47,172,76,0.42)] hover:brightness-110 transition-all disabled:opacity-50"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary_container to-primary text-on_primary_fixed font-semibold px-5 py-3 rounded-2xl shadow-[0_8px_30px_-10px_rgba(115,209,29,0.32)] hover:brightness-110 transition-all disabled:opacity-50"
           >
             {checkoutLoading ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={18} />}
             {checkoutLoading ? 'Preparando pago...' : primaryActionLabel}

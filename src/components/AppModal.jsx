@@ -70,7 +70,7 @@ export default function AppModal({
         }
       }}
     >
-      <div className="relative w-full max-w-lg rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_30px_80px_-34px_rgba(24,36,24,0.34)] sm:p-7">
+      <div className="relative w-full max-w-lg rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_30px_80px_-34px_rgba(0,16,44,0.24)] sm:p-7">
         <button
           type="button"
           onClick={() => onClose?.()}

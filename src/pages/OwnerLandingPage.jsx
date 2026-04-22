@@ -166,7 +166,7 @@ export default function OwnerLandingPage() {
                   La plataforma #1 para duenos de canchas
                 </p>
 
-                <h1 className="mt-6 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,0,0,0.48)]">
+                <h1 className="mt-6 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,16,44,0.48)]">
                   Tenes
                   <span className="block text-primary [text-shadow:0_0_24px_rgba(115,209,29,0.42)]">
                     canchas?

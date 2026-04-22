@@ -113,7 +113,7 @@ export default function PortalProfile() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_360px]">
-        <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(24,36,24,0.2)] sm:p-8">
+        <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(0,16,44,0.16)] sm:p-8">
           <div className="mb-8 flex items-center gap-4">
             {user?.photoURL ? (
               <img
@@ -207,7 +207,7 @@ export default function PortalProfile() {
         </section>
 
         <aside className="space-y-6">
-          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(24,36,24,0.2)]">
+          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(0,16,44,0.16)]">
             <div className="mb-4 flex items-center gap-3">
               <div className="rounded-2xl bg-primary/10 p-3 text-primary">
                 <ShieldCheck size={20} />
@@ -241,7 +241,7 @@ export default function PortalProfile() {
             </button>
           </section>
 
-          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(24,36,24,0.2)]">
+          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgba(0,16,44,0.16)]">
             <h2 className="mb-4 font-semibold text-on_surface">Sesion</h2>
             <button
               onClick={logout}

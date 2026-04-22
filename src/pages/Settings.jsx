@@ -325,7 +325,7 @@ export default function Settings() {
         <button
           type="submit"
           disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-4 font-bold text-on_primary_fixed shadow-[0_8px_30px_-10px_rgba(47,172,76,0.4)] transition-all hover:brightness-110 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-4 font-bold text-on_primary_fixed shadow-[0_8px_30px_-10px_rgba(115,209,29,0.3)] transition-all hover:brightness-110 disabled:opacity-50"
         >
           {saving ? (
             <Loader2 size={18} className="animate-spin" />

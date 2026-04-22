@@ -150,19 +150,19 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#030c14] font-body text-white">
+    <div className="relative min-h-screen overflow-hidden bg-brand_bg font-body text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(26,56,84,0.82),transparent_40%),linear-gradient(180deg,#03111b_0%,#071a2a_52%,#04111d_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.12),transparent_32%),linear-gradient(180deg,rgba(0,16,44,1)_0%,rgba(0,16,44,0.94)_52%,rgba(0,16,44,1)_100%)]" />
         <div className="absolute left-[8%] top-[8%] h-24 w-24 rounded-full bg-white/25 blur-2xl" />
         <div className="absolute right-[10%] top-[5%] h-28 w-28 rounded-full bg-white/30 blur-[54px]" />
-        <div className="absolute inset-x-0 bottom-[-8%] h-[40%] bg-[radial-gradient(circle_at_bottom,rgba(80,255,66,0.28),transparent_52%)]" />
+        <div className="absolute inset-x-0 bottom-[-8%] h-[40%] bg-[radial-gradient(circle_at_bottom,rgba(115,209,29,0.24),transparent_52%)]" />
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#04101a]/72 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand_bg/72 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link
             to="/"
-            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_28px_-22px_rgba(120,255,87,0.45)]"
+            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_28px_-22px_rgba(115,209,29,0.32)]"
           >
             <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
           </Link>
@@ -171,7 +171,7 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => setLoginOpen(true)}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-[#87ff44]/30 hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-primary/30 hover:bg-white/10"
             >
               <LogIn size={15} />
               Iniciar sesion
@@ -179,7 +179,7 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => navigate('/register?tipo=owner')}
-              className="inline-flex items-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] px-4 py-2 text-sm font-semibold text-[#08110d] shadow-[0_14px_32px_-16px_rgba(130,255,87,0.75)] transition hover:scale-[1.02] hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary-gradient px-4 py-2 text-sm font-semibold text-on_primary shadow-[0_14px_32px_-16px_rgba(115,209,29,0.72)] transition hover:scale-[1.02] hover:brightness-110"
             >
               <UserPlus size={15} />
               Sumar mi cancha
@@ -191,7 +191,7 @@ export default function LandingPage() {
       <main className="relative z-10 pb-24">
         <section className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
           <div className="poster-panel-dark poster-grid px-5 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
-            <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#95ff51]/65 to-transparent" />
+            <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-primary/65 to-transparent" />
             <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.94fr)] lg:items-center">
               <div className="relative">
                 <p className="poster-chip">
@@ -200,19 +200,19 @@ export default function LandingPage() {
                 </p>
 
                 <div className="mt-6 max-w-[21rem] sm:max-w-[25rem]">
-                  <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(132,255,88,0.24)]" />
+                  <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(115,209,29,0.24)]" />
                 </div>
 
                 <h1 className="mt-8 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,0,0,0.48)]">
                   Tenes
-                  <span className="block text-[#88ff43] [text-shadow:0_0_24px_rgba(123,255,86,0.42)]">
+                  <span className="block text-primary [text-shadow:0_0_24px_rgba(115,209,29,0.42)]">
                     canchas?
                   </span>
                 </h1>
 
                 <p className="mt-4 max-w-xl font-['Barlow_Condensed'] text-[clamp(2rem,4vw,3.1rem)] uppercase leading-[0.92] tracking-[0.01em] text-white">
                   Hace crecer tu negocio con{' '}
-                  <span className="text-[#8fff45]">Clubes Tucuman</span>
+                  <span className="text-primary">Clubes Tucuman</span>
                 </p>
 
                 <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
@@ -224,7 +224,7 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={() => navigate('/register?tipo=owner')}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] px-6 py-3.5 font-semibold text-[#07110c] shadow-[0_18px_44px_-18px_rgba(123,255,86,0.78)] transition hover:scale-[1.02] hover:brightness-110"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgba(115,209,29,0.76)] transition hover:scale-[1.02] hover:brightness-110"
                   >
                     Suma tu cancha hoy
                     <ArrowRight size={18} />
@@ -232,7 +232,7 @@ export default function LandingPage() {
                   <button
                     type="button"
                     onClick={scrollToComplexes}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/6 px-6 py-3.5 font-medium text-white transition hover:border-[#8eff47]/32 hover:bg-white/10"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/6 px-6 py-3.5 font-medium text-white transition hover:border-primary/32 hover:bg-white/10"
                   >
                     Ver complejos
                     <ChevronRight size={18} />
@@ -243,7 +243,7 @@ export default function LandingPage() {
                   {PLATFORM_CHIPS.map((chip) => (
                     <span
                       key={chip}
-                      className="rounded-full border border-[#96ff54]/20 bg-[#081522]/82 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#c7ffab]"
+                      className="rounded-full border border-primary/20 bg-brand_bg/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-brand_white/80"
                     >
                       {chip}
                     </span>
@@ -257,7 +257,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="neon-card light-scan mt-8 p-5 sm:p-6">
-                  <div className="mb-4 flex items-center gap-2 text-[#baff8a]">
+                  <div className="mb-4 flex items-center gap-2 text-primary">
                     <Shield size={16} />
                     <p className="font-['Barlow_Condensed'] text-base uppercase tracking-[0.2em]">
                       Todo en un solo lugar
@@ -272,7 +272,7 @@ export default function LandingPage() {
               </div>
 
               <div className="relative min-h-[32rem] sm:min-h-[36rem] lg:min-h-[42rem]">
-                <div className="absolute inset-x-[10%] bottom-[8%] h-20 rounded-full bg-[#84ff49]/36 blur-3xl" />
+                <div className="absolute inset-x-[10%] bottom-[8%] h-20 rounded-full bg-primary/35 blur-3xl" />
                 <div className="absolute left-0 right-[18%] top-[16%] sm:right-[24%] lg:top-[24%]">
                   <DashboardMockup complexesCount={complexes.length} totalCourts={totalCourts} />
                 </div>
@@ -305,12 +305,12 @@ export default function LandingPage() {
               </div>
 
               <div className="w-full lg:max-w-md">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.26em] text-[#baff8a]">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.26em] text-primary">
                   Buscar complejo o zona
                 </label>
                 <div className="relative">
                   <Search
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#89ff46]"
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary"
                     size={18}
                   />
                   <input
@@ -326,7 +326,7 @@ export default function LandingPage() {
 
             {loadingData ? (
               <div className="flex justify-center py-24">
-                <Loader2 className="animate-spin text-[#89ff46]" size={40} />
+                <Loader2 className="animate-spin text-primary" size={40} />
               </div>
             ) : filteredComplexes.length === 0 ? (
               <div className="py-24 text-center">
@@ -351,8 +351,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-[#9cff66]/70 sm:px-6">
-          Mas reservas · Mas ventas · Mejor gestion
+        <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-primary/70 sm:px-6">
+          Mas reservas - Mas ventas - Mejor gestion
         </footer>
       </main>
 
@@ -365,7 +365,7 @@ function StatCard({ value, label, note }) {
   return (
     <div className="neon-card px-4 py-4">
       <p className="font-['Teko'] text-5xl uppercase leading-none text-white">{value}</p>
-      <p className="mt-2 font-['Barlow_Condensed'] text-lg uppercase tracking-[0.08em] text-[#b7ff97]">
+      <p className="mt-2 font-['Barlow_Condensed'] text-lg uppercase tracking-[0.08em] text-primary/85">
         {label}
       </p>
       <p className="mt-2 text-sm leading-6 text-slate-400">{note}</p>
@@ -376,7 +376,7 @@ function StatCard({ value, label, note }) {
 function BenefitCard({ icon: Icon, title, description }) {
   return (
     <div className="rounded-[1.45rem] border border-white/8 bg-white/[0.03] px-4 py-4">
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#84ff49]/12 text-[#9dff53]">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/12 text-primary">
         <Icon size={20} />
       </div>
       <h3 className="mt-4 font-['Barlow_Condensed'] text-2xl uppercase text-white">{title}</h3>

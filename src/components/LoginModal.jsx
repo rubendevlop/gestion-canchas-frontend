@@ -159,11 +159,12 @@ export default function LoginModal({ open, onClose }) {
         aria-label="Iniciar sesion"
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
-        <div className="relative w-full max-w-sm rounded-[2rem] border border-outline_variant/20 bg-white p-7 shadow-[0_32px_64px_-32px_rgba(20,32,22,0.32)]">
+        <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-[#9dff53]/18 bg-[linear-gradient(180deg,rgba(4,18,30,0.98),rgba(5,16,26,0.94))] p-7 text-white shadow-[0_38px_90px_-38px_rgba(123,255,86,0.42)]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(123,255,86,0.18),transparent_68%)]" />
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 rounded-xl p-1 text-outline transition-colors hover:bg-surface_container hover:text-on_surface"
+            className="absolute right-4 top-4 rounded-xl p-1 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
             aria-label="Cerrar"
           >
             <X size={20} />
@@ -175,19 +176,19 @@ export default function LoginModal({ open, onClose }) {
           <h2 className="mb-1 text-center text-2xl font-display font-bold text-on_surface">
             Bienvenido de nuevo
           </h2>
-          <p className="mb-6 text-center text-sm text-on_surface_variant">
+          <p className="mb-6 text-center text-sm text-slate-300">
             Ingresa con tu correo o con Google.
           </p>
 
-          <div className="space-y-4 rounded-[1.5rem] border border-outline_variant/15 bg-surface_container_low p-4">
+          <div className="space-y-4 rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-4">
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-outline">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#bbff9f]">
                 Correo
               </label>
               <div className="relative">
                 <Mail
                   size={16}
-                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-outline_variant"
+                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#91ff54]"
                 />
                 <input
                   type="email"
@@ -197,19 +198,19 @@ export default function LoginModal({ open, onClose }) {
                   onChange={(event) =>
                     setForm((current) => ({ ...current, email: event.target.value }))
                   }
-                  className="w-full rounded-xl border border-outline_variant/30 bg-white py-2.5 pl-10 pr-4 text-on_surface placeholder-outline_variant transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-white/10 bg-[#071523] py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-[#8eff47]/40 focus:outline-none focus:ring-4 focus:ring-[#8eff47]/10"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-outline">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#bbff9f]">
                 Contrasena
               </label>
               <div className="relative">
                 <KeyRound
                   size={16}
-                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-outline_variant"
+                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#91ff54]"
                 />
                 <input
                   type="password"
@@ -224,7 +225,7 @@ export default function LoginModal({ open, onClose }) {
                       handleEmailLogin();
                     }
                   }}
-                  className="w-full rounded-xl border border-outline_variant/30 bg-white py-2.5 pl-10 pr-4 text-on_surface placeholder-outline_variant transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-white/10 bg-[#071523] py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-[#8eff47]/40 focus:outline-none focus:ring-4 focus:ring-[#8eff47]/10"
                 />
               </div>
             </div>
@@ -234,10 +235,10 @@ export default function LoginModal({ open, onClose }) {
             type="button"
             onClick={handleEmailLogin}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] transition hover:brightness-110 disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] py-3 font-semibold text-[#08110d] shadow-[0_18px_44px_-18px_rgba(123,255,86,0.75)] transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#08110d]/50 border-t-transparent" />
             ) : (
               <ArrowRight size={18} />
             )}
@@ -245,28 +246,28 @@ export default function LoginModal({ open, onClose }) {
           </button>
 
           <div className="my-5 flex items-center gap-3">
-            <div className="flex-1 border-t border-outline_variant/20" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-outline">
+            <div className="flex-1 border-t border-white/10" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               O continuar con
             </span>
-            <div className="flex-1 border-t border-outline_variant/20" />
+            <div className="flex-1 border-t border-white/10" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-outline_variant/30 bg-white py-3 text-on_surface transition hover:bg-surface_container_low disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] py-3 text-white transition hover:bg-white/[0.08] disabled:opacity-50"
           >
             {loading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-outline_variant border-t-transparent" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-500 border-t-transparent" />
             ) : (
               <GoogleIcon />
             )}
             {loading ? 'Procesando...' : 'Ingresar con Google'}
           </button>
 
-          <p className="mt-5 text-center text-sm text-on_surface_variant">
+          <p className="mt-5 text-center text-sm text-slate-300">
             No tenes cuenta?{' '}
             <button
               type="button"
@@ -274,12 +275,12 @@ export default function LoginModal({ open, onClose }) {
                 onClose();
                 navigate('/register');
               }}
-              className="font-semibold text-primary hover:underline"
+              className="font-semibold text-[#8eff47] hover:underline"
             >
               Registrate
             </button>
           </p>
-          <p className="mt-1 text-center text-sm text-on_surface_variant">
+          <p className="mt-1 text-center text-sm text-slate-300">
             Tenes un complejo?{' '}
             <button
               type="button"
@@ -287,7 +288,7 @@ export default function LoginModal({ open, onClose }) {
                 onClose();
                 navigate('/register?tipo=owner');
               }}
-              className="font-semibold text-secondary hover:underline"
+              className="font-semibold text-[#8eff47] hover:underline"
             >
               Registrar mi complejo
             </button>

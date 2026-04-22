@@ -1,21 +1,78 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  ArrowRight,
+  BarChart3,
+  CalendarRange,
   ChevronRight,
+  Clock3,
+  LayoutDashboard,
   Loader2,
   LogIn,
   MapPin,
   Search,
+  Shield,
+  ShoppingCart,
+  Smartphone,
+  Sparkles,
   Star,
   UserPlus,
+  Users,
 } from 'lucide-react';
 import LoginModal from '../components/LoginModal';
 import BrandLogo from '../components/BrandLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchAPI } from '../services/api';
 
+const BENEFIT_ITEMS = [
+  {
+    icon: CalendarRange,
+    title: 'Recibi reservas online',
+    description: 'Mostra horarios, precios y disponibilidad sin depender del telefono.',
+  },
+  {
+    icon: LayoutDashboard,
+    title: 'Gestiona todo desde un panel',
+    description: 'Visualiza turnos, ocupacion y movimientos con una interfaz simple.',
+  },
+  {
+    icon: ShoppingCart,
+    title: 'Vende productos y extras',
+    description: 'Suma tienda, eventos o consumos desde la misma plataforma.',
+  },
+  {
+    icon: Users,
+    title: 'Llega a mas jugadores',
+    description: 'Aparece en la vidriera publica y capta nuevas reservas todos los dias.',
+  },
+];
+
+const PLATFORM_CHIPS = [
+  'Reservas online',
+  'Cobros claros',
+  'Tienda y eventos',
+  'Vista publica para clientes',
+];
+
+const WEEK_DAYS = [
+  { label: 'MIE', day: '22' },
+  { label: 'JUE', day: '23' },
+  { label: 'VIE', day: '24', active: true },
+  { label: 'SAB', day: '25' },
+];
+
+const DEMO_SLOTS = [
+  { title: 'Cancha 1', surface: 'Cesped sintetico', time: '20:00', price: '$15.000' },
+  { title: 'Cancha 2', surface: 'Cesped sintetico', time: '21:00', price: '$15.000' },
+  { title: 'Cancha 3', surface: 'Cesped sintetico', time: '22:00', price: '$15.000' },
+];
+
 function normalizeSearchValue(value = '') {
   return String(value || '').trim().toLowerCase();
+}
+
+function buildLocationLabel(complex) {
+  return complex?.address || complex?.city || 'Tucuman';
 }
 
 export default function LandingPage() {
@@ -54,132 +111,475 @@ export default function LandingPage() {
       return true;
     }
 
-    const haystack = [
-      complex?.name,
-      complex?.address,
-      complex?.city,
-    ]
+    return [complex?.name, complex?.address, complex?.city]
       .map(normalizeSearchValue)
-      .join(' ');
-
-    return haystack.includes(normalizedSearch);
+      .join(' ')
+      .includes(normalizedSearch);
   });
 
+  const totalCourts = complexes.reduce(
+    (sum, complex) => sum + Number(complex?.courtsCount || 0),
+    0,
+  );
+  const totalCities = new Set(
+    complexes
+      .map((complex) => normalizeSearchValue(complex?.city || complex?.address).split(',')[0])
+      .filter(Boolean),
+  ).size;
+
+  const heroStats = [
+    {
+      value: loadingData ? '--' : `+${complexes.length}`,
+      label: 'Complejos visibles',
+      note: 'Publicados en la vidriera para clientes',
+    },
+    {
+      value: loadingData ? '--' : `+${totalCourts}`,
+      label: 'Canchas activas',
+      note: 'Con horarios y disponibilidad online',
+    },
+    {
+      value: loadingData ? '--' : `+${totalCities}`,
+      label: 'Zonas cubiertas',
+      note: 'Demanda repartida en multiples barrios',
+    },
+  ];
+
+  const scrollToComplexes = () => {
+    document.getElementById('complexes-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background font-body text-on_surface">
+    <div className="relative min-h-screen overflow-hidden bg-[#030c14] font-body text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.1),transparent_48%)]" />
-        <div className="absolute left-[-6rem] top-[6rem] h-[18rem] w-[18rem] rounded-full bg-primary/8 blur-3xl" />
-        <div className="absolute bottom-[-8rem] right-[-6rem] h-[22rem] w-[22rem] rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(26,56,84,0.82),transparent_40%),linear-gradient(180deg,#03111b_0%,#071a2a_52%,#04111d_100%)]" />
+        <div className="absolute left-[8%] top-[8%] h-24 w-24 rounded-full bg-white/25 blur-2xl" />
+        <div className="absolute right-[10%] top-[5%] h-28 w-28 rounded-full bg-white/30 blur-[54px]" />
+        <div className="absolute inset-x-0 bottom-[-8%] h-[40%] bg-[radial-gradient(circle_at_bottom,rgba(80,255,66,0.28),transparent_52%)]" />
       </div>
 
-      <header className="sticky top-0 z-30 border-b border-outline_variant/25 bg-white/84 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-          <div className="flex items-center justify-between gap-3">
-            <Link
-              to="/"
-              className="shrink-0 rounded-2xl border border-outline_variant/15 bg-white/85 px-3 py-2 shadow-[0_12px_24px_-20px_rgba(20,32,22,0.24)]"
-            >
-              <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
-            </Link>
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#04101a]/72 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+          <Link
+            to="/"
+            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_28px_-22px_rgba(120,255,87,0.45)]"
+          >
+            <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
+          </Link>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                id="btn-login"
-                onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-2 rounded-2xl border border-outline_variant/25 bg-white px-4 py-2 text-sm font-semibold text-on_surface transition hover:border-primary/30 hover:text-primary"
-              >
-                <LogIn size={15} />
-                <span>Iniciar sesion</span>
-              </button>
-              <button
-                type="button"
-                id="btn-register"
-                onClick={() => navigate('/register')}
-                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-4 py-2 text-sm font-semibold text-on_primary shadow-[0_8px_22px_-10px_rgba(47,158,68,0.4)] transition hover:brightness-110"
-              >
-                <UserPlus size={15} />
-                <span>Registrarse</span>
-              </button>
-            </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setLoginOpen(true)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-[#87ff44]/30 hover:bg-white/10"
+            >
+              <LogIn size={15} />
+              Iniciar sesion
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/register?tipo=owner')}
+              className="inline-flex items-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] px-4 py-2 text-sm font-semibold text-[#08110d] shadow-[0_14px_32px_-16px_rgba(130,255,87,0.75)] transition hover:scale-[1.02] hover:brightness-110"
+            >
+              <UserPlus size={15} />
+              Sumar mi cancha
+            </button>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-        <section className="relative mb-10 overflow-hidden rounded-[2rem] border border-outline_variant/20 bg-[linear-gradient(145deg,#ffffff,#eff7e5)] px-6 py-16 text-center shadow-[0_26px_70px_-42px_rgba(24,36,24,0.22)] sm:px-10">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(123,207,82,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(242,177,52,0.12),transparent_28%)]" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[repeating-linear-gradient(90deg,transparent_0,transparent_94px,rgba(123,207,82,0.08)_94px,rgba(123,207,82,0.08)_188px)] opacity-35" />
+      <main className="relative z-10 pb-24">
+        <section className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
+          <div className="poster-panel-dark poster-grid px-5 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
+            <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#95ff51]/65 to-transparent" />
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.94fr)] lg:items-center">
+              <div className="relative">
+                <p className="poster-chip">
+                  <Sparkles size={14} />
+                  La plataforma #1 para duenos de canchas
+                </p>
 
-          <div className="relative mx-auto max-w-3xl">
-            <h1 className="mb-4 text-5xl font-display font-bold leading-tight text-on_surface">
-              Reserva tu cancha
-              <br />
-              <span className="text-primary">en minutos.</span>
-            </h1>
-            <p className="mx-auto mb-8 max-w-xl text-lg text-on_surface_variant">
-              Encontra un complejo, elegi tu horario y entra a jugar.
-            </p>
+                <div className="mt-6 max-w-[21rem] sm:max-w-[25rem]">
+                  <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(132,255,88,0.24)]" />
+                </div>
 
-            <div className="mb-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => navigate('/register')}
-                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary px-7 py-3.5 font-bold text-on_primary shadow-[0_10px_28px_-10px_rgba(47,158,68,0.4)] transition hover:brightness-110"
-              >
-                <UserPlus size={18} />
-                Crear cuenta gratis
-              </button>
-              <button
-                type="button"
-                onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-2 rounded-2xl border border-outline_variant/30 bg-white px-7 py-3.5 font-semibold text-on_surface transition hover:border-primary/30 hover:text-primary"
-              >
-                <LogIn size={18} />
-                Ya tengo cuenta
-              </button>
-            </div>
+                <h1 className="mt-8 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,0,0,0.48)]">
+                  Tenes
+                  <span className="block text-[#88ff43] [text-shadow:0_0_24px_rgba(123,255,86,0.42)]">
+                    canchas?
+                  </span>
+                </h1>
 
-            <div className="relative mx-auto max-w-lg">
-              <Search
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-outline"
-                size={18}
-              />
-              <input
-                type="text"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Buscar complejo o ciudad..."
-                className="w-full rounded-2xl border border-outline_variant/25 bg-white py-4 pl-14 pr-6 text-base text-on_surface placeholder-outline transition-all focus:border-primary/50 focus:outline-none"
-              />
+                <p className="mt-4 max-w-xl font-['Barlow_Condensed'] text-[clamp(2rem,4vw,3.1rem)] uppercase leading-[0.92] tracking-[0.01em] text-white">
+                  Hace crecer tu negocio con{' '}
+                  <span className="text-[#8fff45]">Clubes Tucuman</span>
+                </p>
+
+                <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
+                  Recibi reservas online, organiza tus horarios, vende productos y mantene una
+                  vidriera publica para que mas jugadores te encuentren rapido.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/register?tipo=owner')}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] px-6 py-3.5 font-semibold text-[#07110c] shadow-[0_18px_44px_-18px_rgba(123,255,86,0.78)] transition hover:scale-[1.02] hover:brightness-110"
+                  >
+                    Suma tu cancha hoy
+                    <ArrowRight size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={scrollToComplexes}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/6 px-6 py-3.5 font-medium text-white transition hover:border-[#8eff47]/32 hover:bg-white/10"
+                  >
+                    Ver complejos
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {PLATFORM_CHIPS.map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-full border border-[#96ff54]/20 bg-[#081522]/82 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#c7ffab]"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                  {heroStats.map((item) => (
+                    <StatCard key={item.label} {...item} />
+                  ))}
+                </div>
+
+                <div className="neon-card light-scan mt-8 p-5 sm:p-6">
+                  <div className="mb-4 flex items-center gap-2 text-[#baff8a]">
+                    <Shield size={16} />
+                    <p className="font-['Barlow_Condensed'] text-base uppercase tracking-[0.2em]">
+                      Todo en un solo lugar
+                    </p>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {BENEFIT_ITEMS.map((item) => (
+                      <BenefitCard key={item.title} {...item} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative min-h-[32rem] sm:min-h-[36rem] lg:min-h-[42rem]">
+                <div className="absolute inset-x-[10%] bottom-[8%] h-20 rounded-full bg-[#84ff49]/36 blur-3xl" />
+                <div className="absolute left-0 right-[18%] top-[16%] sm:right-[24%] lg:top-[24%]">
+                  <DashboardMockup complexesCount={complexes.length} totalCourts={totalCourts} />
+                </div>
+                <div className="float-slow absolute right-[4%] top-[2%] w-[16.5rem] rotate-[8deg] sm:w-[18rem] lg:w-[21rem]">
+                  <PhoneMockup />
+                </div>
+                <div className="float-slow-delay absolute bottom-0 left-[2%] right-[2%]">
+                  <OwnerBanner onClick={() => navigate('/register?tipo=owner')} />
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {loadingData ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={36} />
+        <section
+          id="complexes-section"
+          className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 sm:pt-10"
+        >
+          <div className="poster-panel-dark px-5 py-6 sm:px-8 sm:py-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="poster-chip">Reserva online</p>
+                <h2 className="mt-4 font-['Teko'] text-[clamp(3.5rem,10vw,6rem)] uppercase leading-[0.86] tracking-[0.02em] text-white">
+                  Complejos destacados
+                </h2>
+                <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
+                  Busca un complejo, mira disponibilidad y entra a reservar desde una experiencia
+                  mucho mas visual.
+                </p>
+              </div>
+
+              <div className="w-full lg:max-w-md">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.26em] text-[#baff8a]">
+                  Buscar complejo o zona
+                </label>
+                <div className="relative">
+                  <Search
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#89ff46]"
+                    size={18}
+                  />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    placeholder="Ej.: Yerba Buena, Tucuman Lawn Tennis..."
+                    className="neon-input pl-11"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {loadingData ? (
+              <div className="flex justify-center py-24">
+                <Loader2 className="animate-spin text-[#89ff46]" size={40} />
+              </div>
+            ) : filteredComplexes.length === 0 ? (
+              <div className="py-24 text-center">
+                <p className="font-['Barlow_Condensed'] text-4xl uppercase text-white">
+                  No se encontraron complejos
+                </p>
+                <p className="mt-3 text-slate-300">
+                  Prueba con otro nombre, barrio o ciudad para seguir buscando.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {filteredComplexes.map((complex) => (
+                  <ComplexCard
+                    key={complex._id}
+                    complex={complex}
+                    onNeedAuth={() => setLoginOpen(true)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : filteredComplexes.length === 0 ? (
-          <div className="py-20 text-center text-on_surface_variant/60">
-            <p className="text-xl">No se encontraron complejos.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredComplexes.map((complex) => (
-              <ComplexCard
-                key={complex._id}
-                complex={complex}
-                onNeedAuth={() => setLoginOpen(true)}
-              />
-            ))}
-          </div>
-        )}
+        </section>
+
+        <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-[#9cff66]/70 sm:px-6">
+          Mas reservas · Mas ventas · Mejor gestion
+        </footer>
       </main>
 
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </div>
+  );
+}
+
+function StatCard({ value, label, note }) {
+  return (
+    <div className="neon-card px-4 py-4">
+      <p className="font-['Teko'] text-5xl uppercase leading-none text-white">{value}</p>
+      <p className="mt-2 font-['Barlow_Condensed'] text-lg uppercase tracking-[0.08em] text-[#b7ff97]">
+        {label}
+      </p>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{note}</p>
+    </div>
+  );
+}
+
+function BenefitCard({ icon: Icon, title, description }) {
+  return (
+    <div className="rounded-[1.45rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#84ff49]/12 text-[#9dff53]">
+        <Icon size={20} />
+      </div>
+      <h3 className="mt-4 font-['Barlow_Condensed'] text-2xl uppercase text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+    </div>
+  );
+}
+
+function PhoneMockup() {
+  return (
+    <div className="relative overflow-hidden rounded-[2.8rem] border border-white/18 bg-[#07111b] p-3 shadow-[0_36px_90px_-40px_rgba(132,255,73,0.52)]">
+      <div className="absolute inset-x-10 top-2 h-6 rounded-b-[1rem] bg-black/80" />
+      <div className="rounded-[2.2rem] border border-white/8 bg-[linear-gradient(180deg,#071625_0%,#09111b_100%)] px-4 pb-5 pt-8">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.26em] text-slate-400">Clubes Tucuman</p>
+            <h3 className="mt-2 font-['Barlow_Condensed'] text-3xl uppercase text-white">
+              Nueva reserva
+            </h3>
+          </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8dff49]/16 text-[#9dff53]">
+            <Smartphone size={18} />
+          </div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-white/[0.04] p-1.5">
+          <button className="rounded-xl bg-[#84ff49] px-3 py-2 text-sm font-semibold text-[#07110c]">
+            Canchas
+          </button>
+          <button className="rounded-xl px-3 py-2 text-sm font-medium text-slate-400">
+            Eventos
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-4 gap-2">
+          {WEEK_DAYS.map((item) => (
+            <div
+              key={`${item.label}-${item.day}`}
+              className={`rounded-2xl border px-3 py-3 text-center ${
+                item.active
+                  ? 'border-[#97ff58]/35 bg-[#84ff49]/15 text-white'
+                  : 'border-white/8 bg-white/[0.03] text-slate-400'
+              }`}
+            >
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em]">
+                {item.label}
+              </p>
+              <p className="mt-1 font-['Barlow_Condensed'] text-2xl uppercase">{item.day}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {DEMO_SLOTS.map((slot) => (
+            <div
+              key={`${slot.title}-${slot.time}`}
+              className="rounded-2xl border border-white/8 bg-white/[0.03] p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-['Barlow_Condensed'] text-2xl uppercase text-white">
+                    {slot.title}
+                  </p>
+                  <p className="text-sm text-slate-400">{slot.surface}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-['Barlow_Condensed'] text-2xl uppercase text-white">
+                    {slot.time}
+                  </p>
+                  <p className="text-sm font-semibold text-[#96ff52]">{slot.price}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="mt-4 w-full rounded-xl bg-[#83ff42] px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.16em] text-[#08110d]"
+              >
+                Reservar
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DashboardMockup({ complexesCount, totalCourts }) {
+  return (
+    <div className="neon-card light-scan px-5 py-5 sm:px-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Resumen general</p>
+          <h3 className="mt-2 font-['Barlow_Condensed'] text-3xl uppercase text-white">
+            Panel owner
+          </h3>
+        </div>
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#8bff49]/14 text-[#9dff53]">
+          <LayoutDashboard size={20} />
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <DashboardMetric
+          icon={CalendarRange}
+          value={complexesCount || 12}
+          label="Reservas del mes"
+          accent="+23%"
+        />
+        <DashboardMetric icon={BarChart3} value={totalCourts || 24} label="Canchas online" accent="+18%" />
+        <DashboardMetric icon={Users} value={534} label="Jugadores" accent="+31%" />
+      </div>
+
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="rounded-[1.45rem] border border-white/8 bg-white/[0.03] p-4">
+          <div className="flex items-center justify-between text-sm text-slate-400">
+            <span>Reservas por dia</span>
+            <Clock3 size={16} />
+          </div>
+          <div className="mt-5 flex h-36 items-end gap-2">
+            {[28, 46, 34, 72, 41, 84, 96].map((height, index) => (
+              <div key={height} className="flex flex-1 flex-col items-center gap-2">
+                <div
+                  className="w-full rounded-t-full bg-[linear-gradient(180deg,#9dff54_0%,#397e2f_100%)]"
+                  style={{ height: `${height}%` }}
+                />
+                <span className="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">
+                  {['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'][index]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[1.45rem] border border-white/8 bg-white/[0.03] p-4">
+          <div className="flex items-center justify-between text-sm text-slate-400">
+            <span>Canchas mas vistas</span>
+            <Shield size={16} />
+          </div>
+          <div className="mt-5 flex items-center gap-4">
+            <div className="relative h-28 w-28 rounded-full bg-[conic-gradient(#8fff45_0_42%,#35a8ff_42%_74%,#1d2d3c_74%_100%)]">
+              <div className="absolute inset-[22%] rounded-full bg-[#081523]" />
+            </div>
+            <div className="space-y-3 text-sm text-slate-300">
+              <LegendItem color="bg-[#8fff45]" label="Cancha 1" value="42%" />
+              <LegendItem color="bg-[#35a8ff]" label="Cancha 2" value="32%" />
+              <LegendItem color="bg-white/30" label="Cancha 3" value="26%" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DashboardMetric({ icon: Icon, value, label, accent }) {
+  return (
+    <div className="rounded-[1.35rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#84ff49]/12 text-[#9dff53]">
+          <Icon size={18} />
+        </div>
+        <span className="text-sm font-semibold text-[#8eff47]">{accent}</span>
+      </div>
+      <p className="mt-4 font-['Teko'] text-5xl uppercase leading-none text-white">{value}</p>
+      <p className="mt-2 text-sm uppercase tracking-[0.12em] text-slate-400">{label}</p>
+    </div>
+  );
+}
+
+function LegendItem({ color, label, value }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`h-2.5 w-2.5 rounded-full ${color}`} />
+      <span className="min-w-[4.5rem]">{label}</span>
+      <span className="font-semibold text-white">{value}</span>
+    </div>
+  );
+}
+
+function OwnerBanner({ onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-[#9dff53]/30 bg-[linear-gradient(135deg,rgba(121,255,74,0.96),rgba(82,216,50,0.92))] px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgba(123,255,86,0.8)] transition hover:brightness-110"
+    >
+      <div className="flex items-center gap-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/45 bg-white/15 text-3xl text-white shadow-[0_0_0_10px_rgba(255,255,255,0.12)]">
+          <span>⚽</span>
+        </div>
+        <div>
+          <p className="font-['Teko'] text-5xl uppercase leading-[0.9] tracking-[0.02em] text-[#08110d] sm:text-6xl">
+            Suma tu cancha hoy
+          </p>
+          <p className="mt-1 font-medium text-[#0d2013]/80">
+            Empeza a cobrar mejor y a ordenar tus reservas.
+          </p>
+        </div>
+      </div>
+      <div className="hidden h-14 w-14 items-center justify-center rounded-full bg-[#09121b] text-white transition group-hover:translate-x-1 md:flex">
+        <ArrowRight size={24} />
+      </div>
+    </button>
   );
 }
 
@@ -200,45 +600,51 @@ function ComplexCard({ complex, onNeedAuth }) {
     <button
       type="button"
       onClick={handleClick}
-      className="group block w-full overflow-hidden rounded-3xl border border-outline_variant/20 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-surface_container_low"
+      className="group neon-card overflow-hidden text-left transition duration-300 hover:-translate-y-1 hover:border-[#8eff47]/28"
     >
-      <div className="flex h-48 items-center justify-center bg-gradient-to-br from-primary/20 via-primary_container/20 to-secondary/15">
+      <div className="relative h-56 overflow-hidden">
         {complex.imageUrl ? (
           <img
             src={complex.imageUrl}
             alt={complex.name}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <span className="text-5xl font-display font-semibold text-primary/70">Futbol</span>
+          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(136,255,67,0.26),transparent_28%),linear-gradient(180deg,#102435_0%,#09111c_100%)]">
+            <span className="font-['Teko'] text-7xl uppercase tracking-[0.08em] text-[#8eff47]/90">
+              Futbol
+            </span>
+          </div>
         )}
-      </div>
-
-      <div className="p-5">
-        <div className="mb-2 flex items-start justify-between">
-          <h3 className="text-lg font-display font-semibold leading-tight text-on_surface">
-            {complex.name}
-          </h3>
-          <div className="ml-2 flex shrink-0 items-center gap-1 text-sm text-yellow-400">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgba(2,8,14,0.12)_45%,rgba(2,8,14,0.8)_100%)]" />
+        <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
+          <span className="rounded-full border border-white/10 bg-[#071523]/78 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#bbff9e]">
+            {complex.courtsCount ?? '-'} canchas
+          </span>
+          <div className="flex items-center gap-1 rounded-full border border-white/10 bg-[#071523]/78 px-2.5 py-1 text-sm text-yellow-300">
             <Star size={13} fill="currentColor" />
             <span>4.8</span>
           </div>
         </div>
+      </div>
 
-        <div className="mb-4 flex items-center gap-1.5 text-sm text-on_surface_variant">
-          <MapPin size={13} />
-          <span className="truncate">{complex.address || 'Tucuman'}</span>
+      <div className="p-5">
+        <h3 className="font-['Barlow_Condensed'] text-3xl uppercase leading-none text-white">
+          {complex.name}
+        </h3>
+        <div className="mt-3 flex items-center gap-2 text-sm text-slate-400">
+          <MapPin size={15} className="text-[#8eff47]" />
+          <span className="truncate">{buildLocationLabel(complex)}</span>
         </div>
-
-        <div className="flex items-center justify-between">
-          <span className="rounded-full bg-surface_container px-3 py-1 text-xs text-on_surface_variant">
-            {complex.courtsCount ?? '-'} canchas
-          </span>
-          <span className="flex items-center gap-1 text-sm font-medium text-primary transition-all group-hover:gap-2">
-            Ver horarios
-            <ChevronRight size={14} />
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <p className="text-sm text-slate-300">
+            {user ? 'Entrar a ver horarios' : 'Inicia sesion para reservar'}
+          </p>
+          <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.16em] text-[#96ff52]">
+            Ver mas
+            <ChevronRight size={15} />
           </span>
         </div>
       </div>

@@ -1,8 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700;800&family=Teko:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes poster-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes poster-scan {
+  0% {
+    transform: translateX(-180%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+@keyframes poster-grid-pan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 180px 0;
+  }
+}
 
 @layer base {
   :root {
@@ -84,5 +112,86 @@
 
   .input-field {
     @apply bg-white w-full text-on_surface placeholder-on_surface_variant rounded-xl px-4 py-3 border border-outline_variant/45 focus:border-primary/45 focus:shadow-[0_0_0_4px_rgba(114,203,84,0.14)] outline-none transition-all duration-300;
+  }
+
+  .poster-panel-dark {
+    @apply relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(2,12,20,0.96),rgba(6,18,29,0.9))] backdrop-blur-xl shadow-[0_40px_120px_-56px_rgba(123,255,86,0.34)];
+  }
+
+  .poster-grid {
+    isolation: isolate;
+  }
+
+  .poster-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    opacity: 0.45;
+    background:
+      linear-gradient(180deg, rgba(7, 40, 23, 0) 0%, rgba(67, 179, 59, 0.2) 78%, rgba(67, 179, 59, 0.38) 100%),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 88px,
+        rgba(116, 255, 61, 0.055) 88px,
+        rgba(116, 255, 61, 0.055) 176px
+      );
+    animation: poster-grid-pan 18s linear infinite;
+  }
+
+  .poster-grid::after {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 18% 14%, rgba(154, 255, 106, 0.18), transparent 22%),
+      radial-gradient(circle at 82% 10%, rgba(255, 255, 255, 0.2), transparent 14%),
+      radial-gradient(circle at 50% 58%, rgba(89, 255, 74, 0.12), transparent 24%),
+      radial-gradient(circle at 76% 72%, rgba(89, 255, 74, 0.16), transparent 22%);
+    filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .neon-card {
+    @apply rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,21,35,0.9),rgba(6,16,28,0.82))] backdrop-blur-xl shadow-[0_24px_90px_-50px_rgba(123,255,86,0.38)];
+  }
+
+  .poster-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-[#9dff53]/25 bg-[#091724]/80 px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#baff8a];
+  }
+
+  .neon-input {
+    @apply w-full rounded-2xl border border-white/10 bg-[#071523]/88 px-5 py-4 text-white placeholder:text-slate-400 transition-all duration-300 focus:border-[#89ff46]/45 focus:outline-none focus:ring-4 focus:ring-[#89ff46]/10;
+  }
+
+  .float-slow {
+    animation: poster-float 8s ease-in-out infinite;
+  }
+
+  .float-slow-delay {
+    animation: poster-float 9s ease-in-out -2.5s infinite;
+  }
+
+  .light-scan {
+    isolation: isolate;
+  }
+
+  .light-scan::after {
+    content: '';
+    position: absolute;
+    inset: -26%;
+    z-index: -1;
+    background: linear-gradient(
+      110deg,
+      transparent 38%,
+      rgba(181, 255, 160, 0.06) 46%,
+      rgba(181, 255, 160, 0.22) 50%,
+      rgba(181, 255, 160, 0.06) 54%,
+      transparent 62%
+    );
+    animation: poster-scan 7.5s linear infinite;
+    pointer-events: none;
   }
 }

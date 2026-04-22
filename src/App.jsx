@@ -39,7 +39,7 @@ const PortalProfile = lazy(() => import('./pages/portal/PortalProfile'));
 function RouteLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-6">
-      <div className="flex flex-col items-center gap-4 rounded-[1.75rem] border border-outline_variant/20 bg-white px-8 py-10 shadow-[0_28px_60px_-36px_rgba(24,36,24,0.22)]">
+      <div className="flex flex-col items-center gap-4 rounded-[1.75rem] border border-outline_variant/20 bg-white px-8 py-10 shadow-[0_28px_60px_-36px_rgba(0,16,44,0.18)]">
         <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
         <p className="text-sm text-on_surface_variant">Cargando pantalla...</p>
       </div>
@@ -58,7 +58,7 @@ function PublicGuard({ children }) {
   return children;
 }
 
-/** Catch-all: authenticated → role home, anonymous → landing. */
+/** Catch-all: authenticated â†’ role home, anonymous â†’ landing. */
 function RoleRedirect() {
   const { user, role, loading } = useAuth();
   if (loading) return (
@@ -75,7 +75,7 @@ function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoader />}>
       <Routes>
-        {/* ── Public ── */}
+        {/* â”€â”€ Public â”€â”€ */}
         <Route
           path="/"
           element={
@@ -103,7 +103,7 @@ function AppRoutes() {
         {/* /login legacy redirect */}
         <Route path="/login" element={<Navigate to="/" replace />} />
 
-        {/* ── Owner billing result (skip billing check) ── */}
+        {/* â”€â”€ Owner billing result (skip billing check) â”€â”€ */}
         <Route
           path="/dashboard/billing/resultado"
           element={
@@ -113,7 +113,7 @@ function AppRoutes() {
           }
         />
 
-        {/* ── Dashboard ── */}
+        {/* â”€â”€ Dashboard â”€â”€ */}
         <Route
           path="/dashboard"
           element={
@@ -136,7 +136,7 @@ function AppRoutes() {
           <Route path="payments" element={<ProtectedRoute allowedRoles={['superadmin']}><AdminPayments /></ProtectedRoute>} />
         </Route>
 
-        {/* ── Portal (client) ── */}
+        {/* â”€â”€ Portal (client) â”€â”€ */}
         <Route
           path="/portal"
           element={

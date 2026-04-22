@@ -159,8 +159,8 @@ export default function LoginModal({ open, onClose }) {
         aria-label="Iniciar sesion"
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
-        <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-[#9dff53]/18 bg-[linear-gradient(180deg,rgba(4,18,30,0.98),rgba(5,16,26,0.94))] p-7 text-white shadow-[0_38px_90px_-38px_rgba(123,255,86,0.42)]">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(123,255,86,0.18),transparent_68%)]" />
+        <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-primary/18 bg-[linear-gradient(180deg,rgba(0,16,44,0.98),rgba(0,16,44,0.94))] p-7 text-white shadow-[0_38px_90px_-38px_rgba(115,209,29,0.42)]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.18),transparent_68%)]" />
           <button
             type="button"
             onClick={onClose}
@@ -182,13 +182,13 @@ export default function LoginModal({ open, onClose }) {
 
           <div className="space-y-4 rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-4">
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#bbff9f]">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-primary">
                 Correo
               </label>
               <div className="relative">
                 <Mail
                   size={16}
-                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#91ff54]"
+                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-primary"
                 />
                 <input
                   type="email"
@@ -198,19 +198,19 @@ export default function LoginModal({ open, onClose }) {
                   onChange={(event) =>
                     setForm((current) => ({ ...current, email: event.target.value }))
                   }
-                  className="w-full rounded-xl border border-white/10 bg-[#071523] py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-[#8eff47]/40 focus:outline-none focus:ring-4 focus:ring-[#8eff47]/10"
+                  className="w-full rounded-xl border border-white/10 bg-brand_bg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-primary/40 focus:outline-none focus:ring-4 focus:ring-primary/10"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#bbff9f]">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-primary">
                 Contrasena
               </label>
               <div className="relative">
                 <KeyRound
                   size={16}
-                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#91ff54]"
+                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-primary"
                 />
                 <input
                   type="password"
@@ -225,7 +225,7 @@ export default function LoginModal({ open, onClose }) {
                       handleEmailLogin();
                     }
                   }}
-                  className="w-full rounded-xl border border-white/10 bg-[#071523] py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-[#8eff47]/40 focus:outline-none focus:ring-4 focus:ring-[#8eff47]/10"
+                  className="w-full rounded-xl border border-white/10 bg-brand_bg py-2.5 pl-10 pr-4 text-white placeholder:text-slate-500 transition focus:border-primary/40 focus:outline-none focus:ring-4 focus:ring-primary/10"
                 />
               </div>
             </div>
@@ -235,10 +235,10 @@ export default function LoginModal({ open, onClose }) {
             type="button"
             onClick={handleEmailLogin}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#7CFF4B_0%,#58d832_55%,#9dcf20_100%)] py-3 font-semibold text-[#08110d] shadow-[0_18px_44px_-18px_rgba(123,255,86,0.75)] transition hover:brightness-110 disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-gradient py-3 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgba(115,209,29,0.75)] transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#08110d]/50 border-t-transparent" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/50 border-t-transparent" />
             ) : (
               <ArrowRight size={18} />
             )}
@@ -275,7 +275,7 @@ export default function LoginModal({ open, onClose }) {
                 onClose();
                 navigate('/register');
               }}
-              className="font-semibold text-[#8eff47] hover:underline"
+              className="font-semibold text-primary hover:underline"
             >
               Registrate
             </button>
@@ -288,7 +288,7 @@ export default function LoginModal({ open, onClose }) {
                 onClose();
                 navigate('/register?tipo=owner');
               }}
-              className="font-semibold text-[#8eff47] hover:underline"
+              className="font-semibold text-primary hover:underline"
             >
               Registrar mi complejo
             </button>

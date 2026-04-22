@@ -566,7 +566,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background text-on_surface font-body lg:flex">
-      <div className="hidden items-center justify-center overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,#ffffff,#f1f8e8)] p-6 lg:flex lg:w-1/2 xl:p-8">
+      <div className="hidden items-center justify-center overflow-hidden border-r border-outline_variant/25 bg-[linear-gradient(155deg,var(--text-white),rgb(var(--surface-container-rgb)))] p-6 lg:flex lg:w-1/2 xl:p-8">
         <img
           src={loginBackground}
           alt="Vista previa de la plataforma Clubes Tucuman"
@@ -574,7 +574,7 @@ export default function Login() {
         />
       </div>
 
-      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(114,203,84,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(201,138,25,0.12),transparent_28%),linear-gradient(180deg,#fbfdf8,#f3f7ee)] p-5 sm:p-8 lg:w-1/2 lg:p-10">
+      <div className="flex w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(0,16,44,0.1),transparent_28%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] p-5 sm:p-8 lg:w-1/2 lg:p-10">
         <div className="w-full max-w-md rounded-[2rem] border border-outline_variant/20 bg-white/92 p-6 shadow-[0_32px_64px_-42px_rgba(20,32,22,0.28)] backdrop-blur-sm sm:p-8">
           <div className="mb-8 flex justify-center lg:hidden">
             <BrandLogo imageClassName="h-16 w-auto" />

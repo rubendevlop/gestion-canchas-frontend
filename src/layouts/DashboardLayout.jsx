@@ -209,9 +209,9 @@ export default function DashboardLayout({ children = null }) {
           onClick={() => mobile && setSidebarOpen(false)}
           className={`group flex items-center gap-4 rounded-2xl border px-4 py-3.5 transition-all duration-200 ${
             isActive
-              ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgba(31,143,73,0.24)]'
+              ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgba(115,209,29,0.24)]'
               : mobile
-                ? 'border-transparent bg-[#f7fbf3] text-on_surface hover:border-outline_variant/18 hover:bg-white'
+                ? 'border-transparent bg-surface_container_low text-on_surface hover:border-outline_variant/18 hover:bg-white'
                 : 'border-transparent bg-transparent text-on_surface_variant hover:border-outline_variant/20 hover:bg-white/80 hover:text-on_surface'
           }`}
         >
@@ -241,16 +241,16 @@ export default function DashboardLayout({ children = null }) {
           type="button"
           aria-label="Cerrar menu"
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-[#0d140e]/42 backdrop-blur-[1px] lg:hidden"
+          className="fixed inset-0 z-40 bg-brand_bg/42 backdrop-blur-[1px] lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-[60] isolate flex w-[min(20rem,88vw)] flex-col overflow-hidden border-r border-outline_variant/40 bg-[#f7fbf3] shadow-[18px_0_42px_-18px_rgba(11,20,12,0.28)] transition-transform duration-300 lg:static lg:z-20 lg:w-72 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-[60] isolate flex w-[min(20rem,88vw)] flex-col overflow-hidden border-r border-outline_variant/40 bg-surface_container_low shadow-[18px_0_42px_-18px_rgba(0,16,44,0.2)] transition-transform duration-300 lg:static lg:z-20 lg:w-72 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[#f7fbf3]" />
+        <div className="pointer-events-none absolute inset-0 bg-surface_container_low" />
 
         <div className="relative flex items-start justify-between gap-4 border-b border-outline_variant/20 px-6 pb-5 pt-6 sm:px-8">
           <div className="min-w-0">

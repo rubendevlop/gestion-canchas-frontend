@@ -564,7 +564,7 @@ function OwnerBanner({ onClick }) {
       className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-primary/30 bg-primary-gradient px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgba(115,209,29,0.78)] transition hover:brightness-105"
     >
       <div className="flex items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/45 bg-white/15 text-3xl text-white shadow-[0_0_0_10px_rgba(255,255,255,0.12)]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-brand_white/45 bg-brand_white/15 text-3xl text-on_primary shadow-[0_0_0_10px_rgba(248,248,248,0.12)]">
           <span>⚽</span>
         </div>
         <div>

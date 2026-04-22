@@ -539,7 +539,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(114,203,84,0.14),transparent_32%),linear-gradient(180deg,#fbfdf8,#f3f7ee)] font-body text-on_surface">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.14),transparent_32%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] font-body text-on_surface">
       <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
           <Link to="/">

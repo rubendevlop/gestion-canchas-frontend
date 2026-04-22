@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
+  Building2,
   CalendarRange,
   ChevronRight,
   Loader2,
@@ -206,13 +207,15 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => navigate('/register?tipo=owner')}
-                  className="mt-6 flex w-full items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/[0.06] px-5 py-4 text-left transition hover:border-primary/36 hover:bg-primary/[0.10]"
+                  className="mt-6 flex w-full items-center gap-4 rounded-2xl border border-primary/40 bg-[linear-gradient(135deg,rgba(115,209,29,0.12),rgba(115,209,29,0.04))] px-5 py-5 text-left shadow-[0_8px_28px_-12px_rgba(115,209,29,0.28)] transition hover:border-primary/60 hover:bg-[linear-gradient(135deg,rgba(115,209,29,0.18),rgba(115,209,29,0.08))] hover:shadow-[0_12px_36px_-12px_rgba(115,209,29,0.4)]"
                 >
-                  <div>
-                    <p className="text-sm font-semibold text-white">¿Sos dueño de un complejo?</p>
-                    <p className="mt-0.5 text-xs text-slate-400">Registrá tus canchas y empezá a recibir reservas online.</p>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                    <Building2 size={22} />
                   </div>
-                  <ChevronRight size={18} className="shrink-0 text-primary" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-base font-bold text-white">¿Sos dueño de un complejo?</p>
+                    <p className="mt-0.5 text-sm text-slate-300">Registrá tus canchas y recibí reservas online →</p>
+                  </div>
                 </button>
               </div>
 

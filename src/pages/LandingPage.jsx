@@ -387,9 +387,9 @@ function BenefitCard({ icon: Icon, title, description }) {
 
 function PhoneMockup() {
   return (
-    <div className="relative overflow-hidden rounded-[2.8rem] border border-white/18 bg-[#07111b] p-3 shadow-[0_36px_90px_-40px_rgba(132,255,73,0.52)]">
+    <div className="relative overflow-hidden rounded-[2.8rem] border border-white/18 bg-brand_bg p-3 shadow-[0_36px_90px_-40px_rgba(115,209,29,0.5)]">
       <div className="absolute inset-x-10 top-2 h-6 rounded-b-[1rem] bg-black/80" />
-      <div className="rounded-[2.2rem] border border-white/8 bg-[linear-gradient(180deg,#071625_0%,#09111b_100%)] px-4 pb-5 pt-8">
+      <div className="rounded-[2.2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(0,16,44,0.88)_0%,rgba(0,16,44,1)_100%)] px-4 pb-5 pt-8">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.26em] text-slate-400">Clubes Tucuman</p>
@@ -397,13 +397,13 @@ function PhoneMockup() {
               Nueva reserva
             </h3>
           </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#8dff49]/16 text-[#9dff53]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/16 text-primary">
             <Smartphone size={18} />
           </div>
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-white/[0.04] p-1.5">
-          <button className="rounded-xl bg-[#84ff49] px-3 py-2 text-sm font-semibold text-[#07110c]">
+          <button className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-on_primary">
             Canchas
           </button>
           <button className="rounded-xl px-3 py-2 text-sm font-medium text-slate-400">
@@ -417,7 +417,7 @@ function PhoneMockup() {
               key={`${item.label}-${item.day}`}
               className={`rounded-2xl border px-3 py-3 text-center ${
                 item.active
-                  ? 'border-[#97ff58]/35 bg-[#84ff49]/15 text-white'
+                  ? 'border-primary/35 bg-primary/15 text-white'
                   : 'border-white/8 bg-white/[0.03] text-slate-400'
               }`}
             >
@@ -446,12 +446,12 @@ function PhoneMockup() {
                   <p className="font-['Barlow_Condensed'] text-2xl uppercase text-white">
                     {slot.time}
                   </p>
-                  <p className="text-sm font-semibold text-[#96ff52]">{slot.price}</p>
+                  <p className="text-sm font-semibold text-primary">{slot.price}</p>
                 </div>
               </div>
               <button
                 type="button"
-                className="mt-4 w-full rounded-xl bg-[#83ff42] px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.16em] text-[#08110d]"
+                className="mt-4 w-full rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.16em] text-on_primary"
               >
                 Reservar
               </button>
@@ -473,7 +473,7 @@ function DashboardMockup({ complexesCount, totalCourts }) {
             Panel owner
           </h3>
         </div>
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#8bff49]/14 text-[#9dff53]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/14 text-primary">
           <LayoutDashboard size={20} />
         </div>
       </div>
@@ -499,7 +499,7 @@ function DashboardMockup({ complexesCount, totalCourts }) {
             {[28, 46, 34, 72, 41, 84, 96].map((height, index) => (
               <div key={height} className="flex flex-1 flex-col items-center gap-2">
                 <div
-                  className="w-full rounded-t-full bg-[linear-gradient(180deg,#9dff54_0%,#397e2f_100%)]"
+                  className="w-full rounded-t-full bg-[linear-gradient(180deg,var(--primary-green-hover)_0%,var(--primary-green)_100%)]"
                   style={{ height: `${height}%` }}
                 />
                 <span className="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">
@@ -516,12 +516,12 @@ function DashboardMockup({ complexesCount, totalCourts }) {
             <Shield size={16} />
           </div>
           <div className="mt-5 flex items-center gap-4">
-            <div className="relative h-28 w-28 rounded-full bg-[conic-gradient(#8fff45_0_42%,#35a8ff_42%_74%,#1d2d3c_74%_100%)]">
-              <div className="absolute inset-[22%] rounded-full bg-[#081523]" />
+            <div className="relative h-28 w-28 rounded-full bg-[conic-gradient(var(--primary-green)_0_42%,var(--primary-green-hover)_42%_74%,rgba(248,248,248,0.24)_74%_100%)]">
+              <div className="absolute inset-[22%] rounded-full bg-brand_bg" />
             </div>
             <div className="space-y-3 text-sm text-slate-300">
-              <LegendItem color="bg-[#8fff45]" label="Cancha 1" value="42%" />
-              <LegendItem color="bg-[#35a8ff]" label="Cancha 2" value="32%" />
+              <LegendItem color="bg-primary" label="Cancha 1" value="42%" />
+              <LegendItem color="bg-brand_green_hover" label="Cancha 2" value="32%" />
               <LegendItem color="bg-white/30" label="Cancha 3" value="26%" />
             </div>
           </div>
@@ -535,10 +535,10 @@ function DashboardMetric({ icon: Icon, value, label, accent }) {
   return (
     <div className="rounded-[1.35rem] border border-white/8 bg-white/[0.03] px-4 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#84ff49]/12 text-[#9dff53]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/12 text-primary">
           <Icon size={18} />
         </div>
-        <span className="text-sm font-semibold text-[#8eff47]">{accent}</span>
+        <span className="text-sm font-semibold text-primary">{accent}</span>
       </div>
       <p className="mt-4 font-['Teko'] text-5xl uppercase leading-none text-white">{value}</p>
       <p className="mt-2 text-sm uppercase tracking-[0.12em] text-slate-400">{label}</p>
@@ -561,22 +561,22 @@ function OwnerBanner({ onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-[#9dff53]/30 bg-[linear-gradient(135deg,rgba(121,255,74,0.96),rgba(82,216,50,0.92))] px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgba(123,255,86,0.8)] transition hover:brightness-110"
+      className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-primary/30 bg-primary-gradient px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgba(115,209,29,0.78)] transition hover:brightness-105"
     >
       <div className="flex items-center gap-4">
         <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/45 bg-white/15 text-3xl text-white shadow-[0_0_0_10px_rgba(255,255,255,0.12)]">
           <span>⚽</span>
         </div>
         <div>
-          <p className="font-['Teko'] text-5xl uppercase leading-[0.9] tracking-[0.02em] text-[#08110d] sm:text-6xl">
+          <p className="font-['Teko'] text-5xl uppercase leading-[0.9] tracking-[0.02em] text-on_primary sm:text-6xl">
             Suma tu cancha hoy
           </p>
-          <p className="mt-1 font-medium text-[#0d2013]/80">
+          <p className="mt-1 font-medium text-on_primary/72">
             Empeza a cobrar mejor y a ordenar tus reservas.
           </p>
         </div>
       </div>
-      <div className="hidden h-14 w-14 items-center justify-center rounded-full bg-[#09121b] text-white transition group-hover:translate-x-1 md:flex">
+      <div className="hidden h-14 w-14 items-center justify-center rounded-full bg-brand_bg text-brand_white transition group-hover:translate-x-1 md:flex">
         <ArrowRight size={24} />
       </div>
     </button>
@@ -600,7 +600,7 @@ function ComplexCard({ complex, onNeedAuth }) {
     <button
       type="button"
       onClick={handleClick}
-      className="group neon-card overflow-hidden text-left transition duration-300 hover:-translate-y-1 hover:border-[#8eff47]/28"
+      className="group neon-card overflow-hidden text-left transition duration-300 hover:-translate-y-1 hover:border-primary/28"
     >
       <div className="relative h-56 overflow-hidden">
         {complex.imageUrl ? (
@@ -612,18 +612,18 @@ function ComplexCard({ complex, onNeedAuth }) {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(136,255,67,0.26),transparent_28%),linear-gradient(180deg,#102435_0%,#09111c_100%)]">
-            <span className="font-['Teko'] text-7xl uppercase tracking-[0.08em] text-[#8eff47]/90">
+          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.22),transparent_28%),linear-gradient(180deg,rgba(0,16,44,0.86)_0%,rgba(0,16,44,1)_100%)]">
+            <span className="font-['Teko'] text-7xl uppercase tracking-[0.08em] text-primary/90">
               Futbol
             </span>
           </div>
         )}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgba(2,8,14,0.12)_45%,rgba(2,8,14,0.8)_100%)]" />
         <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
-          <span className="rounded-full border border-white/10 bg-[#071523]/78 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#bbff9e]">
+          <span className="rounded-full border border-white/10 bg-brand_bg/78 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
             {complex.courtsCount ?? '-'} canchas
           </span>
-          <div className="flex items-center gap-1 rounded-full border border-white/10 bg-[#071523]/78 px-2.5 py-1 text-sm text-yellow-300">
+          <div className="flex items-center gap-1 rounded-full border border-white/10 bg-brand_bg/78 px-2.5 py-1 text-sm text-brand_white/80">
             <Star size={13} fill="currentColor" />
             <span>4.8</span>
           </div>
@@ -635,14 +635,14 @@ function ComplexCard({ complex, onNeedAuth }) {
           {complex.name}
         </h3>
         <div className="mt-3 flex items-center gap-2 text-sm text-slate-400">
-          <MapPin size={15} className="text-[#8eff47]" />
+          <MapPin size={15} className="text-primary" />
           <span className="truncate">{buildLocationLabel(complex)}</span>
         </div>
         <div className="mt-5 flex items-center justify-between gap-3">
           <p className="text-sm text-slate-300">
             {user ? 'Entrar a ver horarios' : 'Inicia sesion para reservar'}
           </p>
-          <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.16em] text-[#96ff52]">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.16em] text-primary">
             Ver mas
             <ChevronRight size={15} />
           </span>

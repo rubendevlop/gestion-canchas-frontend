@@ -52,6 +52,43 @@ const GOOGLE_CLIENT_FORM_INITIAL = {
   phone: '',
 };
 
+const REGISTER_BENEFITS = {
+  client: [
+    {
+      icon: Users,
+      title: 'Reserva sin friccion',
+      description: 'Encuentra horarios, productos y complejos desde una sola cuenta.',
+    },
+    {
+      icon: Shield,
+      title: 'Acceso claro y seguro',
+      description: 'Ingresa con email o Google y mantene tu historial siempre ordenado.',
+    },
+    {
+      icon: LayoutGrid,
+      title: 'Todo en el mismo lugar',
+      description: 'Tus reservas, compras y datos quedan listos para usar desde el portal.',
+    },
+  ],
+  owner: [
+    {
+      icon: Building2,
+      title: 'Muestra tu complejo mejor',
+      description: 'Publica canchas, precios y disponibilidad con una vidriera mas profesional.',
+    },
+    {
+      icon: LayoutGrid,
+      title: 'Gestion centralizada',
+      description: 'Organiza reservas, canchas y datos del negocio desde un panel unico.',
+    },
+    {
+      icon: Shield,
+      title: 'Alta validada',
+      description: 'La autenticacion con Google ayuda a dar confianza al proceso de registro.',
+    },
+  ],
+};
+
 function normalizeEmail(value = '') {
   return String(value || '').trim().toLowerCase();
 }
@@ -176,18 +213,36 @@ function AccountTypeCard({ icon, title, desc, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-all ${
+      className={`flex items-start gap-3 rounded-[1.4rem] border p-4 text-left transition-all ${
         active
-          ? 'border-primary bg-primary/10 text-primary'
-          : 'border-outline_variant/25 bg-white text-on_surface_variant hover:border-primary/40 hover:text-on_surface'
+          ? 'border-primary/30 bg-[linear-gradient(135deg,rgba(115,209,29,0.14),rgba(115,209,29,0.04))] text-on_surface shadow-[0_18px_38px_-28px_rgba(115,209,29,0.3)]'
+          : 'border-outline_variant/25 bg-white text-on_surface_variant hover:border-primary/30 hover:text-on_surface'
       }`}
     >
-      <div className={active ? 'text-primary' : 'text-outline'}>{icon}</div>
-      <div>
-        <p className="text-sm font-semibold">{title}</p>
-        <p className="mt-0.5 text-xs opacity-70">{desc}</p>
+      <div
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
+          active ? 'bg-primary/12 text-primary' : 'bg-surface_container text-outline'
+        }`}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className={`text-sm font-semibold ${active ? 'text-on_surface' : ''}`}>{title}</p>
+        <p className="mt-0.5 text-xs leading-5 opacity-80">{desc}</p>
       </div>
     </button>
+  );
+}
+
+function RegisterBenefitCard({ icon: Icon, title, description }) {
+  return (
+    <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] px-4 py-4">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/14 text-primary">
+        <Icon size={20} />
+      </div>
+      <h3 className="mt-4 font-['Barlow_Condensed'] text-2xl uppercase text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-brand_white/72">{description}</p>
+    </div>
   );
 }
 
@@ -538,6 +593,9 @@ export default function RegisterPage() {
     }
   };
 
+  const registerBenefits =
+    mode === 'register-client' ? REGISTER_BENEFITS.client : REGISTER_BENEFITS.owner;
+
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.14),transparent_32%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] font-body text-on_surface">
       <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/85 backdrop-blur-xl">
@@ -558,7 +616,7 @@ export default function RegisterPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-xl px-5 py-10">
+      <main className="mx-auto max-w-6xl px-5 py-10">
         <button
           type="button"
           onClick={() => navigate('/')}
@@ -578,30 +636,62 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <div className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_28px_60px_-36px_rgba(24,36,24,0.22)] sm:p-8">
-          <h1 className="mb-2 text-3xl font-display font-bold">Crear cuenta</h1>
-          <p className="mb-6 text-sm text-on_surface_variant">
-            {mode === 'register-client'
-              ? 'Crea tu cuenta para reservar canchas y comprar productos.'
-              : 'Registra tu complejo. La autenticacion se hace con Google.'}
-          </p>
+        <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <section className="poster-panel-dark poster-grid px-6 py-7 sm:px-8 sm:py-8">
+            <p className="poster-chip">Clubes Tucuman</p>
+            <div className="mt-6 max-w-[15rem]">
+              <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(115,209,29,0.24)]" />
+            </div>
+            <h1 className="mt-8 font-['Teko'] text-[clamp(3.6rem,8vw,5.6rem)] uppercase leading-[0.86] tracking-[0.02em] text-white">
+              {mode === 'register-client' ? 'Entra a jugar mejor' : 'Suma tu complejo hoy'}
+            </h1>
+            <p className="mt-4 max-w-md text-base leading-7 text-brand_white/76">
+              {mode === 'register-client'
+                ? 'Crea tu cuenta para reservar canchas, comprar productos y moverte por el portal con una experiencia mas clara.'
+                : 'Registra tu complejo con una identidad de marca mas fuerte y prepara tu negocio para recibir reservas online.'}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="rounded-full border border-primary/20 bg-brand_bg/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand_white/80">
+                Reservas online
+              </span>
+              <span className="rounded-full border border-primary/20 bg-brand_bg/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand_white/80">
+                Gestion ordenada
+              </span>
+              <span className="rounded-full border border-primary/20 bg-brand_bg/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand_white/80">
+                Todo en espanol
+              </span>
+            </div>
+            <div className="mt-8 grid gap-3">
+              {registerBenefits.map((item) => (
+                <RegisterBenefitCard key={item.title} {...item} />
+              ))}
+            </div>
+          </section>
 
-          <div className="mb-6 grid grid-cols-2 gap-3">
-            <AccountTypeCard
-              icon={<Users size={22} />}
-              title="Soy cliente"
-              desc="Quiero reservar canchas"
-              active={mode === 'register-client'}
-              onClick={() => setMode('register-client')}
-            />
-            <AccountTypeCard
-              icon={<Building2 size={22} />}
-              title="Soy dueno"
-              desc="Tengo un complejo"
-              active={mode === 'register-owner'}
-              onClick={() => setMode('register-owner')}
-            />
-          </div>
+          <div className="rounded-[2rem] border border-outline_variant/20 bg-white/95 p-6 shadow-[0_28px_60px_-36px_rgba(0,16,44,0.18)] backdrop-blur-sm sm:p-8">
+            <h2 className="mb-2 text-3xl font-display font-bold">Crear cuenta</h2>
+            <p className="mb-6 text-sm text-on_surface_variant">
+              {mode === 'register-client'
+                ? 'Crea tu cuenta para reservar canchas y comprar productos.'
+                : 'Registra tu complejo. La autenticacion se hace con Google.'}
+            </p>
+
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <AccountTypeCard
+                icon={<Users size={22} />}
+                title="Soy cliente"
+                desc="Quiero reservar canchas"
+                active={mode === 'register-client'}
+                onClick={() => setMode('register-client')}
+              />
+              <AccountTypeCard
+                icon={<Building2 size={22} />}
+                title="Soy dueno"
+                desc="Tengo un complejo"
+                active={mode === 'register-owner'}
+                onClick={() => setMode('register-owner')}
+              />
+            </div>
 
           {mode === 'register-client' && (
             <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">

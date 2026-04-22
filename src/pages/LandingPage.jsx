@@ -282,7 +282,6 @@ export default function LandingPage() {
           id="complexes-section"
           className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 sm:pt-10"
         >
-          <div className="poster-panel-dark px-5 py-6 sm:px-8 sm:py-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="poster-chip">Reserva online</p>
@@ -339,8 +338,8 @@ export default function LandingPage() {
                 ))}
               </div>
             )}
-          </div>
         </section>
+
 
         <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-primary/70 sm:px-6">
           Mas reservas - Mas juego - Mejor experiencia

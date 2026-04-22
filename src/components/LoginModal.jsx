@@ -159,8 +159,8 @@ export default function LoginModal({ open, onClose }) {
         aria-label="Iniciar sesion"
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
-        <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-primary/18 bg-[linear-gradient(180deg,rgba(0,16,44,0.98),rgba(0,16,44,0.94))] p-7 text-white shadow-[0_38px_90px_-38px_rgba(115,209,29,0.42)]">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.18),transparent_68%)]" />
+        <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-primary/18 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.98),rgb(var(--bg-main-rgb)/0.94))] p-7 text-white shadow-[0_38px_90px_-38px_rgb(var(--primary-green-rgb)/0.42)]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.18),transparent_68%)]" />
           <button
             type="button"
             onClick={onClose}
@@ -235,7 +235,7 @@ export default function LoginModal({ open, onClose }) {
             type="button"
             onClick={handleEmailLogin}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-gradient py-3 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgba(115,209,29,0.75)] transition hover:brightness-110 disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-gradient py-3 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgb(var(--primary-green-rgb)/0.75)] transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/50 border-t-transparent" />

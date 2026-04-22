@@ -209,7 +209,7 @@ export default function DashboardLayout({ children = null }) {
           onClick={() => mobile && setSidebarOpen(false)}
           className={`group flex items-center gap-4 rounded-2xl border px-4 py-3.5 transition-all duration-200 ${
             isActive
-              ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgba(115,209,29,0.24)]'
+              ? 'border-primary/15 bg-primary/10 text-on_surface shadow-[0_16px_34px_-22px_rgb(var(--primary-green-rgb)/0.24)]'
               : mobile
                 ? 'border-transparent bg-surface_container_low text-on_surface hover:border-outline_variant/18 hover:bg-white'
                 : 'border-transparent bg-transparent text-on_surface_variant hover:border-outline_variant/20 hover:bg-white/80 hover:text-on_surface'
@@ -246,7 +246,7 @@ export default function DashboardLayout({ children = null }) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-[60] isolate flex w-[min(20rem,88vw)] flex-col overflow-hidden border-r border-outline_variant/40 bg-surface_container_low shadow-[18px_0_42px_-18px_rgba(0,16,44,0.2)] transition-transform duration-300 lg:static lg:z-20 lg:w-72 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-[60] isolate flex w-[min(20rem,88vw)] flex-col overflow-hidden border-r border-outline_variant/40 bg-surface_container_low shadow-[18px_0_42px_-18px_rgb(var(--bg-main-rgb)/0.2)] transition-transform duration-300 lg:static lg:z-20 lg:w-72 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -254,7 +254,7 @@ export default function DashboardLayout({ children = null }) {
 
         <div className="relative flex items-start justify-between gap-4 border-b border-outline_variant/20 px-6 pb-5 pt-6 sm:px-8">
           <div className="min-w-0">
-            <div className="inline-flex rounded-[1.75rem] border border-outline_variant/20 bg-white px-4 py-3 shadow-[0_18px_30px_-24px_rgba(0,16,44,0.18)]">
+            <div className="inline-flex rounded-[1.75rem] border border-outline_variant/20 bg-white px-4 py-3 shadow-[0_18px_30px_-24px_rgb(var(--bg-main-rgb)/0.18)]">
               <BrandLogo imageClassName="h-14 w-auto" />
             </div>
             <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-outline">
@@ -280,7 +280,7 @@ export default function DashboardLayout({ children = null }) {
         </nav>
 
         <div className="relative mt-auto border-t border-outline_variant/18 p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] sm:p-6">
-          <div className="rounded-[1.5rem] border border-outline_variant/18 bg-white p-4 shadow-[0_20px_34px_-28px_rgba(0,16,44,0.22)]">
+          <div className="rounded-[1.5rem] border border-outline_variant/18 bg-white p-4 shadow-[0_20px_34px_-28px_rgb(var(--bg-main-rgb)/0.22)]">
             <div className="mb-4 flex items-center gap-3">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt="Avatar" className="h-11 w-11 rounded-full ring-2 ring-surface_container_highest" />
@@ -312,7 +312,7 @@ export default function DashboardLayout({ children = null }) {
       </aside>
 
       <main className="relative z-10 min-w-0 flex-1 flex flex-col">
-        <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/92 shadow-[0_12px_28px_-24px_rgba(0,16,44,0.18)] backdrop-blur-xl">
+        <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/92 shadow-[0_12px_28px_-24px_rgb(var(--bg-main-rgb)/0.18)] backdrop-blur-xl">
           <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-10">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <button
@@ -353,7 +353,7 @@ export default function DashboardLayout({ children = null }) {
                 </button>
 
                 {notificationsOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-[min(22rem,calc(100vw-1rem))] max-w-sm overflow-hidden rounded-[1.75rem] border border-outline_variant/20 bg-white shadow-[0_24px_60px_-30px_rgba(0,16,44,0.18)]">
+                  <div className="absolute right-0 top-full mt-3 w-[min(22rem,calc(100vw-1rem))] max-w-sm overflow-hidden rounded-[1.75rem] border border-outline_variant/20 bg-white shadow-[0_24px_60px_-30px_rgb(var(--bg-main-rgb)/0.18)]">
                     <div className="px-5 py-4 border-b border-outline_variant/10">
                       <p className="text-sm font-semibold text-on_surface">Notificaciones</p>
                       <p className="mt-1 text-xs text-on_surface_variant">

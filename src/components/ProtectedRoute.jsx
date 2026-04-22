@@ -17,7 +17,7 @@ const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
 
 const LOADING_SCREEN = (
   <div className="min-h-screen flex items-center justify-center bg-background px-6">
-    <div className="flex flex-col items-center gap-4 rounded-[1.75rem] border border-outline_variant/20 bg-white px-8 py-10 shadow-[0_28px_60px_-36px_rgba(0,16,44,0.18)]">
+    <div className="flex flex-col items-center gap-4 rounded-[1.75rem] border border-outline_variant/20 bg-white px-8 py-10 shadow-[0_28px_60px_-36px_rgb(var(--bg-main-rgb)/0.18)]">
       <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
       <p className="text-on_surface_variant text-sm">Verificando sesion...</p>
     </div>
@@ -39,7 +39,7 @@ function AdminPanelState({ children }) {
 function PendingApprovalScreen() {
   return (
     <AdminPanelState>
-      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgba(0,16,44,0.18)] sm:p-10">
+      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgb(var(--bg-main-rgb)/0.18)] sm:p-10">
         <div className="flex h-18 w-18 items-center justify-center rounded-[1.75rem] bg-yellow-400/12 text-yellow-500">
           <Clock size={34} />
         </div>
@@ -72,7 +72,7 @@ function PendingApprovalScreen() {
 function RejectedScreen({ note }) {
   return (
     <AdminPanelState>
-      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgba(0,16,44,0.18)] sm:p-10">
+      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgb(var(--bg-main-rgb)/0.18)] sm:p-10">
         <div className="flex h-18 w-18 items-center justify-center rounded-[1.75rem] bg-red-500/10 text-red-500">
           <XCircle size={34} />
         </div>
@@ -145,7 +145,7 @@ function BillingRequiredScreen({ ownerBilling, refreshProfile }) {
 
   return (
     <AdminPanelState>
-      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgba(0,16,44,0.18)] sm:p-10">
+      <div className="w-full rounded-[2rem] border border-outline_variant/20 bg-white/92 p-8 shadow-[0_32px_72px_-40px_rgb(var(--bg-main-rgb)/0.18)] sm:p-10">
         <div className="flex h-18 w-18 items-center justify-center rounded-[1.75rem] bg-primary/10 text-primary">
           <CreditCard size={34} />
         </div>

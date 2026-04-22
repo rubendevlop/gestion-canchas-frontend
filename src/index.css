@@ -102,8 +102,10 @@
       );
   }
 
-  * {
+  *, ::before, ::after, ::backdrop {
     -webkit-tap-highlight-color: transparent;
+    --tw-ring-offset-color: var(--text-white);
+    --tw-ring-color: rgb(var(--primary-green-rgb) / 0.5);
   }
 
   #root {

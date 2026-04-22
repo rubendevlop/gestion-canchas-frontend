@@ -110,17 +110,17 @@ export default function OwnerLandingPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-brand_bg font-body text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(115,209,29,0.12),transparent_32%),linear-gradient(180deg,rgba(0,16,44,1)_0%,rgba(0,16,44,0.94)_52%,rgba(0,16,44,1)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.12),transparent_32%),linear-gradient(180deg,rgb(var(--bg-main-rgb))_0%,rgb(var(--bg-main-rgb)/0.94)_52%,rgb(var(--bg-main-rgb))_100%)]" />
         <div className="absolute left-[8%] top-[8%] h-24 w-24 rounded-full bg-white/25 blur-2xl" />
         <div className="absolute right-[10%] top-[5%] h-28 w-28 rounded-full bg-white/30 blur-[54px]" />
-        <div className="absolute inset-x-0 bottom-[-8%] h-[40%] bg-[radial-gradient(circle_at_bottom,rgba(115,209,29,0.24),transparent_52%)]" />
+        <div className="absolute inset-x-0 bottom-[-8%] h-[40%] bg-[radial-gradient(circle_at_bottom,rgb(var(--primary-green-rgb)/0.24),transparent_52%)]" />
       </div>
 
       <header className="sticky top-0 z-40 border-b border-white/10 bg-brand_bg/72 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link
             to="/"
-            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_28px_-22px_rgba(115,209,29,0.32)]"
+            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 shadow-[0_16px_28px_-22px_rgb(var(--primary-green-rgb)/0.32)]"
           >
             <BrandLogo imageClassName="h-9 w-auto sm:h-10" />
           </Link>
@@ -145,7 +145,7 @@ export default function OwnerLandingPage() {
             <button
               type="button"
               onClick={() => navigate('/register?tipo=owner')}
-              className="inline-flex items-center gap-2 rounded-2xl bg-primary-gradient px-3 py-2 text-xs font-semibold text-on_primary shadow-[0_14px_32px_-16px_rgba(115,209,29,0.72)] transition hover:scale-[1.02] hover:brightness-110 sm:px-4 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary-gradient px-3 py-2 text-xs font-semibold text-on_primary shadow-[0_14px_32px_-16px_rgb(var(--primary-green-rgb)/0.72)] transition hover:scale-[1.02] hover:brightness-110 sm:px-4 sm:text-sm"
             >
               <UserPlus size={15} />
               <span className="sm:hidden">Alta owner</span>
@@ -166,9 +166,9 @@ export default function OwnerLandingPage() {
                   La plataforma #1 para duenos de canchas
                 </p>
 
-                <h1 className="mt-6 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,16,44,0.48)]">
+                <h1 className="mt-6 max-w-[7ch] font-['Teko'] text-[clamp(5rem,15vw,8.8rem)] uppercase leading-[0.82] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgb(var(--bg-main-rgb)/0.48)]">
                   Tenes
-                  <span className="block text-primary [text-shadow:0_0_24px_rgba(115,209,29,0.42)]">
+                  <span className="block text-primary [text-shadow:0_0_24px_rgb(var(--primary-green-rgb)/0.42)]">
                     canchas?
                   </span>
                 </h1>
@@ -187,7 +187,7 @@ export default function OwnerLandingPage() {
                   <button
                     type="button"
                     onClick={() => navigate('/register?tipo=owner')}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgba(115,209,29,0.76)] transition hover:scale-[1.02] hover:brightness-110"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgb(var(--primary-green-rgb)/0.76)] transition hover:scale-[1.02] hover:brightness-110"
                   >
                     Suma tu cancha hoy
                     <ArrowRight size={18} />
@@ -265,7 +265,7 @@ export default function OwnerLandingPage() {
               <button
                 type="button"
                 onClick={() => navigate('/register?tipo=owner')}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgba(115,209,29,0.76)] transition hover:scale-[1.02] hover:brightness-110"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgb(var(--primary-green-rgb)/0.76)] transition hover:scale-[1.02] hover:brightness-110"
               >
                 Crear alta owner
                 <ArrowRight size={18} />
@@ -316,9 +316,9 @@ function BenefitCard({ icon: Icon, title, description }) {
 
 function PhoneMockup() {
   return (
-    <div className="relative overflow-hidden rounded-[2.8rem] border border-white/18 bg-brand_bg p-3 shadow-[0_36px_90px_-40px_rgba(115,209,29,0.5)]">
+    <div className="relative overflow-hidden rounded-[2.8rem] border border-white/18 bg-brand_bg p-3 shadow-[0_36px_90px_-40px_rgb(var(--primary-green-rgb)/0.5)]">
       <div className="absolute inset-x-10 top-2 h-6 rounded-b-[1rem] bg-black/80" />
-      <div className="rounded-[2.2rem] border border-white/8 bg-[linear-gradient(180deg,rgba(0,16,44,0.88)_0%,rgba(0,16,44,1)_100%)] px-4 pb-5 pt-8">
+      <div className="rounded-[2.2rem] border border-white/8 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.88)_0%,rgb(var(--bg-main-rgb))_100%)] px-4 pb-5 pt-8">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.26em] text-slate-400">Clubes Tucuman</p>
@@ -450,7 +450,7 @@ function DashboardMockup({ complexesCount, totalCourts }) {
             <Shield size={16} />
           </div>
           <div className="mt-5 flex items-center gap-4">
-            <div className="relative h-28 w-28 rounded-full bg-[conic-gradient(var(--primary-green)_0_42%,var(--primary-green-hover)_42%_74%,rgba(248,248,248,0.24)_74%_100%)]">
+            <div className="relative h-28 w-28 rounded-full bg-[conic-gradient(var(--primary-green)_0_42%,var(--primary-green-hover)_42%_74%,rgb(var(--text-white-rgb)/0.24)_74%_100%)]">
               <div className="absolute inset-[22%] rounded-full bg-brand_bg" />
             </div>
             <div className="space-y-3 text-sm text-slate-300">
@@ -495,10 +495,10 @@ function OwnerBanner({ onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-primary/30 bg-primary-gradient px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgba(115,209,29,0.78)] transition hover:brightness-105"
+      className="group flex w-full items-center justify-between gap-4 rounded-[1.9rem] border border-primary/30 bg-primary-gradient px-5 py-4 text-left shadow-[0_24px_70px_-34px_rgb(var(--primary-green-rgb)/0.78)] transition hover:brightness-105"
     >
       <div className="flex items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-brand_white/45 bg-brand_white/15 shadow-[0_0_0_10px_rgba(248,248,248,0.12)]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-brand_white/45 bg-brand_white/15 shadow-[0_0_0_10px_rgb(var(--text-white-rgb)/0.12)]">
           <BrandLogo imageClassName="h-8 w-auto" />
         </div>
         <div>

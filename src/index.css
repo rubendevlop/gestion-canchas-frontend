@@ -211,6 +211,111 @@
     box-shadow: 0 0 0 4px rgb(var(--primary-green-rgb) / 0.1);
   }
 
+  .theme-shell-dark {
+    --background-rgb: 0 16 44;
+    --surface-rgb: 0 16 44;
+    --surface-container-lowest-rgb: 0 16 44;
+    --surface-container-low-rgb: 0 16 44;
+    --surface-container-rgb: 0 16 44;
+    --surface-container-high-rgb: 0 16 44;
+    --surface-container-highest-rgb: 0 16 44;
+    --secondary-container-rgb: 0 16 44;
+    --tertiary-container-rgb: 0 16 44;
+    --outline-rgb: 217 217 217;
+    --on-surface-rgb: 248 248 248;
+    --on-surface-variant-rgb: 217 217 217;
+    --inverse-surface-rgb: 248 248 248;
+    --inverse-on-surface-rgb: 0 16 44;
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at top, rgb(var(--primary-green-rgb) / 0.14), transparent 26%),
+      linear-gradient(180deg, rgb(var(--bg-main-rgb)) 0%, rgb(var(--bg-main-rgb) / 0.96) 56%, rgb(var(--bg-main-rgb)) 100%);
+    color: var(--text-white);
+  }
+
+  .theme-shell-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -2;
+    opacity: 0.42;
+    background:
+      radial-gradient(circle at 12% 10%, rgb(var(--text-white-rgb) / 0.1), transparent 16%),
+      radial-gradient(circle at 88% 14%, rgb(var(--primary-green-rgb) / 0.14), transparent 18%),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 92px,
+        rgb(var(--primary-green-rgb) / 0.05) 92px,
+        rgb(var(--primary-green-rgb) / 0.05) 184px
+      );
+  }
+
+  .theme-shell-dark::after {
+    content: '';
+    position: absolute;
+    inset: auto -8rem -10rem auto;
+    width: 24rem;
+    height: 24rem;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 9999px;
+    background: rgb(var(--primary-green-rgb) / 0.14);
+    filter: blur(64px);
+  }
+
+  .app-shell-header {
+    @apply border-b border-white/10 backdrop-blur-xl;
+    background: rgb(var(--bg-main-rgb) / 0.72);
+  }
+
+  .app-shell-logo {
+    @apply rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 shadow-[0_16px_28px_-22px_rgb(var(--primary-green-rgb)/0.32)];
+  }
+
+  .app-shell-panel {
+    @apply rounded-[1.85rem] border border-white/10 bg-white/[0.04] shadow-[0_24px_70px_-38px_rgb(var(--primary-green-rgb)/0.22)] backdrop-blur-xl;
+  }
+
+  .app-shell-panel-strong {
+    @apply rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.94),rgb(var(--bg-main-rgb)/0.88))] shadow-[0_28px_80px_-42px_rgb(var(--primary-green-rgb)/0.26)] backdrop-blur-xl;
+  }
+
+  .app-shell-soft {
+    @apply rounded-[1.45rem] border border-white/8 bg-white/[0.03];
+  }
+
+  .app-shell-pill {
+    @apply rounded-2xl border border-white/10 bg-white/[0.05] text-brand_white transition-all;
+  }
+
+  .app-shell-pill-active {
+    @apply border-primary/28 bg-primary/12 text-white shadow-[0_14px_28px_-20px_rgb(var(--primary-green-rgb)/0.42)];
+  }
+
+  .app-shell-input {
+    @apply w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder:text-brand_gray/65 transition-all focus:border-primary/45 focus:outline-none focus:ring-2 focus:ring-primary/15;
+  }
+
+  .app-shell-button-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgb(var(--primary-green-rgb)/0.62)] transition hover:scale-[1.02] hover:brightness-110;
+  }
+
+  .app-shell-button-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/[0.05] px-6 py-3.5 font-medium text-white transition hover:border-primary/32 hover:bg-white/[0.09];
+  }
+
+  .app-shell-eyebrow {
+    @apply text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-primary;
+  }
+
+  .app-shell-empty {
+    @apply app-shell-panel px-6 py-12 text-center text-brand_gray;
+  }
+
   .float-slow {
     animation: poster-float 8s ease-in-out infinite;
   }

@@ -34,7 +34,7 @@ export default function ComplexDetail() {
   }
 
   if (!complex) {
-    return <div className="py-20 text-center text-on_surface_variant/70">{errorMessage || 'Complejo no encontrado.'}</div>;
+    return <div className="app-shell-empty py-20">{errorMessage || 'Complejo no encontrado.'}</div>;
   }
 
   const ownerPhone = String(complex.ownerContact?.phone || '').trim();
@@ -47,7 +47,7 @@ export default function ComplexDetail() {
 
   return (
     <div>
-      <div className="relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl border border-outline_variant/20 bg-gradient-to-br from-white via-surface_container_low to-secondary/10 shadow-[0_24px_70px_-42px_rgb(var(--bg-main-rgb)/0.14)]">
+      <div className="poster-panel-dark relative mb-8 flex h-64 items-center justify-center overflow-hidden rounded-3xl shadow-[0_24px_70px_-42px_rgb(var(--bg-main-rgb)/0.24)]">
         {complex.imageUrl ? (
           <img
             src={complex.imageUrl}
@@ -59,10 +59,10 @@ export default function ComplexDetail() {
         ) : (
           <span className="text-8xl">Futbol</span>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/92 via-white/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand_bg via-brand_bg/55 to-transparent" />
         <div className="absolute bottom-0 left-0 p-8">
-          <h1 className="mb-2 text-4xl font-display font-bold text-on_surface">{complex.name}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-sm text-on_surface_variant">
+          <h1 className="mb-2 text-4xl font-display font-bold text-white">{complex.name}</h1>
+          <div className="flex flex-wrap items-center gap-4 text-sm text-brand_gray">
             <span className="flex items-center gap-1.5">
               <MapPin size={14} />
               {complex.address || 'Buenos Aires'}
@@ -71,7 +71,7 @@ export default function ComplexDetail() {
               <Clock size={14} />
               {complex.openTime || '08:00'} - {complex.closeTime || '23:00'}
             </span>
-            <span className="flex items-center gap-1.5 text-yellow-400">
+            <span className="flex items-center gap-1.5 text-primary">
               <Star size={14} fill="currentColor" />
               4.8
             </span>
@@ -82,29 +82,29 @@ export default function ComplexDetail() {
       <div className="mb-10 grid grid-cols-2 gap-4">
         <Link
           to={`/portal/complejo/${complexId}/reservar`}
-          className="flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-5 text-lg font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgb(var(--primary-green-rgb)/0.26)] transition-all hover:scale-[1.01] hover:brightness-110"
+          className="app-shell-button-primary flex py-5 text-lg font-semibold"
         >
           <CalendarRange size={22} />
           Reservar cancha
         </Link>
         <Link
           to={`/portal/complejo/${complexId}/tienda`}
-          className="flex items-center justify-center gap-3 rounded-2xl border border-outline_variant/25 bg-white py-5 text-lg font-semibold text-on_surface transition-all hover:bg-surface_container_low"
+          className="app-shell-button-secondary flex py-5 text-lg font-semibold"
         >
           <ShoppingBag size={22} />
           Ver tienda
         </Link>
       </div>
 
-      <div className="mb-10 flex flex-wrap items-center gap-3 rounded-2xl border border-outline_variant/20 bg-white px-5 py-4 text-sm text-on_surface_variant">
-        <span className="font-medium text-on_surface">Reservas:</span>
+      <div className="app-shell-panel mb-10 flex flex-wrap items-center gap-3 px-5 py-4 text-sm text-brand_gray">
+        <span className="font-medium text-white">Reservas:</span>
         {reservationPaymentOptions.onSiteEnabled && (
           <span className="rounded-full bg-amber-400/10 px-3 py-1 font-semibold text-amber-700">
             Pagar en cancha
           </span>
         )}
         {reservationPaymentOptions.onlineEnabled ? (
-          <span className="rounded-full bg-sky-400/10 px-3 py-1 font-semibold text-sky-700">
+          <span className="rounded-full border border-primary/20 bg-primary/12 px-3 py-1 font-semibold text-primary">
             Pago online
           </span>
         ) : (
@@ -113,10 +113,10 @@ export default function ComplexDetail() {
       </div>
 
       {hasOwnerContact && (
-        <section className="mb-10 rounded-3xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_46px_-32px_rgb(var(--bg-main-rgb)/0.16)]">
+        <section className="app-shell-panel mb-10 p-6">
           <div className="mb-5">
-            <h2 className="text-2xl font-display font-semibold text-on_surface">Contacto</h2>
-            <p className="mt-2 text-sm text-on_surface_variant">
+            <h2 className="text-2xl font-display font-semibold text-white">Contacto</h2>
+            <p className="mt-2 text-sm text-brand_gray">
               Si necesitas resolver algo con tu reserva o compra, estos son los datos del owner del complejo.
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function ComplexDetail() {
       )}
 
       <section>
-        <h2 className="mb-5 text-2xl font-display font-semibold text-on_surface">Canchas disponibles</h2>
+        <h2 className="mb-5 text-2xl font-display font-semibold text-white">Canchas disponibles</h2>
         <div className="space-y-4">
           {courts.map((court) => {
             const imageUrl = court.imageUrl || court.image || court.images?.[0] || '';
@@ -138,7 +138,7 @@ export default function ComplexDetail() {
               <Link
                 key={court._id}
                 to={`/portal/complejo/${complexId}/reservar?courtId=${court._id}`}
-                className="group grid overflow-hidden rounded-2xl border border-outline_variant/20 bg-white transition-all hover:border-primary/30 hover:bg-surface_container_low md:grid-cols-[220px_minmax(0,1fr)]"
+                className="group app-shell-panel grid overflow-hidden transition-all hover:border-primary/30 hover:bg-white/[0.06] md:grid-cols-[220px_minmax(0,1fr)]"
               >
                 <div className="h-44 bg-gradient-to-br from-surface_container to-surface_container_high md:h-full">
                   {imageUrl ? (
@@ -150,16 +150,16 @@ export default function ComplexDetail() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-5xl text-on_surface_variant/25">Cancha</div>
+                    <div className="flex h-full items-center justify-center text-5xl text-brand_gray/25">Cancha</div>
                   )}
                 </div>
 
                 <div className="flex items-center justify-between gap-6 px-6 py-5">
                   <div className="min-w-0">
-                    <p className="text-base font-medium text-on_surface">{court.name}</p>
-                    <p className="mt-1 text-sm text-on_surface_variant">{court.sport || 'Futbol 5'}</p>
+                    <p className="text-base font-medium text-white">{court.name}</p>
+                    <p className="mt-1 text-sm text-brand_gray">{court.sport || 'Futbol 5'}</p>
                     {court.description && (
-                      <p className="mt-3 text-sm text-on_surface_variant/85">{court.description}</p>
+                      <p className="mt-3 text-sm text-brand_gray/85">{court.description}</p>
                     )}
                   </div>
 
@@ -167,7 +167,7 @@ export default function ComplexDetail() {
                     <div className="text-right">
                       <p className="font-semibold text-primary">
                         ${court.pricePerHour?.toLocaleString('es-AR')}
-                        <span className="text-xs font-normal text-on_surface_variant/65">/hr</span>
+                        <span className="text-xs font-normal text-brand_gray/65">/hr</span>
                       </p>
                       <span
                         className={`mt-2 inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -179,7 +179,7 @@ export default function ComplexDetail() {
                         {court.isAvailable !== false ? 'Disponible' : 'No disponible'}
                       </span>
                     </div>
-                    <ChevronRight size={18} className="text-on_surface_variant/45 transition-colors group-hover:text-primary" />
+                    <ChevronRight size={18} className="text-brand_gray/45 transition-colors group-hover:text-primary" />
                   </div>
                 </div>
               </Link>
@@ -187,7 +187,7 @@ export default function ComplexDetail() {
           })}
 
           {courts.length === 0 && (
-            <p className="py-10 text-center text-on_surface_variant/60">Este complejo no tiene canchas cargadas aun.</p>
+            <p className="app-shell-empty py-10">Este complejo no tiene canchas cargadas aun.</p>
           )}
         </div>
       </section>
@@ -197,14 +197,14 @@ export default function ComplexDetail() {
 
 function ContactRow({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
       <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Icon size={18} />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-on_surface_variant/70">{label}</p>
-          <p className="mt-1 break-all text-sm font-medium text-on_surface">{value || 'No disponible'}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand_gray/70">{label}</p>
+          <p className="mt-1 break-all text-sm font-medium text-white">{value || 'No disponible'}</p>
         </div>
       </div>
     </div>

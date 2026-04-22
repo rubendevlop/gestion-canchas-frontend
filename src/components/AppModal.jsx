@@ -9,19 +9,19 @@ const ICONS = {
 
 const TONE_STYLES = {
   error: {
-    badge: 'bg-red-400/10 text-red-500',
-    primary: 'bg-red-500 text-white hover:bg-red-600',
-    secondary: 'border-red-400/20 text-red-500 hover:bg-red-400/10',
+    badge: 'border border-primary/20 bg-primary/12 text-primary',
+    primary: 'bg-primary text-on_primary hover:brightness-110',
+    secondary: 'border-white/10 text-brand_gray hover:bg-white/[0.05] hover:text-white',
   },
   success: {
-    badge: 'bg-green-400/10 text-green-600',
+    badge: 'border border-primary/20 bg-primary/12 text-primary',
     primary: 'bg-primary text-on_primary hover:brightness-110',
-    secondary: 'border-outline_variant/20 text-on_surface_variant hover:bg-surface_container_low',
+    secondary: 'border-white/10 text-brand_gray hover:bg-white/[0.05] hover:text-white',
   },
   info: {
-    badge: 'bg-primary/10 text-primary',
+    badge: 'border border-primary/20 bg-primary/12 text-primary',
     primary: 'bg-primary text-on_primary hover:brightness-110',
-    secondary: 'border-outline_variant/20 text-on_surface_variant hover:bg-surface_container_low',
+    secondary: 'border-white/10 text-brand_gray hover:bg-white/[0.05] hover:text-white',
   },
 };
 
@@ -63,18 +63,18 @@ export default function AppModal({
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/65 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-brand_bg/70 p-4 backdrop-blur-sm"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onClose?.();
         }
       }}
     >
-      <div className="relative w-full max-w-lg rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_30px_80px_-34px_rgb(var(--bg-main-rgb)/0.24)] sm:p-7">
+      <div className="relative w-full max-w-lg rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.98),rgb(var(--bg-main-rgb)/0.92))] p-6 shadow-[0_30px_80px_-34px_rgb(var(--bg-main-rgb)/0.42)] sm:p-7">
         <button
           type="button"
           onClick={() => onClose?.()}
-          className="absolute right-4 top-4 rounded-full p-2 text-outline transition-colors hover:bg-surface_container_low hover:text-on_surface"
+          className="absolute right-4 top-4 rounded-full p-2 text-brand_gray transition-colors hover:bg-white/[0.05] hover:text-white"
           aria-label="Cerrar modal"
         >
           <X size={18} />
@@ -85,9 +85,9 @@ export default function AppModal({
             <Icon size={22} />
           </div>
           <div>
-            <h3 className="text-xl font-display font-semibold text-on_surface">{title}</h3>
+            <h3 className="text-xl font-display font-semibold text-white">{title}</h3>
             {description ? (
-              <p className="mt-2 text-sm leading-6 text-on_surface_variant">{description}</p>
+              <p className="mt-2 text-sm leading-6 text-brand_gray">{description}</p>
             ) : null}
           </div>
         </div>

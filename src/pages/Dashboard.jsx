@@ -59,11 +59,11 @@ export default function Dashboard() {
     <div className="animate-fade-in pb-10">
       <header className="mb-8 sm:mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm text-outline uppercase tracking-widest mb-1">{complex.name}</p>
-          <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-on_surface tracking-tight">
+          <p className="text-sm text-brand_gray uppercase tracking-widest mb-1">{complex.name}</p>
+          <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-white tracking-tight">
             Panel de Control
           </h2>
-          <p className="text-on_surface_variant">
+          <p className="text-brand_gray">
             {today.count === 0
               ? 'Sin reservas por el momento hoy.'
               : `Hoy tenes ${today.count} reserva${today.count !== 1 ? 's' : ''} activa${today.count !== 1 ? 's' : ''}.`}
@@ -79,55 +79,55 @@ export default function Dashboard() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-12 gap-6 mb-10">
-        <div className="sm:col-span-2 xl:col-span-5 bg-surface_container border border-outline_variant/10 rounded-[1.5rem] p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group">
+        <div className="app-shell-panel sm:col-span-2 xl:col-span-5 flex flex-col justify-between relative overflow-hidden p-6 sm:p-8 group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] rounded-full group-hover:bg-primary/20 transition-all" />
           <div>
-            <p className="text-sm font-semibold tracking-[0.05em] uppercase text-outline mb-2 flex items-center gap-2">
+            <p className="text-sm font-semibold tracking-[0.05em] uppercase text-brand_gray mb-2 flex items-center gap-2">
               <DollarSign size={14} /> Ingresos Confirmados (Hoy)
             </p>
-            <h3 className="text-4xl sm:text-5xl font-display font-bold text-on_surface">
+            <h3 className="text-4xl sm:text-5xl font-display font-bold text-white">
               ${today.income.toLocaleString('es-AR')}
             </h3>
           </div>
-          <div className="mt-6 flex items-center gap-2 text-on_surface_variant text-sm">
+          <div className="mt-6 flex items-center gap-2 text-brand_gray text-sm">
             <span>
               {today.confirmedCount} reserva{today.confirmedCount !== 1 ? 's' : ''} confirmada{today.confirmedCount !== 1 ? 's' : ''} hoy
             </span>
           </div>
         </div>
 
-        <div className="xl:col-span-4 bg-surface_container border border-outline_variant/10 rounded-[1.5rem] p-6 sm:p-8 flex flex-col justify-between">
+        <div className="app-shell-panel xl:col-span-4 flex flex-col justify-between p-6 sm:p-8">
           <div>
-            <p className="text-sm font-semibold tracking-[0.05em] uppercase text-outline mb-2 flex items-center gap-2">
+            <p className="text-sm font-semibold tracking-[0.05em] uppercase text-brand_gray mb-2 flex items-center gap-2">
               <LayoutGrid size={14} /> Canchas ({courts.total} total)
             </p>
-            <h3 className="text-3xl sm:text-4xl font-display font-medium text-on_surface">
+            <h3 className="text-3xl sm:text-4xl font-display font-medium text-white">
               {courts.occupied} ocupada{courts.occupied !== 1 ? 's' : ''}
             </h3>
           </div>
           <div className="mt-6">
-            <div className="flex justify-between text-xs text-outline mb-2">
+            <div className="flex justify-between text-xs text-brand_gray mb-2">
               <span>Ocupacion</span>
               <span>{courts.occupancyRate}%</span>
             </div>
-            <div className="w-full bg-surface_container_highest h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
               <div
                 className="bg-primary h-full rounded-full shadow-[0_0_10px_rgb(var(--primary-green-hover-rgb)/0.58)] transition-all"
                 style={{ width: `${courts.occupancyRate}%` }}
               />
             </div>
-            <p className="text-xs text-outline mt-2 text-right">
+            <p className="text-xs text-brand_gray mt-2 text-right">
               {courts.available} disponible{courts.available !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
 
-        <div className="xl:col-span-3 bg-surface_container border border-outline_variant/10 rounded-[1.5rem] p-6 sm:p-8 flex flex-col justify-between">
+        <div className="app-shell-panel xl:col-span-3 flex flex-col justify-between p-6 sm:p-8">
           <div>
             <p className="text-sm font-semibold tracking-[0.05em] uppercase text-error mb-2 flex items-center gap-2">
               <AlertTriangle size={14} /> Stock Critico
             </p>
-            <h3 className="text-3xl sm:text-4xl font-display font-medium text-on_surface">
+            <h3 className="text-3xl sm:text-4xl font-display font-medium text-white">
               {lowStock.length} item{lowStock.length !== 1 ? 's' : ''}
             </h3>
           </div>
@@ -141,9 +141,9 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-surface_container_high rounded-[1.5rem] p-6 sm:p-8">
+        <div className="app-shell-panel p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4 mb-6">
-            <h3 className="text-xl font-display font-medium text-on_surface">Reservas de Hoy</h3>
+            <h3 className="text-xl font-display font-medium text-white">Reservas de Hoy</h3>
             <Link to="/dashboard/reservations" className="text-sm text-primary hover:text-primary_fixed transition-colors">
               Ver todo
             </Link>
@@ -151,8 +151,8 @@ export default function Dashboard() {
 
           {today.reservations.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center opacity-50">
-              <CalendarRange size={40} strokeWidth={1} className="text-outline_variant mb-3" />
-              <p className="text-on_surface_variant text-sm">No hay reservas hoy.</p>
+              <CalendarRange size={40} strokeWidth={1} className="text-brand_gray mb-3" />
+              <p className="text-brand_gray text-sm">No hay reservas hoy.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -162,15 +162,15 @@ export default function Dashboard() {
                 return (
                   <div
                     key={reservation._id}
-                    className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between hover:bg-surface_container_highest -mx-4 px-4 py-3 rounded-xl transition-colors"
+                    className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between hover:bg-white/[0.04] -mx-4 px-4 py-3 rounded-xl transition-colors"
                   >
                     <div className="flex items-center gap-4 min-w-0">
-                      <div className="w-12 h-12 bg-surface_container_low rounded-2xl flex items-center justify-center font-bold text-on_surface text-sm shrink-0">
+                      <div className="w-12 h-12 bg-white/[0.06] rounded-2xl flex items-center justify-center font-bold text-white text-sm shrink-0">
                         {reservation.startTime}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-medium text-on_surface text-sm">{reservation.court?.name || 'Cancha'}</p>
-                        <p className="text-xs text-outline truncate">
+                        <p className="font-medium text-white text-sm">{reservation.court?.name || 'Cancha'}</p>
+                        <p className="text-xs text-brand_gray truncate">
                           {reservation.user?.displayName || reservation.user?.email || 'Cliente'}
                         </p>
                       </div>
@@ -193,8 +193,8 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="bg-surface_container rounded-[1.5rem] p-6 sm:p-8">
-          <h3 className="text-xl font-display font-medium text-on_surface mb-6">Estado del Complejo</h3>
+        <div className="app-shell-panel p-6 sm:p-8">
+          <h3 className="text-xl font-display font-medium text-white mb-6">Estado del Complejo</h3>
 
           <div className="space-y-4">
             <StatRow label="Reservas este mes" value={month.totalReservations} />
@@ -202,14 +202,14 @@ export default function Dashboard() {
 
             {lowStock.length > 0 && (
               <div className="mt-4 pt-4 border-t border-outline_variant/10">
-                <p className="text-xs uppercase tracking-wider text-error mb-3 font-semibold flex items-center gap-2">
+                <p className="text-xs uppercase tracking-wider text-primary mb-3 font-semibold flex items-center gap-2">
                   <AlertTriangle size={12} /> Productos con stock bajo
                 </p>
                 <div className="space-y-2">
                   {lowStock.map((product) => (
                     <div key={product._id} className="flex justify-between items-center gap-4 text-sm">
-                      <span className="text-on_surface_variant truncate">{product.name}</span>
-                      <span className="text-error font-semibold shrink-0">{product.stock} u.</span>
+                      <span className="text-brand_gray truncate">{product.name}</span>
+                      <span className="text-primary font-semibold shrink-0">{product.stock} u.</span>
                     </div>
                   ))}
                 </div>
@@ -226,10 +226,10 @@ function ErrorState({ message }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <AlertTriangle size={72} className="text-red-400/60 mb-6" strokeWidth={1} />
-      <h2 className="text-2xl sm:text-3xl font-display font-medium text-on_surface mb-3">
+      <h2 className="text-2xl sm:text-3xl font-display font-medium text-white mb-3">
         No se pudo cargar el dashboard
       </h2>
-      <p className="text-on_surface_variant max-w-md mb-8">{message}</p>
+      <p className="text-brand_gray max-w-md mb-8">{message}</p>
       <button
         type="button"
         onClick={() => window.location.reload()}
@@ -244,8 +244,8 @@ function ErrorState({ message }) {
 function StatRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2">
-      <span className="text-on_surface_variant text-sm">{label}</span>
-      <span className="font-display font-semibold text-on_surface shrink-0">{value}</span>
+      <span className="text-brand_gray text-sm">{label}</span>
+      <span className="font-display font-semibold text-white shrink-0">{value}</span>
     </div>
   );
 }
@@ -253,11 +253,11 @@ function StatRow({ label, value }) {
 function NoComplexState() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-      <Building2 size={72} className="text-outline_variant/30 mb-6" strokeWidth={1} />
-      <h2 className="text-2xl sm:text-3xl font-display font-medium text-on_surface mb-3">
+      <Building2 size={72} className="text-brand_gray/30 mb-6" strokeWidth={1} />
+      <h2 className="text-2xl sm:text-3xl font-display font-medium text-white mb-3">
         Aun no tenes un complejo configurado
       </h2>
-      <p className="text-on_surface_variant max-w-md mb-8">
+      <p className="text-brand_gray max-w-md mb-8">
         Para ver metricas, reservas e ingresos, primero tenes que crear tu complejo deportivo.
       </p>
       <Link

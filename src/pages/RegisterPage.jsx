@@ -152,7 +152,7 @@ function FormField({
       </label>
       <div className="relative">
         <div
-          className={`pointer-events-none absolute left-0 text-outline_variant ${
+          className={`pointer-events-none absolute left-0 text-brand_gray/70 ${
             textarea ? 'top-3.5 pl-4' : 'inset-y-0 flex items-center pl-4'
           }`}
         >
@@ -165,7 +165,7 @@ function FormField({
             value={value}
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
-            className={`w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
+            className={`w-full rounded-xl border border-white/10 bg-white/[0.05] py-3 pl-12 pr-4 text-white placeholder-brand_gray/60 transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
               disabled ? 'cursor-not-allowed opacity-70' : ''
             }`}
           />
@@ -177,7 +177,7 @@ function FormField({
             autoComplete={autoComplete}
             disabled={disabled}
             onChange={(event) => onChange(event.target.value)}
-            className={`w-full rounded-xl border border-outline_variant/30 bg-white py-3 pl-12 pr-4 text-on_surface placeholder-outline_variant transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
+            className={`w-full rounded-xl border border-white/10 bg-white/[0.05] py-3 pl-12 pr-4 text-white placeholder-brand_gray/60 transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 ${
               disabled ? 'cursor-not-allowed opacity-70' : ''
             }`}
           />
@@ -196,7 +196,7 @@ function SelectField({ label, value, onChange, options = [] }) {
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-outline_variant/30 bg-white px-4 py-3 text-on_surface transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
+        className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-white transition focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20"
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -215,19 +215,19 @@ function AccountTypeCard({ icon, title, desc, active, onClick }) {
       onClick={onClick}
       className={`flex items-start gap-3 rounded-[1.4rem] border p-4 text-left transition-all ${
         active
-          ? 'border-primary/30 bg-[linear-gradient(135deg,rgb(var(--primary-green-rgb)/0.14),rgb(var(--primary-green-rgb)/0.04))] text-on_surface shadow-[0_18px_38px_-28px_rgb(var(--primary-green-rgb)/0.3)]'
-          : 'border-outline_variant/25 bg-white text-on_surface_variant hover:border-primary/30 hover:text-on_surface'
+          ? 'border-primary/30 bg-[linear-gradient(135deg,rgb(var(--primary-green-rgb)/0.18),rgb(var(--primary-green-rgb)/0.04))] text-white shadow-[0_18px_38px_-28px_rgb(var(--primary-green-rgb)/0.3)]'
+          : 'border-white/10 bg-white/[0.04] text-brand_gray hover:border-primary/30 hover:text-white'
       }`}
     >
       <div
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
-          active ? 'bg-primary/12 text-primary' : 'bg-surface_container text-outline'
+          active ? 'bg-primary/14 text-primary' : 'bg-white/[0.06] text-brand_gray'
         }`}
       >
         {icon}
       </div>
       <div className="min-w-0">
-        <p className={`text-sm font-semibold ${active ? 'text-on_surface' : ''}`}>{title}</p>
+        <p className={`text-sm font-semibold ${active ? 'text-white' : ''}`}>{title}</p>
         <p className="mt-0.5 text-xs leading-5 opacity-80">{desc}</p>
       </div>
     </button>
@@ -597,13 +597,13 @@ export default function RegisterPage() {
     mode === 'register-client' ? REGISTER_BENEFITS.client : REGISTER_BENEFITS.owner;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.14),transparent_32%),linear-gradient(180deg,var(--text-white),rgb(var(--background-rgb)))] font-body text-on_surface">
-      <header className="sticky top-0 z-20 border-b border-outline_variant/20 bg-white/85 backdrop-blur-xl">
+    <div className="theme-shell-dark font-body text-on_surface">
+      <header className="app-shell-header sticky top-0 z-20">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
-          <Link to="/">
+          <Link to="/" className="app-shell-logo">
             <BrandLogo imageClassName="h-9 w-auto" />
           </Link>
-          <p className="text-sm text-on_surface_variant">
+          <p className="text-sm text-brand_gray">
             Ya tenes cuenta?{' '}
             <button
               type="button"
@@ -620,18 +620,18 @@ export default function RegisterPage() {
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="mb-6 flex items-center gap-1.5 text-sm text-on_surface_variant transition hover:text-on_surface"
+          className="mb-6 flex items-center gap-1.5 text-sm text-brand_gray transition hover:text-white"
         >
           <ArrowLeft size={16} />
           Volver al inicio
         </button>
 
         {registeredSuccess && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
-            <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-700" />
+          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-primary/25 bg-primary/12 px-5 py-4">
+            <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-primary" />
             <div>
-              <p className="text-sm font-semibold text-emerald-800">Proceso completado</p>
-              <p className="mt-0.5 text-xs text-emerald-700">{registeredSuccess}</p>
+              <p className="text-sm font-semibold text-white">Proceso completado</p>
+              <p className="mt-0.5 text-xs text-brand_gray">{registeredSuccess}</p>
             </div>
           </div>
         )}
@@ -668,9 +668,9 @@ export default function RegisterPage() {
             </div>
           </section>
 
-          <div className="rounded-[2rem] border border-outline_variant/20 bg-white/95 p-6 shadow-[0_28px_60px_-36px_rgb(var(--bg-main-rgb)/0.18)] backdrop-blur-sm sm:p-8">
-            <h2 className="mb-2 text-3xl font-display font-bold">Crear cuenta</h2>
-            <p className="mb-6 text-sm text-on_surface_variant">
+          <div className="app-shell-panel-strong p-6 sm:p-8">
+            <h2 className="mb-2 text-3xl font-display font-bold text-white">Crear cuenta</h2>
+            <p className="mb-6 text-sm text-brand_gray">
               {mode === 'register-client'
                 ? 'Crea tu cuenta para reservar canchas y comprar productos.'
                 : 'Registra tu complejo. La autenticacion se hace con Google.'}
@@ -694,7 +694,7 @@ export default function RegisterPage() {
             </div>
 
           {mode === 'register-client' && (
-            <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+            <div className="space-y-4 rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
               <FormField
                 icon={<UserIcon size={18} />}
                 placeholder="Tu nombre de usuario"
@@ -755,7 +755,7 @@ export default function RegisterPage() {
           )}
 
           {mode === 'register-owner' && (
-            <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+            <div className="space-y-4 rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
                   icon={<UserIcon size={18} />}
@@ -881,7 +881,7 @@ export default function RegisterPage() {
               onChange={(event) => setTermsAccepted(event.target.checked)}
               className="mt-0.5 h-4 w-4 accent-[var(--primary-green)]"
             />
-            <span className="text-xs leading-relaxed text-on_surface_variant">
+            <span className="text-xs leading-relaxed text-brand_gray">
               Al registrarme acepto los{' '}
               <button
                 type="button"
@@ -914,7 +914,7 @@ export default function RegisterPage() {
             </span>
           </label>
 
-          <div className="mt-3 rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3 text-sm text-on_surface_variant">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-brand_gray">
             {mode === 'register-client'
               ? 'Podes crear la cuenta con email o con Google.'
               : 'El alta owner sigue con Google porque requiere validar la identidad.'}
@@ -924,7 +924,7 @@ export default function RegisterPage() {
             type="button"
             onClick={mode === 'register-client' ? handleClientRegister : handleOwnerIntent}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgb(var(--primary-green-rgb)/0.32)] transition hover:brightness-110 disabled:opacity-50"
+            className="app-shell-button-primary mt-4 flex w-full py-3.5 disabled:opacity-50"
           >
             {loading ? (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
@@ -943,20 +943,20 @@ export default function RegisterPage() {
           {mode === 'register-client' && (
             <>
               <div className="my-4 flex items-center gap-3">
-                <div className="flex-1 border-t border-outline_variant/20" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-outline">
+                <div className="flex-1 border-t border-white/10" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-brand_gray/70">
                   O registrarte con
                 </span>
-                <div className="flex-1 border-t border-outline_variant/20" />
+                <div className="flex-1 border-t border-white/10" />
               </div>
               <button
                 type="button"
                 onClick={handleGoogleClientStart}
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-outline_variant/30 bg-white py-3 text-on_surface transition hover:bg-surface_container_low disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] py-3 text-white transition hover:bg-white/[0.08] disabled:opacity-50"
               >
                 {loading ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-outline_variant border-t-transparent" />
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/50 border-t-transparent" />
                 ) : (
                   <GoogleIcon />
                 )}
@@ -969,27 +969,27 @@ export default function RegisterPage() {
       </main>
 
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.18)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand_bg/70 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.98),rgb(var(--bg-main-rgb)/0.92))] p-8 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.42)]">
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
-              className="absolute right-4 top-4 text-outline transition hover:text-on_surface"
+              className="absolute right-4 top-4 text-brand_gray transition hover:text-white"
             >
               <X size={20} />
             </button>
             <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
               <Shield size={28} className="text-primary" />
             </div>
-            <h3 className="mb-2 text-center text-xl font-display font-bold">
+            <h3 className="mb-2 text-center text-xl font-display font-bold text-white">
               Confirma tu registro
             </h3>
-            <p className="mb-6 text-center text-sm text-on_surface_variant">
+            <p className="mb-6 text-center text-sm text-brand_gray">
               Vas a crear una cuenta como{' '}
               <span className="font-semibold text-primary">Dueno de Complejo</span>. Se
               abrira Google para autenticarte.
             </p>
-            <div className="mb-6 space-y-2 rounded-2xl bg-surface_container p-4 text-xs text-on_surface_variant">
+            <div className="mb-6 space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-xs text-brand_gray">
               <p className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="shrink-0 text-primary" />
                 Tus datos se guardan de forma segura
@@ -1006,7 +1006,7 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={handleConfirmedOwner}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-bold text-on_primary transition hover:brightness-110"
+              className="app-shell-button-primary flex w-full py-3.5 font-bold"
             >
               <GoogleIcon />
               Continuar con Google
@@ -1014,7 +1014,7 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
-              className="mt-3 w-full py-2 text-center text-sm text-outline transition hover:text-on_surface"
+              className="mt-3 w-full py-2 text-center text-sm text-brand_gray transition hover:text-white"
             >
               Cancelar
             </button>
@@ -1023,21 +1023,21 @@ export default function RegisterPage() {
       )}
 
       {showGoogleClientModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.18)] sm:p-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand_bg/70 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.98),rgb(var(--bg-main-rgb)/0.92))] p-6 shadow-[0_26px_70px_-32px_rgb(var(--bg-main-rgb)/0.42)] sm:p-8">
             <button
               type="button"
               onClick={handleCancelGoogleClient}
-              className="absolute right-4 top-4 text-outline transition hover:text-on_surface"
+              className="absolute right-4 top-4 text-brand_gray transition hover:text-white"
             >
               <X size={20} />
             </button>
-            <h3 className="mb-2 text-2xl font-display font-bold">Completa tu cuenta</h3>
-            <p className="mb-6 text-sm text-on_surface_variant">
+            <h3 className="mb-2 text-2xl font-display font-bold text-white">Completa tu cuenta</h3>
+            <p className="mb-6 text-sm text-brand_gray">
               Google ya valido tu acceso. Necesitamos tu nombre de usuario y un
               telefono valido de Argentina.
             </p>
-            <div className="space-y-4 rounded-[1.75rem] border border-outline_variant/15 bg-surface_container_low p-4 sm:p-5">
+            <div className="space-y-4 rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
               <FormField
                 icon={<UserIcon size={18} />}
                 placeholder="Tu nombre de usuario"
@@ -1074,7 +1074,7 @@ export default function RegisterPage() {
                 type="button"
                 onClick={handleCompleteGoogleClient}
                 disabled={loading}
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3 font-semibold text-on_primary transition hover:brightness-110 disabled:opacity-50"
+                className="app-shell-button-primary flex flex-1 py-3 disabled:opacity-50"
               >
                 {loading ? (
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
@@ -1086,7 +1086,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={handleCancelGoogleClient}
-                className="rounded-2xl border border-outline_variant/20 px-4 py-3 text-sm font-medium text-on_surface_variant transition hover:border-outline hover:text-on_surface"
+                className="rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium text-brand_gray transition hover:border-primary/25 hover:text-white"
               >
                 Cancelar
               </button>

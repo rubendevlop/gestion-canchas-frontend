@@ -84,11 +84,11 @@ export default function SuperadminDashboard() {
     <div className="animate-fade-in pb-10">
       <header className="mb-8 sm:mb-10 flex flex-col gap-4 md:flex-row md:justify-between md:items-end">
         <div>
-          <p className="text-sm text-outline uppercase tracking-widest mb-1">Superadmin</p>
-          <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-on_surface tracking-tight">
+          <p className="text-sm text-brand_gray uppercase tracking-widest mb-1">Superadmin</p>
+          <h2 className="text-[2rem] sm:text-[2.5rem] font-display font-medium text-white tracking-tight">
             Panel global
           </h2>
-          <p className="text-on_surface_variant">
+          <p className="text-brand_gray">
             Desde aca validas owners y monitoreas el estado general de los complejos.
           </p>
         </div>
@@ -129,11 +129,11 @@ export default function SuperadminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-8">
-        <section className="bg-surface_container_high rounded-[1.75rem] border border-outline_variant/10 p-5 sm:p-7">
+        <section className="app-shell-panel p-5 sm:p-7">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-              <h3 className="text-xl font-display font-medium text-on_surface">Solicitudes owner</h3>
-              <p className="text-sm text-on_surface_variant">
+                <h3 className="text-xl font-display font-medium text-white">Solicitudes owner</h3>
+                <p className="text-sm text-brand_gray">
                 Las cuentas pendientes deben aprobarse antes de que puedan usar el dashboard.
               </p>
             </div>
@@ -143,10 +143,10 @@ export default function SuperadminDashboard() {
           </div>
 
           {metrics.pendingOwners.length === 0 ? (
-            <div className="bg-green-400/5 border border-green-400/15 rounded-3xl p-8 text-center">
-              <CheckCircle2 size={34} className="text-green-400 mx-auto mb-3" />
-              <p className="text-on_surface font-medium">No hay owners pendientes.</p>
-              <p className="text-sm text-on_surface_variant mt-2">
+            <div className="rounded-3xl border border-primary/20 bg-primary/10 p-8 text-center">
+              <CheckCircle2 size={34} className="text-primary mx-auto mb-3" />
+              <p className="text-white font-medium">No hay owners pendientes.</p>
+              <p className="text-sm text-brand_gray mt-2">
                 El flujo de aprobacion esta al dia.
               </p>
             </div>
@@ -155,15 +155,15 @@ export default function SuperadminDashboard() {
               {metrics.pendingOwners.slice(0, 5).map((user) => (
                 <div
                   key={user._id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-yellow-400/15 bg-yellow-400/5 px-5 py-4"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/10 px-5 py-4"
                 >
                   <div className="min-w-0">
-                    <p className="text-on_surface font-medium truncate">{user.displayName}</p>
-                    <p className="text-sm text-outline truncate">{user.email}</p>
+                    <p className="text-white font-medium truncate">{user.displayName}</p>
+                    <p className="text-sm text-brand_gray truncate">{user.email}</p>
                   </div>
                   <div className="text-left sm:text-right shrink-0">
-                    <p className="text-xs uppercase tracking-wider text-yellow-400">Pendiente</p>
-                    <p className="text-xs text-outline">{formatDate(user.createdAt)}</p>
+                    <p className="text-xs uppercase tracking-wider text-primary">Pendiente</p>
+                    <p className="text-xs text-brand_gray">{formatDate(user.createdAt)}</p>
                   </div>
                 </div>
               ))}
@@ -172,11 +172,11 @@ export default function SuperadminDashboard() {
         </section>
 
         <section className="space-y-6">
-          <div className="bg-surface_container rounded-[1.75rem] border border-outline_variant/10 p-5 sm:p-7">
+          <div className="app-shell-panel p-5 sm:p-7">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
               <div>
-                <h3 className="text-xl font-display font-medium text-on_surface">Complejos recientes</h3>
-                <p className="text-sm text-on_surface_variant">Ultimos registros creados en la plataforma.</p>
+                <h3 className="text-xl font-display font-medium text-white">Complejos recientes</h3>
+                <p className="text-sm text-brand_gray">Ultimos registros creados en la plataforma.</p>
               </div>
               <Link to="/dashboard/complexes" className="text-sm text-primary hover:text-primary_fixed transition-colors">
                 Gestionar
@@ -184,31 +184,31 @@ export default function SuperadminDashboard() {
             </div>
 
             {complexes.length === 0 ? (
-              <div className="rounded-2xl bg-surface_container_low px-5 py-6 text-sm text-on_surface_variant">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-6 text-sm text-brand_gray">
                 Todavia no hay complejos registrados.
               </div>
             ) : (
               <div className="space-y-3">
                 {complexes.slice(0, 4).map((complex) => (
-                  <div key={complex._id} className="rounded-2xl bg-surface_container_low px-5 py-4">
+                  <div key={complex._id} className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-on_surface font-medium truncate">{complex.name}</p>
-                        <p className="text-sm text-outline truncate">
+                        <p className="text-white font-medium truncate">{complex.name}</p>
+                        <p className="text-sm text-brand_gray truncate">
                           {complex.ownerId?.displayName || complex.ownerId?.email || 'Sin owner'}
                         </p>
                       </div>
                       <span
                         className={`text-[0.65rem] font-bold uppercase tracking-widest px-3 py-1 rounded-full shrink-0 ${
                           complex.isActive
-                            ? 'bg-green-400/10 text-green-400'
-                            : 'bg-red-400/10 text-red-400'
+                            ? 'border border-primary/20 bg-primary/10 text-primary'
+                            : 'border border-white/10 bg-white/[0.04] text-brand_gray'
                         }`}
                       >
                         {complex.isActive ? 'Activo' : 'Inactivo'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-outline mt-3">
+                    <div className="flex items-center gap-2 text-xs text-brand_gray mt-3">
                       <MapPin size={13} />
                       <span className="truncate">{complex.address || 'Sin direccion'}</span>
                     </div>
@@ -218,8 +218,8 @@ export default function SuperadminDashboard() {
             )}
           </div>
 
-          <div className="bg-surface_container rounded-[1.75rem] border border-outline_variant/10 p-5 sm:p-7">
-            <h3 className="text-xl font-display font-medium text-on_surface mb-5">Estado general</h3>
+          <div className="app-shell-panel p-5 sm:p-7">
+            <h3 className="text-xl font-display font-medium text-white mb-5">Estado general</h3>
             <div className="space-y-4">
               <SummaryRow label="Complejos activos" value={`${metrics.activeComplexes.length} / ${complexes.length || 0}`} />
               <SummaryRow label="Owners aprobados" value={metrics.approvedOwners.length} />
@@ -236,11 +236,11 @@ function MetricCard({ icon: Icon, label, value, color, accent = false }) {
   return (
     <div
       className={`bg-surface_container border rounded-[1.5rem] p-5 ${
-        accent ? 'border-yellow-400/30 bg-yellow-400/5' : 'border-outline_variant/10'
+        accent ? 'border-primary/30 bg-primary/10' : 'border-white/10 bg-white/[0.04]'
       }`}
     >
       <Icon size={18} className={`${color} mb-2 opacity-70`} />
-      <p className="text-xs text-outline uppercase tracking-wider mb-0.5">{label}</p>
+      <p className="text-xs text-brand_gray uppercase tracking-wider mb-0.5">{label}</p>
       <p className={`text-2xl font-display font-semibold ${color}`}>{value}</p>
     </div>
   );
@@ -249,8 +249,8 @@ function MetricCard({ icon: Icon, label, value, color, accent = false }) {
 function SummaryRow({ label, value, highlight = false }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-sm text-on_surface_variant">{label}</span>
-      <span className={`font-display font-semibold ${highlight ? 'text-yellow-400' : 'text-on_surface'}`}>
+      <span className="text-sm text-brand_gray">{label}</span>
+      <span className={`font-display font-semibold ${highlight ? 'text-primary' : 'text-white'}`}>
         {value}
       </span>
     </div>

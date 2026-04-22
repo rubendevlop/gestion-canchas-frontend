@@ -17,7 +17,7 @@ import { sendPasswordResetLink, updateFirebaseUserProfile } from '../../firebase
 import { fetchAPI } from '../../services/api';
 
 const INPUT_CLS =
-  'w-full rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-3 text-sm text-on_surface placeholder-outline transition-all focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/15';
+  'w-full rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder:text-brand_gray/60 transition-all focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/15';
 
 export default function PortalProfile() {
   const { user, refreshProfile } = useAuth();
@@ -106,20 +106,20 @@ export default function PortalProfile() {
   return (
     <div className="mx-auto max-w-4xl">
       <header className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-on_surface">Mi perfil</h1>
-        <p className="mt-2 text-on_surface_variant">
+        <h1 className="font-display text-3xl font-bold text-white">Mi perfil</h1>
+        <p className="mt-2 text-brand_gray">
           Administra tus datos personales y revisa como se gestiona tu acceso.
         </p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_360px]">
-        <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgb(var(--bg-main-rgb)/0.16)] sm:p-8">
+        <section className="app-shell-panel p-6 sm:p-8">
           <div className="mb-8 flex items-center gap-4">
             {user?.photoURL ? (
               <img
                 src={user.photoURL}
                 alt="avatar"
-                className="h-20 w-20 rounded-full border border-outline_variant/15 object-cover"
+                className="h-20 w-20 rounded-full border border-white/10 object-cover"
               />
             ) : (
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/12 text-3xl font-bold text-primary">
@@ -128,8 +128,8 @@ export default function PortalProfile() {
             )}
 
             <div>
-              <h2 className="text-xl font-semibold text-on_surface">{user?.displayName || 'Cliente'}</h2>
-              <p className="mt-1 flex items-center gap-2 text-sm text-on_surface_variant">
+              <h2 className="text-xl font-semibold text-white">{user?.displayName || 'Cliente'}</h2>
+              <p className="mt-1 flex items-center gap-2 text-sm text-brand_gray">
                 <Mail size={14} />
                 {user?.email || 'Sin email'}
               </p>
@@ -140,7 +140,7 @@ export default function PortalProfile() {
           </div>
 
           {saved && (
-            <div className="mb-6 rounded-2xl border border-green-400/20 bg-green-400/10 px-4 py-3 text-sm font-medium text-green-600">
+            <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/12 px-4 py-3 text-sm font-medium text-primary">
               Tus datos se guardaron correctamente.
             </div>
           )}
@@ -150,7 +150,7 @@ export default function PortalProfile() {
               <div className="relative">
                 <UserRound
                   size={16}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand_gray/70"
                 />
                 <input
                   type="text"
@@ -169,7 +169,7 @@ export default function PortalProfile() {
               <div className="relative">
                 <Phone
                   size={16}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand_gray/70"
                 />
                 <input
                   type="tel"
@@ -190,15 +190,15 @@ export default function PortalProfile() {
               />
             </Field>
 
-            <div className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-brand_gray">
               El email y el metodo de acceso dependen del proveedor con el que iniciaste sesion.
-              Hoy tu cuenta usa <span className="font-semibold text-on_surface">{providerLabel}</span>.
+              Hoy tu cuenta usa <span className="font-semibold text-white">{providerLabel}</span>.
             </div>
 
             <button
               type="submit"
               disabled={saving}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary_fixed transition-all hover:brightness-110 disabled:opacity-60"
+              className="app-shell-button-primary flex w-full py-3.5 disabled:opacity-60"
             >
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               {saving ? 'Guardando...' : 'Guardar cambios'}
@@ -207,18 +207,18 @@ export default function PortalProfile() {
         </section>
 
         <aside className="space-y-6">
-          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgb(var(--bg-main-rgb)/0.16)]">
+          <section className="app-shell-panel p-6">
             <div className="mb-4 flex items-center gap-3">
               <div className="rounded-2xl bg-primary/10 p-3 text-primary">
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h2 className="font-semibold text-on_surface">Seguridad</h2>
-                <p className="text-sm text-on_surface_variant">Gestiona tu acceso y recuperacion.</p>
+                <h2 className="font-semibold text-white">Seguridad</h2>
+                <p className="text-sm text-brand_gray">Gestiona tu acceso y recuperacion.</p>
               </div>
             </div>
 
-            <div className="mb-4 rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
+            <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-brand_gray">
               {supportsPasswordReset
                 ? 'Tu cuenta admite recuperacion por correo. Puedes enviarte un enlace para cambiar la contrasena.'
                 : 'Tu acceso se gestiona con Google. Para cambiar seguridad o contrasena debes hacerlo desde tu cuenta de Google.'}
@@ -228,7 +228,7 @@ export default function PortalProfile() {
               type="button"
               onClick={handleSecurityAction}
               disabled={sendingReset}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-3 text-sm font-medium text-on_surface transition-colors hover:border-primary/20 hover:bg-surface_container disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm font-medium text-white transition-colors hover:border-primary/20 hover:bg-white/[0.08] disabled:opacity-60"
             >
               {sendingReset ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -241,11 +241,11 @@ export default function PortalProfile() {
             </button>
           </section>
 
-          <section className="rounded-[2rem] border border-outline_variant/20 bg-white p-6 shadow-[0_22px_48px_-34px_rgb(var(--bg-main-rgb)/0.16)]">
-            <h2 className="mb-4 font-semibold text-on_surface">Sesion</h2>
+          <section className="app-shell-panel p-6">
+            <h2 className="mb-4 font-semibold text-white">Sesion</h2>
             <button
               onClick={logout}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-outline_variant/25 py-3 text-sm font-medium text-on_surface_variant transition-all hover:border-error/30 hover:text-error"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 py-3 text-sm font-medium text-brand_gray transition-all hover:border-primary/25 hover:text-primary"
             >
               <LogOut size={16} />
               Cerrar sesion
@@ -268,7 +268,7 @@ export default function PortalProfile() {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-outline">
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand_gray/70">
         {label}
       </label>
       {children}

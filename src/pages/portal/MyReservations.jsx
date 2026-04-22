@@ -121,19 +121,19 @@ export default function MyReservations() {
 
   return (
     <div>
-      <h1 className="mb-8 font-display text-3xl font-bold text-on_surface">Mis reservas</h1>
+      <h1 className="mb-8 font-display text-3xl font-bold text-white">Mis reservas</h1>
 
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="animate-spin text-primary" size={36} />
         </div>
       ) : reservations.length === 0 ? (
-        <div className="py-24 text-center">
-          <CalendarRange size={56} className="mx-auto mb-4 text-on_surface_variant/25" strokeWidth={1} />
-          <p className="mb-6 text-on_surface_variant">Todavia no tienes reservas.</p>
+        <div className="app-shell-empty py-24">
+          <CalendarRange size={56} className="mx-auto mb-4 text-brand_gray/35" strokeWidth={1} />
+          <p className="mb-6 text-brand_gray">Todavia no tienes reservas.</p>
           <Link
             to="/portal"
-            className="rounded-2xl bg-primary/10 px-6 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary/15"
+            className="app-shell-button-primary px-6 py-3 text-sm"
           >
             Buscar un complejo
           </Link>
@@ -142,7 +142,7 @@ export default function MyReservations() {
         <div className="space-y-10">
           {upcoming.length > 0 && (
             <section>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-on_surface_variant">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand_gray">
                 Proximas
               </h2>
               <div className="space-y-3">
@@ -160,7 +160,7 @@ export default function MyReservations() {
           )}
           {past.length > 0 && (
             <section>
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-on_surface_variant">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-brand_gray">
                 Historial
               </h2>
               <div className="space-y-3 opacity-75">
@@ -198,14 +198,14 @@ function ReservationCard({ r, onCancel, onPayOnline, paying = false }) {
     resolveReservationPaymentMethod(r) === 'ONLINE';
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-outline_variant/20 bg-white px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="app-shell-panel flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-5">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary">
           <CalendarRange size={22} />
         </div>
         <div>
-          <p className="font-semibold text-on_surface">{r.court?.name || 'Cancha'}</p>
-          <p className="mt-0.5 flex flex-wrap items-center gap-3 text-sm text-on_surface_variant">
+          <p className="font-semibold text-white">{r.court?.name || 'Cancha'}</p>
+          <p className="mt-0.5 flex flex-wrap items-center gap-3 text-sm text-brand_gray">
             <span className="flex items-center gap-1">
               <MapPin size={12} />
               {r.complex?.name || r.court?.complexId || 'Complejo'}
@@ -228,14 +228,14 @@ function ReservationCard({ r, onCancel, onPayOnline, paying = false }) {
             type="button"
             onClick={() => onPayOnline(r._id)}
             disabled={paying}
-            className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/15 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/12 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/18 disabled:opacity-60"
           >
             {paying ? <Loader2 size={14} className="animate-spin" /> : <CreditCard size={14} />}
             {paying ? 'Procesando...' : 'Pagar online'}
           </button>
         )}
         {canCancel && onCancel && (
-          <button onClick={() => onCancel(r._id)} className="text-outline transition-colors hover:text-error" title="Cancelar">
+          <button onClick={() => onCancel(r._id)} className="text-brand_gray transition-colors hover:text-primary" title="Cancelar">
             <XCircle size={18} />
           </button>
         )}

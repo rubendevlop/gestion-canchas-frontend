@@ -203,11 +203,14 @@ export default function LandingPage() {
                   ))}
                 </div>
 
+              </div>
+
+              <div className="neon-card light-scan p-5 sm:p-6">
                 {/* ── CTA dueños ── */}
                 <button
                   type="button"
                   onClick={() => navigate('/register?tipo=owner')}
-                  className="mt-6 flex w-full items-center gap-4 rounded-2xl border border-primary/40 bg-[linear-gradient(135deg,rgba(115,209,29,0.12),rgba(115,209,29,0.04))] px-5 py-5 text-left shadow-[0_8px_28px_-12px_rgba(115,209,29,0.28)] transition hover:border-primary/60 hover:bg-[linear-gradient(135deg,rgba(115,209,29,0.18),rgba(115,209,29,0.08))] hover:shadow-[0_12px_36px_-12px_rgba(115,209,29,0.4)]"
+                  className="mb-5 flex w-full items-center gap-4 rounded-2xl border border-primary/40 bg-[linear-gradient(135deg,rgba(115,209,29,0.12),rgba(115,209,29,0.04))] px-5 py-5 text-left shadow-[0_8px_28px_-12px_rgba(115,209,29,0.28)] transition hover:border-primary/60 hover:bg-[linear-gradient(135deg,rgba(115,209,29,0.18),rgba(115,209,29,0.08))] hover:shadow-[0_12px_36px_-12px_rgba(115,209,29,0.4)]"
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
                     <Building2 size={22} />
@@ -217,9 +220,6 @@ export default function LandingPage() {
                     <p className="mt-0.5 text-sm text-slate-300">Registrá tus canchas y recibí reservas online →</p>
                   </div>
                 </button>
-              </div>
-
-              <div className="neon-card light-scan p-5 sm:p-6">
                 <p className="poster-chip">Explora rapido</p>
                 <h2 className="mt-4 font-['Barlow_Condensed'] text-4xl uppercase text-white">
                   Busca tu proxima cancha

@@ -157,10 +157,6 @@ export default function LandingPage() {
                   Reserva online para jugadores
                 </p>
 
-                <div className="mt-6 max-w-[15rem] sm:max-w-[18rem]">
-                  <BrandLogo imageClassName="h-auto w-full drop-shadow-[0_0_18px_rgba(115,209,29,0.24)]" />
-                </div>
-
                 <h1 className="mt-8 max-w-[8ch] font-['Teko'] text-[clamp(4.2rem,12vw,7rem)] uppercase leading-[0.84] tracking-[0.02em] text-white [text-shadow:0_12px_34px_rgba(0,16,44,0.48)]">
                   Reserva
                   <span className="block text-primary [text-shadow:0_0_24px_rgba(115,209,29,0.42)]">

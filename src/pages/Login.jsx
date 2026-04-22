@@ -835,7 +835,7 @@ export default function Login() {
                   type="checkbox"
                   checked={termsAccepted}
                   onChange={(event) => setTermsAccepted(event.target.checked)}
-                  className="mt-0.5 h-4 w-4 accent-[var(--color-primary)]"
+                  className="mt-0.5 h-4 w-4 accent-[var(--primary-green)]"
                 />
                 <span className="text-xs leading-relaxed text-on_surface_variant">
                   Al registrarme acepto los{' '}

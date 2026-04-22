@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Public pages
 const LandingPage = lazy(() => import('./pages/LandingPage'));
+const OwnerLandingPage = lazy(() => import('./pages/OwnerLandingPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 
 // Dashboard (owner / superadmin)
@@ -80,6 +81,14 @@ function AppRoutes() {
           element={
             <PublicGuard>
               <LandingPage />
+            </PublicGuard>
+          }
+        />
+        <Route
+          path="/duenos"
+          element={
+            <PublicGuard>
+              <OwnerLandingPage />
             </PublicGuard>
           }
         />

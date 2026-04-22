@@ -879,7 +879,7 @@ export default function RegisterPage() {
               type="checkbox"
               checked={termsAccepted}
               onChange={(event) => setTermsAccepted(event.target.checked)}
-              className="mt-0.5 h-4 w-4 accent-[var(--color-primary)]"
+              className="mt-0.5 h-4 w-4 accent-[var(--primary-green)]"
             />
             <span className="text-xs leading-relaxed text-on_surface_variant">
               Al registrarme acepto los{' '}
@@ -924,7 +924,7 @@ export default function RegisterPage() {
             type="button"
             onClick={mode === 'register-client' ? handleClientRegister : handleOwnerIntent}
             disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(47,158,68,0.34)] transition hover:brightness-110 disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary_container to-primary py-3.5 font-semibold text-on_primary shadow-[0_10px_28px_-12px_rgba(115,209,29,0.32)] transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-on_primary/70 border-t-transparent" />
@@ -965,11 +965,12 @@ export default function RegisterPage() {
             </>
           )}
         </div>
+      </div>
       </main>
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgba(24,36,24,0.28)]">
+          <div className="relative w-full max-w-sm rounded-3xl border border-outline_variant/25 bg-white p-8 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.18)]">
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
@@ -990,15 +991,15 @@ export default function RegisterPage() {
             </p>
             <div className="mb-6 space-y-2 rounded-2xl bg-surface_container p-4 text-xs text-on_surface_variant">
               <p className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="shrink-0 text-green-500" />
+                <CheckCircle2 size={14} className="shrink-0 text-primary" />
                 Tus datos se guardan de forma segura
               </p>
               <p className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="shrink-0 text-green-500" />
+                <CheckCircle2 size={14} className="shrink-0 text-primary" />
                 La solicitud queda pendiente de revision
               </p>
               <p className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="shrink-0 text-green-500" />
+                <CheckCircle2 size={14} className="shrink-0 text-primary" />
                 Luego deberas iniciar sesion manualmente
               </p>
             </div>
@@ -1023,7 +1024,7 @@ export default function RegisterPage() {
 
       {showGoogleClientModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgba(24,36,24,0.28)] sm:p-8">
+          <div className="relative w-full max-w-md rounded-3xl border border-outline_variant/25 bg-white p-6 shadow-[0_26px_70px_-32px_rgba(0,16,44,0.18)] sm:p-8">
             <button
               type="button"
               onClick={handleCancelGoogleClient}

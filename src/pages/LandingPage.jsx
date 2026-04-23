@@ -131,9 +131,10 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => setLoginOpen(true)}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-primary/30 hover:bg-white/10 sm:px-4 sm:text-sm"
+              className="inline-flex items-center gap-2 whitespace-nowrap rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-100 transition hover:border-primary/30 hover:bg-white/10 sm:px-4 sm:text-sm"
             >
               <LogIn size={15} />
+              <span className="sm:hidden">Ingresar</span>
               <span className="hidden sm:inline">Iniciar sesion</span>
             </button>
             <button

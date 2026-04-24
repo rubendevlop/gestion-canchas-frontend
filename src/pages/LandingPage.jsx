@@ -4,44 +4,40 @@ import {
   ArrowRight,
   Building2,
   CalendarRange,
-  ChevronRight,
   Loader2,
   LogIn,
-  MapPin,
+  MessageCircleMore,
   Search,
   Shield,
   Sparkles,
   UserPlus,
 } from 'lucide-react';
-import LoginModal from '../components/LoginModal';
 import BrandLogo from '../components/BrandLogo';
-import { useAuth } from '../contexts/AuthContext';
+import ComplexDiscoverySection from '../components/ComplexDiscoverySection';
+import LoginModal from '../components/LoginModal';
+import SupportWhatsAppButton from '../components/SupportWhatsAppButton';
 import { fetchAPI } from '../services/api';
 
 const CLIENT_STEPS = [
   {
     icon: Search,
-    title: 'Busca complejo',
-    description: 'Filtra por nombre o zona y encuentra canchas activas mas rapido.',
+    title: 'Busca por complejo',
+    description: 'Filtra por nombre, zona y amenities sin caer directo en una cancha suelta.',
   },
   {
     icon: CalendarRange,
-    title: 'Elige horario',
-    description: 'Revisa disponibilidad y entra a reservar desde una experiencia clara.',
+    title: 'Filtra por fecha y hora',
+    description: 'El ranking prioriza complejos con mas turnos y canchas libres para ese momento.',
   },
   {
-    icon: Shield,
-    title: 'Reserva sin vueltas',
-    description: 'Inicia sesion y confirma tus turnos desde la misma plataforma.',
+    icon: MessageCircleMore,
+    title: 'Habla por WhatsApp',
+    description: 'Consulta al soporte o al dueno del complejo desde la misma experiencia.',
   },
 ];
 
 function normalizeSearchValue(value = '') {
   return String(value || '').trim().toLowerCase();
-}
-
-function buildLocationLabel(complex) {
-  return complex?.address || complex?.city || 'Tucuman';
 }
 
 export default function LandingPage() {
@@ -50,7 +46,6 @@ export default function LandingPage() {
 
   const [complexes, setComplexes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [search, setSearch] = useState('');
   const [loginOpen, setLoginOpen] = useState(false);
 
   useEffect(() => {
@@ -67,19 +62,6 @@ export default function LandingPage() {
       .finally(() => setLoadingData(false));
   }, []);
 
-  const normalizedSearch = normalizeSearchValue(search);
-  const filteredComplexes = complexes.filter((complex) => {
-    if (!normalizedSearch) {
-      return true;
-    }
-
-    return [complex?.name, complex?.address, complex?.city]
-      .map(normalizeSearchValue)
-      .join(' ')
-      .includes(normalizedSearch);
-  });
-
-  const featuredComplexes = filteredComplexes.slice(0, 3);
   const totalCourts = complexes.reduce(
     (sum, complex) => sum + Number(complex?.courtsCount || 0),
     0,
@@ -169,8 +151,8 @@ export default function LandingPage() {
                 </h1>
 
                 <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
-                  Encuentra complejos, filtra por zona y entra a reservar desde una portada
-                  mucho mas clara.
+                  Explora complejos completos, filtra por amenities, fecha y horario, y
+                  descubre donde tienes mas opciones reales para jugar.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -179,7 +161,7 @@ export default function LandingPage() {
                     onClick={scrollToComplexes}
                     className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-gradient px-6 py-3.5 font-semibold text-on_primary shadow-[0_18px_44px_-18px_rgb(var(--primary-green-rgb)/0.76)] transition hover:scale-[1.02] hover:brightness-110"
                   >
-                    Ver complejos
+                    Buscar complejos
                     <ArrowRight size={18} />
                   </button>
                   <button
@@ -203,11 +185,9 @@ export default function LandingPage() {
                     <ClientStepCard key={item.title} {...item} />
                   ))}
                 </div>
-
               </div>
 
               <div className="neon-card light-scan p-5 sm:p-6">
-                {/* ── CTA dueños ── */}
                 <button
                   type="button"
                   onClick={() => navigate('/register?tipo=owner')}
@@ -217,92 +197,65 @@ export default function LandingPage() {
                     <Building2 size={22} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-base font-bold text-white">¿Sos dueño de un complejo?</p>
-                    <p className="mt-0.5 text-sm text-slate-300">Registrá tus canchas y recibí reservas online →</p>
+                    <p className="text-base font-bold text-white">Eres dueno de un complejo?</p>
+                    <p className="mt-0.5 text-sm text-slate-300">
+                      Publica amenities, horarios y recibe reservas online.
+                    </p>
                   </div>
                 </button>
-                <p className="poster-chip">Explora rapido</p>
+
+                <p className="poster-chip">Nuevo buscador</p>
                 <h2 className="mt-4 font-['Barlow_Condensed'] text-4xl uppercase text-white">
-                  Busca tu proxima cancha
+                  Compara complejos completos
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-slate-300">
-                  Empieza escribiendo una zona o el nombre de un complejo y baja directo a la
-                  grilla de resultados.
+                  La nueva grilla prioriza complejos con mayor disponibilidad real y te deja
+                  escribir directo al dueno por WhatsApp.
                 </p>
 
-                <div className="relative mt-5">
-                  <Search
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary"
-                    size={18}
-                  />
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Ej.: Yerba Buena, Tucuman Lawn Tennis..."
-                    className="neon-input pl-11"
-                  />
-                </div>
-
                 <div className="mt-5 space-y-3">
-                  {loadingData ? (
-                    <div className="flex justify-center py-10">
-                      <Loader2 className="animate-spin text-primary" size={34} />
-                    </div>
-                  ) : featuredComplexes.length === 0 ? (
-                    <div className="rounded-[1.45rem] border border-white/8 bg-white/[0.03] px-4 py-6 text-center">
-                      <p className="font-['Barlow_Condensed'] text-2xl uppercase text-white">
-                        No hay resultados
-                      </p>
-                      <p className="mt-2 text-sm text-slate-400">
-                        Prueba con otro nombre o baja a la seccion de complejos.
-                      </p>
-                    </div>
-                  ) : (
-                    featuredComplexes.map((complex) => (
-                      <button
-                        key={complex._id}
-                        type="button"
-                        onClick={scrollToComplexes}
-                        className="flex w-full items-center justify-between gap-4 rounded-[1.45rem] border border-white/8 bg-white/[0.03] px-4 py-4 text-left transition hover:border-primary/24 hover:bg-white/[0.05]"
-                      >
-                        <div>
-                          <p className="font-['Barlow_Condensed'] text-2xl uppercase text-white">
-                            {complex.name}
-                          </p>
-                          <p className="mt-1 flex items-center gap-2 text-sm text-slate-400">
-                            <MapPin size={14} className="text-primary" />
-                            <span className="truncate">{buildLocationLabel(complex)}</span>
-                          </p>
-                        </div>
-                        <span className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">
-                          Ver
-                        </span>
-                      </button>
-                    ))
-                  )}
+                  <FeatureLine icon={Search} text="Busqueda por nombre, zona y amenities." />
+                  <FeatureLine icon={CalendarRange} text="Filtro por fecha y horario con ranking por turnos libres." />
+                  <FeatureLine icon={Shield} text="Reservas desde una vista mas clara y enfocada en el complejo." />
                 </div>
 
                 <button
                   type="button"
                   onClick={scrollToComplexes}
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-primary transition hover:gap-3"
+                  className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-white/12 bg-white/6 px-5 py-3 text-sm font-semibold text-white transition hover:border-primary/32 hover:bg-white/10"
                 >
-                  Explorar todos los complejos
-                  <ChevronRight size={16} />
+                  Abrir buscador avanzado
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </div>
           </div>
         </section>
 
+        <section className="mx-auto mt-8 max-w-7xl px-4 sm:px-6">
+          <ComplexDiscoverySection
+            sectionId="complexes-section"
+            eyebrow="Explora y reserva"
+            title="Encuentra el complejo con mas opciones para tu horario"
+            description="Filtra por amenities, fecha y horario. El buscador ordena los complejos por cantidad de turnos y canchas disponibles, y cada tarjeta te deja abrir el detalle o escribirle al dueno por WhatsApp."
+            onNeedAuth={() => setLoginOpen(true)}
+          />
+        </section>
 
         <footer className="mx-auto max-w-7xl px-4 pt-8 text-center text-sm uppercase tracking-[0.32em] text-primary/70 sm:px-6">
-          Mas reservas - Mas juego - Mejor experiencia
+          {loadingData ? (
+            <span className="inline-flex items-center gap-2">
+              <Loader2 size={14} className="animate-spin" />
+              Cargando plataforma
+            </span>
+          ) : (
+            'Mas reservas - Mas juego - Mejor experiencia'
+          )}
         </footer>
       </main>
 
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
+      <SupportWhatsAppButton message="Hola, quiero hacer una consulta sobre Clubes Tucuman." />
     </div>
   );
 }
@@ -330,70 +283,13 @@ function ClientStepCard({ icon: Icon, title, description }) {
   );
 }
 
-function ComplexCard({ complex, onNeedAuth }) {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-
-  const handleClick = () => {
-    if (!user) {
-      onNeedAuth();
-      return;
-    }
-
-    navigate(`/portal/complejo/${complex._id}`);
-  };
-
+function FeatureLine({ icon: Icon, text }) {
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="group neon-card overflow-hidden text-left transition duration-300 hover:-translate-y-1 hover:border-primary/28"
-    >
-      <div className="relative h-56 overflow-hidden">
-        {complex.imageUrl ? (
-          <img
-            src={complex.imageUrl}
-            alt={complex.name}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_top,rgb(var(--primary-green-rgb)/0.22),transparent_28%),linear-gradient(180deg,rgb(var(--bg-main-rgb)/0.86)_0%,rgb(var(--bg-main-rgb))_100%)]">
-            <span className="font-['Teko'] text-7xl uppercase tracking-[0.08em] text-primary/90">
-              Futbol
-            </span>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_18%,rgb(var(--bg-main-rgb)/0.12)_45%,rgb(var(--bg-main-rgb)/0.8)_100%)]" />
-        <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
-          <span className="rounded-full border border-white/10 bg-brand_bg/78 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-            {complex.courtsCount ?? '-'} canchas
-          </span>
-          <div className="flex items-center gap-1 rounded-full border border-white/10 bg-brand_bg/78 px-2.5 py-1 text-sm text-brand_white/80">
-            <span>4.8</span>
-          </div>
-        </div>
+    <div className="flex items-start gap-3 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary">
+        <Icon size={17} />
       </div>
-
-      <div className="p-5">
-        <h3 className="font-['Barlow_Condensed'] text-3xl uppercase leading-none text-white">
-          {complex.name}
-        </h3>
-        <div className="mt-3 flex items-center gap-2 text-sm text-slate-400">
-          <MapPin size={15} className="text-primary" />
-          <span className="truncate">{buildLocationLabel(complex)}</span>
-        </div>
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <p className="text-sm text-slate-300">
-            {user ? 'Entrar a ver horarios' : 'Inicia sesion para reservar'}
-          </p>
-          <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.16em] text-primary">
-            Ver mas
-            <ChevronRight size={15} />
-          </span>
-        </div>
-      </div>
-    </button>
+      <p className="text-sm leading-6 text-slate-300">{text}</p>
+    </div>
   );
 }

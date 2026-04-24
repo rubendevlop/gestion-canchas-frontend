@@ -3,6 +3,7 @@ import { CalendarRange, Home, LogOut, Search, ShoppingBag, User } from 'lucide-r
 import { logout } from '../auth';
 import { useAuth } from '../contexts/AuthContext';
 import BrandLogo from '../components/BrandLogo';
+import SupportWhatsAppButton from '../components/SupportWhatsAppButton';
 
 const NAV = [
   { name: 'Inicio', path: '/portal', icon: Home },
@@ -93,6 +94,8 @@ export default function PortalLayout() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         <Outlet />
       </main>
+
+      <SupportWhatsAppButton message="Hola, quiero hacer una consulta sobre reservas en Clubes Tucuman." />
     </div>
   );
 }

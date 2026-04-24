@@ -15,6 +15,7 @@ import ImageUploadField from '../components/ImageUploadField';
 import { useAuth } from '../contexts/AuthContext';
 import { uploadImageToCloudinary } from '../services/cloudinary';
 import { fetchAPI } from '../services/api';
+import { COMPLEX_AMENITIES } from '../constants/complexAmenities';
 
 const INPUT_CLS =
   'w-full rounded-xl border border-outline_variant/15 bg-surface_container px-4 py-3 text-sm text-on_surface placeholder-outline transition-all focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20';
@@ -23,6 +24,7 @@ const EMPTY_FORM = {
   name: '',
   address: '',
   phone: '',
+  amenities: [],
   logo: '',
   logoPublicId: '',
   openingHours: {
@@ -58,6 +60,7 @@ export default function Settings() {
           name: ownedComplex.name || '',
           address: ownedComplex.address || '',
           phone: ownedComplex.phone || '',
+          amenities: Array.isArray(ownedComplex.amenities) ? ownedComplex.amenities : [],
           logo: ownedComplex.logo || ownedComplex.imageUrl || '',
           logoPublicId: ownedComplex.logoPublicId || '',
           openingHours: ownedComplex.openingHours || { start: '08:00', end: '23:00' },
@@ -124,6 +127,7 @@ export default function Settings() {
       name: form.name.trim(),
       address: form.address.trim(),
       phone: form.phone.trim(),
+      amenities: form.amenities,
       logo: form.logo,
       logoPublicId: form.logoPublicId,
       openingHours: {
@@ -158,6 +162,7 @@ export default function Settings() {
         name: savedComplex.name || '',
         address: savedComplex.address || '',
         phone: savedComplex.phone || '',
+        amenities: Array.isArray(savedComplex.amenities) ? savedComplex.amenities : [],
         logo: savedComplex.logo || savedComplex.imageUrl || '',
         logoPublicId: savedComplex.logoPublicId || '',
         openingHours: savedComplex.openingHours || { start: '08:00', end: '23:00' },
@@ -258,7 +263,7 @@ export default function Settings() {
             </div>
           </Field>
 
-          <Field label="Telefono de contacto">
+          <Field label="Telefono / WhatsApp de contacto">
             <div className="relative">
               <Phone
                 size={16}
@@ -273,6 +278,44 @@ export default function Settings() {
               />
             </div>
           </Field>
+        </Section>
+
+        <Section title="Amenities visibles" icon={<CheckCircle2 size={18} />}>
+          <p className="text-sm text-on_surface_variant">
+            Estos items se muestran como filtros publicos cuando un cliente busca complejos.
+          </p>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {COMPLEX_AMENITIES.map((amenity) => {
+              const active = form.amenities.includes(amenity);
+
+              return (
+                <button
+                  key={amenity}
+                  type="button"
+                  onClick={() =>
+                    setField(
+                      'amenities',
+                      active
+                        ? form.amenities.filter((item) => item !== amenity)
+                        : [...form.amenities, amenity],
+                    )
+                  }
+                  className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm transition-all ${
+                    active
+                      ? 'border-primary/35 bg-primary/10 text-on_surface'
+                      : 'border-outline_variant/15 bg-surface_container text-on_surface_variant hover:border-primary/20'
+                  }`}
+                >
+                  <span>{amenity}</span>
+                  <CheckCircle2
+                    size={18}
+                    className={active ? 'text-primary' : 'text-outline'}
+                  />
+                </button>
+              );
+            })}
+          </div>
         </Section>
 
         <Section title="Horarios" icon={<Clock size={18} />}>

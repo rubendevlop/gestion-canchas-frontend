@@ -21,6 +21,7 @@ import AppModal from '../components/AppModal';
 import { fetchAPI } from '../services/api';
 import ImageUploadField from '../components/ImageUploadField';
 import { uploadImageToCloudinary } from '../services/cloudinary';
+import { COURT_FEATURES } from '../constants/courtFeatures';
 import { DEFAULT_BOOKING_HOURS, formatBookingHourRange, normalizeBookingHours } from '../utils/bookingHours';
 
 const SPORT_OPTIONS = [
@@ -37,6 +38,7 @@ const EMPTY_FORM = {
   capacity: '',
   pricePerHour: '',
   bookingHours: [...DEFAULT_BOOKING_HOURS],
+  features: [],
   isAvailable: true,
   image: '',
   imagePublicId: '',
@@ -113,6 +115,7 @@ export default function Courts() {
       capacity: court.capacity?.toString() ?? '',
       pricePerHour: court.pricePerHour?.toString() ?? '',
       bookingHours: normalizeBookingHours(court.bookingHours),
+      features: Array.isArray(court.features) ? court.features : [],
       isAvailable: Boolean(court.isAvailable),
       image: court.image || court.imageUrl || court.images?.[0] || '',
       imagePublicId: court.imagePublicId || '',
@@ -172,6 +175,7 @@ export default function Courts() {
       capacity: Number(form.capacity),
       pricePerHour: Number(form.pricePerHour),
       bookingHours: normalizeBookingHours(form.bookingHours),
+      features: form.features,
       isAvailable: form.isAvailable,
       image: form.image,
       imagePublicId: form.imagePublicId,
@@ -372,6 +376,23 @@ export default function Courts() {
                 />
               </div>
 
+              <div className="mt-4 flex flex-wrap gap-2">
+                {Array.isArray(court.features) && court.features.length > 0 ? (
+                  court.features.map((feature) => (
+                    <span
+                      key={feature}
+                      className="rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
+                    >
+                      {feature}
+                    </span>
+                  ))
+                ) : (
+                  <span className="rounded-full border border-outline_variant/15 bg-surface_container px-3 py-1 text-xs text-on_surface_variant">
+                    Sin caracteristicas cargadas
+                  </span>
+                )}
+              </div>
+
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <button
                   type="button"
@@ -526,6 +547,58 @@ export default function Courts() {
                     ? formatBookingHourRange(form.bookingHours)
                     : 'Selecciona al menos una hora'}
                 </p>
+              </div>
+            </Field>
+
+            <Field label="Caracteristicas">
+              <div className="rounded-[1.5rem] border border-outline_variant/15 bg-surface_container p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm text-on_surface_variant">
+                    Marca las caracteristicas que despues podran usarse para filtrar la cancha.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((current) => ({
+                        ...current,
+                        features:
+                          current.features.length === COURT_FEATURES.length ? [] : [...COURT_FEATURES],
+                      }))
+                    }
+                    className="text-xs font-semibold uppercase tracking-widest text-primary"
+                  >
+                    {form.features.length === COURT_FEATURES.length ? 'Limpiar' : 'Completar'}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {COURT_FEATURES.map((feature) => {
+                    const active = form.features.includes(feature);
+
+                    return (
+                      <button
+                        key={feature}
+                        type="button"
+                        onClick={() =>
+                          setForm((current) => ({
+                            ...current,
+                            features: active
+                              ? current.features.filter((item) => item !== feature)
+                              : [...current.features, feature],
+                          }))
+                        }
+                        className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm transition-all ${
+                          active
+                            ? 'border-primary/35 bg-primary/10 text-on_surface'
+                            : 'border-outline_variant/15 bg-surface_container_highest text-on_surface_variant hover:border-primary/20'
+                        }`}
+                      >
+                        <span>{feature}</span>
+                        <CheckCircle2 size={18} className={active ? 'text-primary' : 'text-outline'} />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </Field>
 

@@ -1,12 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, ChevronLeft, CreditCard, DollarSign, Loader2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  ChevronLeft,
+  CreditCard,
+  DollarSign,
+  Loader2,
+} from 'lucide-react';
+import CourtFiltersPanel from '../../components/CourtFiltersPanel';
 import { fetchAPI } from '../../services/api';
 import {
   getPastBookingHoursForDate,
   getTodayBookingDate,
   normalizeBookingHours,
 } from '../../utils/bookingHours';
+import {
+  buildCourtAvailabilityHint,
+  buildCourtAvailabilityLabel,
+  buildCourtsEndpoint,
+  matchesCourtSearch,
+} from '../../utils/courts';
 
 const DEFAULT_PAYMENT_OPTIONS = {
   defaultMethod: 'ON_SITE',
@@ -27,11 +40,18 @@ export default function BookCourt() {
   const [complex, setComplex] = useState(null);
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(preselectedCourtId);
-  const [selectedDate, setSelectedDate] = useState(() => today);
+  const [filters, setFilters] = useState({
+    search: '',
+    date: today,
+    startTime: '',
+    features: [],
+    availableOnly: false,
+  });
   const [selectedHour, setSelectedHour] = useState('');
   const [paymentMethod, setPaymentMethod] = useState(DEFAULT_PAYMENT_OPTIONS.defaultMethod);
   const [takenSlots, setTakenSlots] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [courtsLoading, setCourtsLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successTitle, setSuccessTitle] = useState('Reserva creada');
@@ -39,16 +59,20 @@ export default function BookCourt() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const paymentOptions = complex?.reservationPaymentOptions || DEFAULT_PAYMENT_OPTIONS;
+  const filteredCourts = courts.filter((court) => matchesCourtSearch(court, filters.search));
+  const court = filteredCourts.find((item) => item._id === selectedCourt) || null;
+  const availableHours = normalizeBookingHours(court?.bookingHours);
+  const unavailableHours = new Set([
+    ...takenSlots,
+    ...getPastBookingHoursForDate(availableHours, filters.date),
+  ]);
+  const selectedCourtImage = court?.imageUrl || court?.image || court?.images?.[0] || '';
 
   useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      fetchAPI(`/complexes/${complexId}?clientVisible=true`),
-      fetchAPI(`/courts?complexId=${complexId}&clientVisible=true`),
-    ])
-      .then(([complexData, courtsData]) => {
+    setPageLoading(true);
+    fetchAPI(`/complexes/${complexId}?clientVisible=true`)
+      .then((complexData) => {
         setComplex(complexData);
-        setCourts(courtsData);
         const nextPaymentMethod =
           complexData?.reservationPaymentOptions?.onlineEnabled === true
             ? String(complexData.reservationPaymentOptions.defaultMethod || 'ONLINE').toUpperCase()
@@ -58,10 +82,9 @@ export default function BookCourt() {
       })
       .catch((error) => {
         setComplex(null);
-        setCourts([]);
         setErrorMessage(error.message || 'Este complejo no esta disponible para reservas.');
       })
-      .finally(() => setLoading(false));
+      .finally(() => setPageLoading(false));
   }, [complexId]);
 
   useEffect(() => {
@@ -73,9 +96,49 @@ export default function BookCourt() {
   }, [paymentOptions.onlineEnabled]);
 
   useEffect(() => {
-    if (!selectedCourt || !selectedDate) return;
+    let cancelled = false;
 
-    fetchAPI(`/reservations/taken?courtId=${selectedCourt}&date=${selectedDate}`)
+    setCourtsLoading(true);
+    fetchAPI(
+      buildCourtsEndpoint(complexId, {
+        date: filters.date,
+        startTime: filters.startTime,
+        features: filters.features,
+        availableOnly: filters.availableOnly,
+      }),
+    )
+      .then((data) => {
+        if (cancelled) return;
+        setCourts(Array.isArray(data) ? data : []);
+        setErrorMessage('');
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setCourts([]);
+        setErrorMessage(error.message || 'No se pudieron cargar las canchas del complejo.');
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setCourtsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [complexId, filters.date, filters.startTime, filters.features, filters.availableOnly]);
+
+  useEffect(() => {
+    if (!selectedCourt || !filteredCourts.some((item) => item._id === selectedCourt)) {
+      setSelectedCourt('');
+      setSelectedHour('');
+    }
+  }, [filteredCourts, selectedCourt]);
+
+  useEffect(() => {
+    if (!selectedCourt || !filters.date) return;
+
+    fetchAPI(`/reservations/taken?courtId=${selectedCourt}&date=${filters.date}`)
       .then((data) => {
         setTakenSlots(data.takenHours || []);
         setErrorMessage('');
@@ -86,10 +149,70 @@ export default function BookCourt() {
           setErrorMessage(error.message);
         }
       });
-  }, [selectedCourt, selectedDate]);
+  }, [selectedCourt, filters.date]);
+
+  useEffect(() => {
+    if (selectedHour && unavailableHours.has(selectedHour)) {
+      setSelectedHour('');
+    }
+  }, [selectedHour, unavailableHours]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters((current) => {
+      if (key === 'date') {
+        const nextDate = value || today;
+        return {
+          ...current,
+          date: nextDate,
+          startTime: current.startTime,
+          availableOnly: nextDate ? current.availableOnly : false,
+        };
+      }
+
+      if (key === 'startTime') {
+        return {
+          ...current,
+          startTime: value,
+        };
+      }
+
+      if (key === 'availableOnly') {
+        return {
+          ...current,
+          availableOnly: Boolean(value),
+        };
+      }
+
+      return { ...current, [key]: value };
+    });
+
+    if (key === 'date' || key === 'startTime') {
+      setSelectedHour('');
+    }
+  };
+
+  const toggleFeature = (feature) => {
+    setFilters((current) => ({
+      ...current,
+      features: current.features.includes(feature)
+        ? current.features.filter((item) => item !== feature)
+        : [...current.features, feature],
+    }));
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      search: '',
+      date: today,
+      startTime: '',
+      features: [],
+      availableOnly: false,
+    });
+    setSelectedHour('');
+  };
 
   const handleBook = async () => {
-    if (!selectedCourt || !selectedDate || !selectedHour) return;
+    if (!selectedCourt || !filters.date || !selectedHour) return;
     setBooking(true);
     setErrorMessage('');
 
@@ -98,7 +221,7 @@ export default function BookCourt() {
         method: 'POST',
         body: JSON.stringify({
           courtId: selectedCourt,
-          date: selectedDate,
+          date: filters.date,
           startTime: selectedHour,
           paymentMethod,
         }),
@@ -107,16 +230,16 @@ export default function BookCourt() {
       if (response.paymentSession?.checkoutUrl && response.providerConfigured) {
         window.location.assign(response.paymentSession.checkoutUrl);
         return;
-      } else {
-        setSuccessTitle(paymentMethod === 'ON_SITE' ? 'Reserva creada' : 'Reserva confirmada');
-        setSuccessMessage(
-          paymentMethod === 'ON_SITE'
-            ? 'Tu reserva quedo registrada. Podras pagarla directamente en el complejo.'
-            : 'Redirigiendo a tus reservas...',
-        );
-        setSuccess(true);
-        setTimeout(() => navigate('/portal/mis-reservas'), 2000);
       }
+
+      setSuccessTitle(paymentMethod === 'ON_SITE' ? 'Reserva creada' : 'Reserva confirmada');
+      setSuccessMessage(
+        paymentMethod === 'ON_SITE'
+          ? 'Tu reserva quedo registrada. Podras pagarla directamente en el complejo.'
+          : 'Redirigiendo a tus reservas...',
+      );
+      setSuccess(true);
+      setTimeout(() => navigate('/portal/mis-reservas'), 2000);
     } catch (error) {
       setErrorMessage(error.message || 'Error al realizar la reserva.');
     } finally {
@@ -124,21 +247,7 @@ export default function BookCourt() {
     }
   };
 
-  const court = courts.find((item) => item._id === selectedCourt);
-  const availableHours = normalizeBookingHours(court?.bookingHours);
-  const unavailableHours = new Set([
-    ...takenSlots,
-    ...getPastBookingHoursForDate(availableHours, selectedDate),
-  ]);
-  const selectedCourtImage = court?.imageUrl || court?.image || court?.images?.[0] || '';
-
-  useEffect(() => {
-    if (selectedHour && unavailableHours.has(selectedHour)) {
-      setSelectedHour('');
-    }
-  }, [selectedHour, unavailableHours]);
-
-  if (loading) {
+  if (pageLoading) {
     return (
       <div className="flex justify-center py-20">
         <Loader2 className="animate-spin text-primary" size={36} />
@@ -146,7 +255,7 @@ export default function BookCourt() {
     );
   }
 
-  if (!courts.length && errorMessage) {
+  if (!complex) {
     return <div className="py-20 text-center text-on_surface_variant">{errorMessage}</div>;
   }
 
@@ -161,7 +270,7 @@ export default function BookCourt() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-6xl">
       <button
         onClick={() => navigate(-1)}
         className="mb-8 flex items-center gap-2 text-sm text-on_surface_variant transition-colors hover:text-on_surface"
@@ -178,91 +287,163 @@ export default function BookCourt() {
         </div>
       )}
 
-      <Step number={1} title="Elegi la cancha">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {courts.map((item) => {
-            const imageUrl = item.imageUrl || item.image || item.images?.[0] || '';
-
-            return (
-              <button
-                key={item._id}
-                onClick={() => {
-                  setSelectedCourt(item._id);
-                  setSelectedHour('');
-                }}
-                className={`overflow-hidden rounded-2xl border text-left transition-all ${
-                  selectedCourt === item._id
-                    ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgb(var(--primary-green-rgb)/0.22)]'
-                    : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
-                }`}
-              >
-                <div className="h-40 bg-gradient-to-br from-surface_container_low to-surface_container">
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={item.name}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-5xl text-on_surface_variant/30">Cancha</div>
-                  )}
-                </div>
-                <div className="flex items-center justify-between gap-4 px-5 py-4">
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="mt-0.5 text-xs text-on_surface_variant">{item.sport || 'Futbol 5'}</p>
-                  </div>
-                  <p className="font-semibold text-primary">${item.pricePerHour?.toLocaleString('es-AR')}/hr</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </Step>
-
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
-          <Step number={2} title="Elegi la fecha">
-            <input
-              type="date"
-              value={selectedDate}
-              min={today}
-              onChange={(event) => {
-                setSelectedDate(event.target.value);
-                setSelectedHour('');
-              }}
-              className="w-full rounded-2xl border border-outline_variant/25 bg-white px-5 py-3.5 text-sm text-on_surface transition-all focus:border-primary/50 focus:outline-none"
+          <Step number={1} title="Filtra las canchas del complejo">
+            <CourtFiltersPanel
+              filters={filters}
+              onChange={handleFilterChange}
+              onToggleFeature={toggleFeature}
+              onReset={resetFilters}
+              description="Usa fecha, horario preferido y caracteristicas para ver primero las canchas que mejor encajan en este complejo."
             />
           </Step>
 
-          <Step number={3} title="Elegi el horario">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {availableHours.map((hour) => {
-                const taken = unavailableHours.has(hour);
-                return (
-                  <button
-                    key={hour}
-                    disabled={taken}
-                    onClick={() => setSelectedHour(hour)}
-                    className={`rounded-2xl border py-3 text-sm font-semibold transition-all ${
-                      taken
-                        ? 'cursor-not-allowed border-outline_variant/15 bg-surface_container_low text-outline'
-                        : selectedHour === hour
-                          ? 'border-primary/35 bg-primary/12 text-primary'
-                          : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:text-on_surface'
-                    }`}
-                  >
-                    {taken ? <s>{hour}</s> : hour}
-                  </button>
-                );
-              })}
-            </div>
-            {availableHours.length === 0 && (
+          <Step number={2} title="Elige la cancha">
+            {courtsLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="animate-spin text-primary" size={32} />
+              </div>
+            ) : filteredCourts.length === 0 ? (
               <p className="rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
-                Esta cancha no tiene horarios habilitados todavia.
+                No hay canchas que coincidan con los filtros elegidos.
               </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {filteredCourts.map((item) => {
+                  const imageUrl = item.imageUrl || item.image || item.images?.[0] || '';
+                  const summary = item.availabilitySummary || {};
+
+                  return (
+                    <button
+                      key={item._id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCourt(item._id);
+                        if (filters.startTime && summary.availableAtRequestedTime) {
+                          setSelectedHour(filters.startTime);
+                        } else {
+                          setSelectedHour('');
+                        }
+                      }}
+                      className={`overflow-hidden rounded-2xl border text-left transition-all ${
+                        selectedCourt === item._id
+                          ? 'border-primary/35 bg-primary/10 text-on_surface shadow-[0_18px_38px_-24px_rgb(var(--primary-green-rgb)/0.22)]'
+                          : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:bg-surface_container_low hover:text-on_surface'
+                      }`}
+                    >
+                      <div className="h-40 bg-gradient-to-br from-surface_container_low to-surface_container">
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={item.name}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-5xl text-on_surface_variant/30">
+                            Cancha
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-4 px-5 py-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <p className="font-medium text-on_surface">{item.name}</p>
+                            <p className="mt-0.5 text-xs text-on_surface_variant">
+                              {item.sport || 'Futbol'}
+                            </p>
+                          </div>
+                          <p className="font-semibold text-primary">
+                            ${item.pricePerHour?.toLocaleString('es-AR')}/hr
+                          </p>
+                        </div>
+
+                        <div className="rounded-2xl border border-outline_variant/15 bg-surface_container_low px-4 py-3">
+                          <p
+                            className={`text-sm font-semibold ${
+                              summary.hasAvailability ? 'text-primary' : 'text-red-500'
+                            }`}
+                          >
+                            {buildCourtAvailabilityLabel(summary)}
+                          </p>
+                          <p className="mt-1 text-xs leading-5 text-on_surface_variant">
+                            {buildCourtAvailabilityHint(summary)}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {Array.isArray(item.features) && item.features.length > 0 ? (
+                            item.features.slice(0, 4).map((feature) => (
+                              <span
+                                key={feature}
+                                className="rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary"
+                              >
+                                {feature}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="rounded-full border border-outline_variant/15 bg-surface_container px-3 py-1 text-[11px] text-on_surface_variant">
+                              Sin caracteristicas cargadas
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </Step>
+
+          <Step number={3} title="Elige el horario final">
+            {!court ? (
+              <p className="rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
+                Selecciona una cancha para ver sus horarios libres.
+              </p>
+            ) : (
+              <>
+                <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-on_surface_variant">
+                  <span className="rounded-full border border-primary/15 bg-primary/10 px-3 py-1 font-semibold text-primary">
+                    {court.name}
+                  </span>
+                  <span>Fecha: {filters.date}</span>
+                  {filters.startTime && <span>Horario preferido: {filters.startTime}</span>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {availableHours.map((hour) => {
+                    const taken = unavailableHours.has(hour);
+                    const preferred = filters.startTime === hour;
+
+                    return (
+                      <button
+                        key={hour}
+                        disabled={taken}
+                        onClick={() => setSelectedHour(hour)}
+                        className={`rounded-2xl border py-3 text-sm font-semibold transition-all ${
+                          taken
+                            ? 'cursor-not-allowed border-outline_variant/15 bg-surface_container_low text-outline'
+                            : selectedHour === hour
+                              ? 'border-primary/35 bg-primary/12 text-primary'
+                              : preferred
+                                ? 'border-primary/25 bg-primary/8 text-on_surface'
+                                : 'border-outline_variant/20 bg-white text-on_surface_variant hover:border-primary/25 hover:text-on_surface'
+                        }`}
+                      >
+                        {taken ? <s>{hour}</s> : hour}
+                      </button>
+                    );
+                  })}
+                </div>
+                {availableHours.length === 0 && (
+                  <p className="rounded-2xl border border-outline_variant/20 bg-surface_container_low px-4 py-4 text-sm text-on_surface_variant">
+                    Esta cancha no tiene horarios habilitados todavia.
+                  </p>
+                )}
+              </>
             )}
           </Step>
 
@@ -297,7 +478,7 @@ export default function BookCourt() {
           </Step>
         </div>
 
-        {selectedCourt && selectedDate && selectedHour && (
+        {selectedCourt && filters.date && selectedHour && (
           <div className="rounded-2xl border border-outline_variant/20 bg-white p-6 shadow-[0_18px_40px_-26px_rgb(var(--bg-main-rgb)/0.14)]">
             <div className="mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-surface_container_low to-surface_container">
               {selectedCourtImage ? (
@@ -309,7 +490,9 @@ export default function BookCourt() {
                   className="h-44 w-full object-cover"
                 />
               ) : (
-                <div className="flex h-44 items-center justify-center text-5xl text-on_surface_variant/30">Cancha</div>
+                <div className="flex h-44 items-center justify-center text-5xl text-on_surface_variant/30">
+                  Cancha
+                </div>
               )}
             </div>
 
@@ -321,7 +504,7 @@ export default function BookCourt() {
               </div>
               <div className="flex justify-between gap-4">
                 <span>Fecha</span>
-                <span className="font-medium text-on_surface">{selectedDate}</span>
+                <span className="font-medium text-on_surface">{filters.date}</span>
               </div>
               <div className="flex justify-between gap-4">
                 <span>Hora</span>
@@ -353,7 +536,6 @@ export default function BookCourt() {
           </div>
         )}
       </div>
-
     </div>
   );
 }
